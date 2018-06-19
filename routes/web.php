@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+//Routes for Uhoo API
+Route::get('uhoo/data', 'ApiController@getUhooData');
+Route::get('uhoo/trans/{data}', 'ApiController@transferUhooData');
+Route::post('uhoo/data/post', 'ApiController@storeUhooData');
