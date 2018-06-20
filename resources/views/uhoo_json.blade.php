@@ -68,7 +68,30 @@
         <div class="flex-center position-ref full-height">
             <div class="content">
                 <div class="title m-b-md">
-                    {{ dd($response) }}
+                    Air Lab
+                </div>
+
+                <div>
+                    @foreach($meters as $meter)
+                        <h4>Temperature</h4>
+                            <p>{{$meter->temperature}}</p>
+                        <h4>Relative Humidity</h4>
+                            <p>{{$meter->relative_humidity}}</p>
+                        <h4>PM2.5</h4>
+                            <p>{{$meter->pm2_5}}</p>
+                        <h4>TVOC</h4>
+                            <p>{{$meter->tvoc}}</p>
+                        <h4>CO2</h4>
+                            <p>{{$meter->co2}}</p>
+                        <h4>CO</h4>
+                            <p>{{$meter->co}}</p>
+                        <h4>Air Pressure</h4>
+                            <p>{{$meter->air_pressure}}</p>
+                        <h4>Ozone</h4>
+                            <p>{{$meter->ozone}}</p>
+                        <h4>NO2</h4>
+                            <p>{{$meter->no2}}</p>
+                    @endforeach
                 </div>
             </div>
         </div>
