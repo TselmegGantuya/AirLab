@@ -10,11 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
-    return view('welcome');
+  	return view('index');
 });
 
 //Routes for Uhoo API
 Route::get('uhoo', 'ApiController@index');
 Route::get('uhoo/data', 'ApiController@getUhooData');
+
