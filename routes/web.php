@@ -13,3 +13,7 @@
 Route::get('/', function () {
   	return view('index');
 });
+
+//Routes for Uhoo API
+Route::get('uhoo', 'ApiController@index');
+Route::get('uhoo/data', 'ApiController@getUhooData');
