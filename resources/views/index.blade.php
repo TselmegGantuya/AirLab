@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="container">
+<div class="container d-none" id="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-default">
@@ -24,7 +24,7 @@
     </div>
 </div>
 
-<body class="text-center">
+<div class="text-center" id ="loginCont">
     <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
         <div class="col-md-4 offset-md-4">
             <form class="form-signin" >
@@ -39,5 +39,5 @@
                 </div>
             </div>
         </div>
-</body>
+</div>
 @endsection
