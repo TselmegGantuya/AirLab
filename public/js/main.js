@@ -1,3 +1,8 @@
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
 function Model ()
 {
     var base_url = window.location.origin;
@@ -19,19 +24,24 @@ function Model ()
     self.currentPageData = ko.observableArray()
     self.currentPage = ko.observable()
     self.pages = ko.observableArray()
+    self.meters = ko.observableArray()
     //login function
-    $(function() {
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-Token': $('meta[name="_token"]').attr('content')
-    }
-  });
-});
+
     self.loginToken = function() {
         $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
         {
-        self.token(data)
+            self.token(data['access_token'])
+            console.log(self.token())
+            $.post(base_url + '/api/uhoo/last',{token:self.token()}).done(function(data)
+            {
+                self.meters(data)
+                console.log(self.meters())
+
+
+            })
+                
         })
+
         
     }
     self.check = function()

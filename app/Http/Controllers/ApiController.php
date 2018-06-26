@@ -33,6 +33,12 @@ class ApiController extends Controller
         return view('uhoo_meters', compact('meters'));
     }
 
+    public function meterLast(){
+
+        $meter = Meter::orderBy('id', 'desc')->first();
+        return $meter;
+    }
+
     /**
      * Display meter details
      * @param  [type] $id [description]

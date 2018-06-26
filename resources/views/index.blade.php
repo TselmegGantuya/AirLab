@@ -2,12 +2,21 @@
 
 @section('content')
 
-<div class="container d-none">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-default">
                 <div class="card-header">Dashboard</div>
-                <div data-bind="foreach:"></div>
+                <div data-bind="foreach: meters">
+                    <p>ID</p>
+                    <p data-bind="text: id"></p>
+                    <p>Temperature</p>
+                    <p data-bind="text: temperature"></p>
+                    <p>Relative Humidity</p>
+                    <p data-bind="text: relative_humidity"></p>
+                    <p>TVOC</p>
+                    <p data-bind="text: tvoc"></p>
+                </div>
                 <div class="card-body" id="list-list">
                 </div>
             </div>
