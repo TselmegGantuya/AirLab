@@ -23,3 +23,5 @@ Route::get('uhoo/data/meters', 'ApiController@getUhooData');
 Route::get('uhoo/devices', 'ApiController@deviceView');
 Route::get('uhoo/meters', 'ApiController@meterView');
 Route::get('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
+
+
