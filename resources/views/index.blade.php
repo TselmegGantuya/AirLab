@@ -2,23 +2,11 @@
 
 @section('content')
 
-<div class="container">
+<div class="container d-none">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-default">
                 <div class="card-header">Dashboard</div>
-                <form method="POST" action="{{url('api/login')}}">
-                    @csrf
-                    <input type="text" name="email">
-                    <input type="text" name="password">
-                    <input type="submit" >
-                </form>
-                <form method="POST" action="{{url('api/refresh')}}">
-                    @csrf
-                    <input type="text" name="token">
-
-                    <input type="submit" >
-                </form>
                 <div class="card-body" id="list-list">
                 </div>
             </div>
@@ -31,9 +19,9 @@
         <div class="col-md-4 offset-md-4">
             <form class="form-signin" >
                 <div data-bind="foreach: currentPageData">
-                    <input class="form-control" required="" data-bind="attr: {type: name, name: name, placeholder: name}">
+                    <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name, oninput: $root.check(this)}">
                 </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken">Sign in</button>
             </form>
             <div class="form-row" data-bind="foreach: pages">
                 <div class="col-md-6 mt-2">
