@@ -35,9 +35,8 @@ function Model ()
             $.post(base_url + '/api/uhoo/last',{token:self.token()}).done(function(data)
             {
                 self.meters(data)
-                console.log(self.meters())
-
-
+                    $("#container").removeClass("d-none")
+                    $("#loginCont").addClass("d-none")
             })
                 
         })
