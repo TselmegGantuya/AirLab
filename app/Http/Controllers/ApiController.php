@@ -10,15 +10,77 @@ use App\Organization;
 class ApiController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all devices
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function deviceView()
+    {
+        $devices = Device::all();
+
+        return view('uhoo_devices', compact('devices'));
+    }
+
+    /**
+     * Display all meters.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(){
+    public function meterView(){
 
         $meters = Meter::all();
 
-        return view('uhoo_json', compact('meters'));
+        return view('uhoo_meters', compact('meters'));
+    }
+
+    /**
+     * Display meter details
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function meterDetail($id)
+    {
+        $device = Device::findOrFail($id);
+
+        return view('uhoo_meter_detail', compact('device'));
+    }
+
+    /**
+     * Method for getting a list of all available devices.
+     * [getUhooData description]
+     * @return [type] [description]
+     * @return \Illuminate\Http\Response
+     */
+    public function getUhooDevices()
+    {
+        // Receive API by doing an 'POST' request
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, "https://api.uhooinc.com/v1/getdevicelist");
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
+        curl_setopt($curl, CURLOPT_ENCODING, "");
+        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, "username=uhoo@theinnoventors.eu&password=3e24510760d65ee46ba631e4d2d2d04bb1f86fecf56ee2e1248dc59b6749be6e");
+        curl_exec($curl);
+        
+        $result = curl_exec($curl);
+        $response = json_decode($result);
+
+        foreach ($response as $res) {
+            //Save new devices to DB
+            $device = new Device;
+            $device->name = $res->deviceName;
+            $device->mac_address = $res->macAddress;
+            $device->serial_number = $res->serialNumber;
+            $device->organization_id;
+            $device->save();
+        }
+
+        // Redirect to devices page
+        return redirect('uhoo/devices');
     }
 
     /**
@@ -39,7 +101,7 @@ class ApiController extends Controller
         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl, CURLOPT_POSTFIELDS, "username=uhoo@theinnoventors.eu&password=3e24510760d65ee46ba631e4d2d2d04bb1f86fecf56ee2e1248dc59b6749be6e&serialNumber=52ff71067565555648220567");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, "username=uhoo@theinnoventors.eu&password=3e24510760d65ee46ba631e4d2d2d04bb1f86fecf56ee2e1248dc59b6749be6e&serialNumber=52ff6f067565555644450367");
         curl_exec($curl);
         
         $result = curl_exec($curl);
@@ -58,63 +120,7 @@ class ApiController extends Controller
         $meter->no2 = $response->NO2; 
         $meter->save();
 
-        // Redirect to Homepage
-        return redirect('uhoo');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeUhooData(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        // Redirect to meters page
+        return redirect('uhoo/meters');
     }
 }

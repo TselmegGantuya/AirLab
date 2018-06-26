@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
-    //
+	// Organization relationship with devices
+    public function devices()
+    {
+    	return $this->hasMany('App\Device');
+    }
 }
