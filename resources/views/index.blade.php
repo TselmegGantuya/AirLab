@@ -8,14 +8,36 @@
             <div class="card card-default">
                 <div class="card-header">Dashboard</div>
                 <div data-bind="foreach: meters">
-                    <p>ID</p>
-                    <p data-bind="text: id"></p>
-                    <p>Temperature</p>
-                    <p data-bind="text: temperature"></p>
-                    <p>Relative Humidity</p>
-                    <p data-bind="text: relative_humidity"></p>
-                    <p>TVOC</p>
-                    <p data-bind="text: tvoc"></p>
+                    <table>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Temperature</th>
+                                <th scope="col">Relative Humidity</th>
+                                <th scope="col">PM2.5</th>
+                                <th scope="col">TVOC</th>
+                                <th scope="col">CO2</th>
+                                <th scope="col">CO</th>
+                                <th scope="col">Air Pressure</th>
+                                <th scope="col">Ozone</th>
+                                <th scope="col">NO2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-bind="text: temperature"></td>
+                                <td data-bind="text: relative_humidity"></td>
+                                <td data-bind="text: pm2_5"></td>
+                                <td data-bind="text: tvoc"></td>
+                                <td data-bind="text: co2"></td>
+                                <td data-bind="text: co"></td>
+                                <td data-bind="text: air_pressure"></td>
+                                <td data-bind="text: ozone"></td>
+                                <td data-bind="text: no2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </table>
                 </div>
                 <div class="card-body" id="list-list">
                 </div>

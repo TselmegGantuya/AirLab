@@ -26,6 +26,12 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('api:get-data')
                  ->everyMinute();
+
+        // if (!strstr(shell_exec('ps xf'), 'artisan queue:work')) {
+        //     $schedule->command('queue:work')
+        //         ->everyMinute()
+        //         ->withoutOverlapping();
+        // }
     }
 
     /**

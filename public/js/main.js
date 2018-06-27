@@ -3,10 +3,12 @@
       'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
     }
   });
+
 function Model ()
 {
     var base_url = window.location.origin;
     var self = this
+
     self.loginInfo = ko.observableArray([
         {name:"email"},
         {name:"password"}
@@ -25,8 +27,8 @@ function Model ()
     self.currentPage = ko.observable()
     self.pages = ko.observableArray()
     self.meters = ko.observableArray()
-    //login function
 
+    //login function
     self.loginToken = function() {
         $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
         {
@@ -37,16 +39,15 @@ function Model ()
                 self.meters(data)
                     $("#container").removeClass("d-none")
                     $("#loginCont").addClass("d-none")
-            })
-                
-        })
-
-        
+            })            
+        })  
     }
+
     self.check = function()
     {
 
     }
+
     self.choosePage = function(data)
     {
         data = data.toLowerCase()
@@ -66,7 +67,5 @@ function Model ()
     }
     self.choosePage('login')
 }
-
-
 
 ko.applyBindings(new Model())
