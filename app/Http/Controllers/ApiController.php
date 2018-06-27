@@ -27,15 +27,14 @@ class ApiController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function meterView(){
-
         $meters = Meter::all();
 
         return view('uhoo_meters', compact('meters'));
     }
 
     public function meterLast(){
-
         $meter = Meter::orderBy('id', 'desc')->first();
+
         return $meter;
     }
 

@@ -17,7 +17,7 @@ function Model ()
         {name:"email"},
         {name:"name"},
         {name:"password"},
-        {name:"password"}
+        {name:"retype password"}
     ])
     self.forgetInfo = ko.observableArray([
         {name:"email"}
