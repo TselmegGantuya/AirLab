@@ -15,7 +15,7 @@ function Model ()
         {name:"email"},
         {name:"name"},
         {name:"password"},
-        {name:"password"}
+        {name:"confirmPassword"}
     ])
     self.forgetInfo = ko.observableArray([
         {name:"email"}
@@ -38,10 +38,10 @@ function Model ()
                     $("#container").removeClass("d-none")
                     $("#loginCont").addClass("d-none")
             })
-                
+
         })
 
-        
+
     }
     self.check = function()
     {
