@@ -14,4 +14,4 @@ Route::get('/', function () {
   	return view('index');
 });
 
-
+Route::get('/test', 'ApiController@deviceView');
