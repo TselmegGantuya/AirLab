@@ -25,7 +25,7 @@
         <div class="col-md-4 offset-md-4">
             <form class="form-signin" >
                 <div data-bind="foreach: currentPageData">
-                    <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name, oninput: $root.check(this)}">
+                    <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name}">
                 </div>
                 <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken">Sign in</button>
             </form>

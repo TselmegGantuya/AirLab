@@ -7,6 +7,12 @@ function Model ()
 {
     var base_url = window.location.origin;
     var self = this
+    self.thing = {
+        bedrijf: {
+            name: 'hi',
+            id: '12'
+        }
+    }
     self.loginInfo = ko.observableArray([
         {name:"email"},
         {name:"password"}
@@ -14,8 +20,7 @@ function Model ()
     self.registerInfo = ko.observableArray([
         {name:"email"},
         {name:"name"},
-        {name:"password"},
-        {name:"password"}
+        {name:"password"}   
     ])
     self.forgetInfo = ko.observableArray([
         {name:"email"}
@@ -40,19 +45,20 @@ function Model ()
             })
                 
         })
-
-        
     }
-    self.check = function()
+    self.registerToDB = function()
     {
-
+        $.post(base_url + '/api/validate',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
+        {
+            console.log(data)
+        })
     }
     self.choosePage = function(data)
     {
         data = data.toLowerCase()
         self.currentPage(data)
         console.log(self.currentPage())
-        if(data == "login"){
+        if (data == "login") {
             self.currentPageData(self.loginInfo())
             self.pages([{name: 'Register'}, {name: 'Forget password'}])
         }else if (data == "register"){
