@@ -17,7 +17,6 @@ function Model ()
         {name:"email"},
         {name:"name"},
         {name:"password"},
-        {name:"retype password"}
     ])
     self.forgetInfo = ko.observableArray([
         {name:"email"}
@@ -27,18 +26,32 @@ function Model ()
     self.currentPage = ko.observable()
     self.pages = ko.observableArray()
     self.meters = ko.observableArray()
+    self.devices = ko.observableArray()
 
-    //login function
+    /**
+     * [loginToken description]
+     * @return {[type]} [description]
+     */
     self.loginToken = function() {
         $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
         {
+
             self.token(data['access_token'])
             console.log(self.token())
-            $.post(base_url + '/api/uhoo/last',{token:self.token()}).done(function(data)
+
+            $.post(base_url + '/api/uhoo/last-meter',{token:self.token()}).done(function(data)
             {
                 self.meters(data)
-                    $("#container").removeClass("d-none")
-                    $("#loginCont").addClass("d-none")
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
+            })
+
+            $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
+            {
+                self.devices(data)
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
+                console.log(self.devices())
             })            
         })  
     }
@@ -48,23 +61,50 @@ function Model ()
 
     }
 
+    /**
+     * [logout description]
+     * @return {[type]} [description]
+     */
+    self.logout = function(){
+        $.post(base_url + '/api/logout', {token:self.token()}).done(function(data)
+        {
+            $("#container").addClass("d-none")
+            $("#loginCont").removeClass("d-none")
+            $('#email').val("")
+            $('#password').val("")
+            self.meters("")
+            self.devices("")
+
+            console.log(data)
+        })
+    }
+
     self.choosePage = function(data)
     {
         data = data.toLowerCase()
         self.currentPage(data)
         console.log(self.currentPage())
+
         if(data == "login"){
+
             self.currentPageData(self.loginInfo())
             self.pages([{name: 'Register'}, {name: 'Forget password'}])
+
         }else if (data == "register"){
+
             self.currentPageData(self.registerInfo())
             self.pages([{name: 'Login'}, {name: 'Forget password'}])
+
         }else{
+
             self.currentPageData(self.forgetInfo())
             self.pages([{name: 'Register'}, {name: 'Login'}])
+
         }
+
         console.log(self.currentPageData())
     }
+
     self.choosePage('login')
 }
 

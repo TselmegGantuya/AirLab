@@ -40,9 +40,9 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="nav-link">
-                <a class="nav-item" href="#">Logout</a>
-            </div>
+<!--             <div class="nav-link">
+                <a class="nav-item" data-bind="click: logout">Logout</a>
+            </div> -->
         </nav>
 
         <main class="py-4">
