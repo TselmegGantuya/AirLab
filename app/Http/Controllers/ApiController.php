@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use App\Meter;
 use App\Device;
 use App\Organization;
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
     /**
      * Display all devices
+     * 
      * [deviceView description]
      * @return [type] [description]
      */
@@ -18,7 +20,13 @@ class ApiController extends Controller
     {
         $devices = Device::all();
 
-        return view('uhoo_devices', compact('devices'));
+        
+
+        foreach ($devices as $d) {
+            $d->organization_name = $d->organization->name;
+        }
+// dd($devices);
+        return $devices;
     }
 
     /**
@@ -27,20 +35,26 @@ class ApiController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function meterView(){
-
         $meters = Meter::all();
 
         return view('uhoo_meters', compact('meters'));
     }
 
-    public function meterLast(){
-
+    /**
+     * Display inserted last meter in DB
+     * 
+     * [lastMeter description]
+     * @return [type] [description]
+     */
+    public function lastMeter(){
         $meter = Meter::orderBy('id', 'desc')->first();
+
         return $meter;
     }
 
     /**
      * Display meter details
+     * 
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
@@ -53,6 +67,7 @@ class ApiController extends Controller
 
     /**
      * Method for getting a list of all available devices.
+     * 
      * [getUhooData description]
      * @return [type] [description]
      * @return \Illuminate\Http\Response
@@ -76,13 +91,15 @@ class ApiController extends Controller
         $response = json_decode($result);
 
         foreach ($response as $res) {
-            //Save new devices to DB
-            $device = new Device;
-            $device->name = $res->deviceName;
-            $device->mac_address = $res->macAddress;
-            $device->serial_number = $res->serialNumber;
-            $device->organization_id;
-            $device->save();
+            if ($res->deviceName != Device::where('name', '=', $name)) {
+                //Save new devices to DB
+                $device = new Device;
+                $device->name = $res->deviceName;
+                $device->mac_address = $res->macAddress;
+                $device->serial_number = $res->serialNumber;
+                $device->organization_id;
+                $device->save();   
+            }
         }
 
         // Redirect to devices page
@@ -91,6 +108,7 @@ class ApiController extends Controller
 
     /**
      * Method for getting a data per minute.
+     * 
      * [getUhooData description]
      * @return [type] [description]
      * @return \Illuminate\Http\Response

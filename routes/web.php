@@ -13,12 +13,3 @@
 Route::get('/', function () {
   	return view('index');
 });
-
-Route::get('test', function(){
-    App\User::create([
-        'name' => 'dude',
-        'email' => 'ur@dumb.cmo',
-        'password' => Hash::make("password"),
-    ]);
-
-});
