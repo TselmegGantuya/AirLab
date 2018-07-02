@@ -8,7 +8,6 @@ function Model ()
 {
     var base_url = window.location.origin;
     var self = this
-
     self.loginInfo = ko.observableArray([
         {name:"email"},
         {name:"password"}
@@ -16,7 +15,7 @@ function Model ()
     self.registerInfo = ko.observableArray([
         {name:"email"},
         {name:"name"},
-        {name:"password"},
+        {name:"password"}   
     ])
     self.forgetInfo = ko.observableArray([
         {name:"email"}
@@ -48,8 +47,7 @@ function Model ()
                 $("#container").removeClass("d-none")
                 $("#loginCont").addClass("d-none")
             })
-
-            $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
+                 $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
             {
                 self.devices(data)
                 $("#container").removeClass("d-none")
@@ -68,6 +66,23 @@ function Model ()
 
     }
 
+    /**
+     * [registerToDB description]
+     * @return {[type]} [description]
+     */
+    self.registerToDB = function()
+
+    {
+        $.post(base_url + '/api/validate',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
+        {
+            console.log(data)
+        })
+    }
+
+    /**
+     * [getMeters description]
+     * @return {[type]} [description]
+     */
     self.getMeters = function(){
         $.post(base_url + '/api/uhoo/meters', {token: self.token()}).done(function(data){
             self.deviceMeter(data)
@@ -75,6 +90,10 @@ function Model ()
         })
     }
 
+    /**
+     * [getDevices description]
+     * @return {[type]} [description]
+     */
     self.getDevices = function(){
         $.post(base_url + '/api/uhoo/user/device', {token: self.token()}).done(function(data){
             self.userDevice(data)
@@ -104,7 +123,7 @@ function Model ()
         self.currentPage(data)
         console.log(self.currentPage())
 
-        if(data == "login"){
+        if (data == "login") {
 
             self.currentPageData(self.loginInfo())
             self.pages([{name: 'Register'}, {name: 'Forgot password'}])
