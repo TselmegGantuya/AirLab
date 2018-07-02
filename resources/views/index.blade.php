@@ -9,24 +9,24 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: profile">
-                            <button class="btn btn-primary col" type="button"> Profile</button>
+                            <button class="btn btn-info col" type="button"> Profile</button>
                         </a>
                     </li>
 <!--                     <li class="nav-item">
                         <a class="nav-link" href="#">
-                            <button class="btn btn-primary col" type="button"> Kamers</button>
+                            <button class="btn btn-info col" type="button"> Kamers</button>
                         </a>
                     </li> -->
 
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: getDevices">
-                            <button class="btn btn-primary col" type="button"> Devices</button>
+                            <button class="btn btn-info col" type="button"> Devices</button>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: getMeters">
-                            <button class="btn btn-primary col" type="button"> Meters</button>
+                            <button class="btn btn-info col" type="button"> Meters</button>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -140,11 +140,12 @@
                 </table>
             </div>
 
-            <h2>Meter Overzicht</h2>
+            <h2>Last Meter</h2>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <th scope="col">Device Name</th>
                             <th scope="col">Time</th>
                             <th scope="col">Temperature</th>
                             <th scope="col">Relative Humidity</th>
@@ -159,6 +160,7 @@
                     </thead>
                     <tbody data-bind="foreach: meters">
                         <tr>
+                            <td data-bind="text: device.name"></td>
                             <td data-bind="text: updated_at"></td>
                             <td data-bind="text: temperature"></td>
                             <td data-bind="text: relative_humidity"></td>
@@ -172,6 +174,7 @@
                         </tr>
                     </tbody>
                     <tfoot>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
