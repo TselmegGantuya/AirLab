@@ -7,6 +7,7 @@ use App\Meter;
 use App\Device;
 use App\Organization;
 use Carbon\Carbon;
+use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
 {
@@ -20,12 +21,10 @@ class ApiController extends Controller
     {
         $devices = Device::all();
 
-        
-
-        foreach ($devices as $d) {
-            $d->organization_name = $d->organization->name;
+        foreach ($devices as $device) {
+            $device->organization_name = $device->organization->name;
         }
-// dd($devices);
+
         return $devices;
     }
 
@@ -37,7 +36,11 @@ class ApiController extends Controller
     public function meterView(){
         $meters = Meter::all();
 
-        return view('uhoo_meters', compact('meters'));
+        foreach ($meters as $meter) {
+            $meter->device_name = $meter->device->name;
+        }
+
+        return $meters;
     }
 
     /**
@@ -50,6 +53,33 @@ class ApiController extends Controller
         $meter = Meter::orderBy('id', 'desc')->first();
 
         return $meter;
+    }
+
+    /**
+     * Method to get all devices that belongs to logged in user
+     * [userDevice description]
+     * @return [type] [description]
+     */
+    public function userDevice()
+    {
+        $devices = Device::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+        $userDevice = array();
+
+        foreach ($organizations as $organization) {
+            if ($userInfo['name'] == $organization->name) {
+                foreach ($devices as $device) {
+                    if ($organization->name == $device->organization->name) {
+                        $userDevice[] = $device;
+                    }
+                }
+            }   
+        }
+
+        return $userDevice;
     }
 
     /**
