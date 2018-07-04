@@ -7,6 +7,7 @@ use App\Meter;
 use App\Device;
 use App\Organization;
 use Carbon\Carbon;
+use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
 {
@@ -20,24 +21,44 @@ class ApiController extends Controller
     {
         $devices = Device::all();
 
-        
-
-        foreach ($devices as $d) {
-            $d->organization_name = $d->organization->name;
+        foreach ($devices as $device) {
+            $device->organization_name = $device->organization->name;
         }
-// dd($devices);
+
         return $devices;
     }
 
     /**
-     * Display all meters.
+     * Display all meters that belongs to logged in user.
      *
      * @return \Illuminate\Http\Response
      */
     public function meterView(){
         $meters = Meter::all();
+        $devices = Device::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+        $meterray = array();
 
-        return view('uhoo_meters', compact('meters'));
+        foreach ($organizations as $organization) {
+            if ($userInfo['name'] == $organization->name) {
+                foreach ($devices as $device) {
+                    if ($device->organization_id == $organization->id) {
+                        foreach ($meters as $meter) {
+                            $meter->device_name = $meter->device->name;
+
+                            if ($meter->device_name == $device->name) {
+                                $meterray[] = $meter;
+                            }
+                        }
+                    }
+                }
+            }   
+        }
+
+        return $meterray;
     }
 
     /**
@@ -48,22 +69,50 @@ class ApiController extends Controller
      */
     public function lastMeter(){
         $meter = Meter::orderBy('id', 'desc')->first();
-
+        $meter->device_name = $meter->device->name;
+        
         return $meter;
     }
 
     /**
-     * Display meter details
-     * 
-     * @param  [type] $id [description]
-     * @return [type]     [description]
+     * Method to get all devices that belongs to logged in user
+     * [userDevice description]
+     * @return [type] [description]
      */
-    public function meterDetail($id)
+    public function userDevice()
     {
-        $device = Device::findOrFail($id);
+        $devices = Device::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+        $userDevice = array();
 
-        return view('uhoo_meter_detail', compact('device'));
+        foreach ($organizations as $organization) {
+            if ($userInfo['name'] == $organization->name) {
+                foreach ($devices as $device) {
+                    if ($organization->name == $device->organization->name) {
+                        $userDevice[] = $device;
+                    }
+                }
+            }   
+        }
+
+        return $userDevice;
     }
+
+    // /**
+    //  * Display meter details
+    //  * 
+    //  * @param  [type] $id [description]
+    //  * @return [type]     [description]
+    //  */
+    // public function meterDetail($id)
+    // {
+    //     $device = Device::findOrFail($id);
+
+    //     return view('uhoo_meter_detail', compact('device'));
+    // }
 
     /**
      * Method for getting a list of all available devices.
@@ -74,6 +123,8 @@ class ApiController extends Controller
      */
     public function getUhooDevices()
     {
+        $data = array('username' => 'uhoo@theinnoventors.eu', 'password' => '3e24510760d65ee46ba631e4d2d2d04bb1f86fecf56ee2e1248dc59b6749be6e');
+
         // Receive API by doing an 'POST' request
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, "https://api.uhooinc.com/v1/getdevicelist");
@@ -84,26 +135,39 @@ class ApiController extends Controller
         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl, CURLOPT_POSTFIELDS, "username=uhoo@theinnoventors.eu&password=3e24510760d65ee46ba631e4d2d2d04bb1f86fecf56ee2e1248dc59b6749be6e");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         curl_exec($curl);
         
         $result = curl_exec($curl);
         $response = json_decode($result);
 
+        $devices = Device::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+
         foreach ($response as $res) {
-            if ($res->deviceName != Device::where('name', '=', $name)) {
-                //Save new devices to DB
-                $device = new Device;
-                $device->name = $res->deviceName;
-                $device->mac_address = $res->macAddress;
-                $device->serial_number = $res->serialNumber;
-                $device->organization_id;
-                $device->save();   
+            foreach ($devices as $device) {
+                if ($res->deviceName !== $device->name) {
+                    dd('not iden');
+                    //Save new devices to DB
+                    $device = new Device;
+                    $device->name = $res->deviceName;
+                    $device->mac_address = $res->macAddress;
+                    $device->serial_number = $res->serialNumber;
+                    foreach ($organizations as $organization) {
+                        if ($userInfo['name'] == $organization->name) {
+                            $device->organization_id = $organization->id;
+                        }   
+                    }
+                    // $device->save();   
+                }               
             }
         }
 
         // Redirect to devices page
-        return redirect('uhoo/devices');
+        return redirect('api/uhoo/devices');
     }
 
     /**
@@ -115,6 +179,8 @@ class ApiController extends Controller
      */
     public function getUhooData()
     {
+        $data = array('username' => 'uhoo@theinnoventors.eu', 'password' => '3e24510760d65ee46ba631e4d2d2d04bb1f86fecf56ee2e1248dc59b6749be6e', 'serialNumber' => '52ff6e067565555639500367');
+
         // Receive API by doing an 'POST' request
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, "https://api.uhooinc.com/v1/getlatestdata");
@@ -125,14 +191,21 @@ class ApiController extends Controller
         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl, CURLOPT_POSTFIELDS, "username=uhoo@theinnoventors.eu&password=3e24510760d65ee46ba631e4d2d2d04bb1f86fecf56ee2e1248dc59b6749be6e&serialNumber=52ff6f067565555644450367");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         curl_exec($curl);
-        
+
         $result = curl_exec($curl);
         $response = json_decode($result);
 
+        $devices = Device::all();
+
         // Save new meters data to DB
         $meter = new Meter;
+        foreach ($devices as $device) {
+            if ($device->serial_number == $data['serialNumber']) {
+                $meter->device_id = $device->id;
+            }
+        }
         $meter->temperature = $response->Temperature;
         $meter->relative_humidity = $response->{'Relative Humidity'};
         $meter->pm2_5 = $response->{'PM2.5'};
@@ -142,9 +215,9 @@ class ApiController extends Controller
         $meter->air_pressure = $response->{'Air Pressure'};
         $meter->ozone = $response->Ozone;
         $meter->no2 = $response->NO2; 
-        $meter->save();
+        // $meter->save();
 
         // Redirect to meters page
-        return redirect('uhoo/meters');
+        return redirect('api/uhoo/meters');
     }
 }

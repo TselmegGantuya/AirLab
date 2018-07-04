@@ -34,15 +34,11 @@
         </nav> -->
 
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
-            <a class="navbar-brand" href="#">Air Lab</a>
+            <a class="navbar-brand text-uppercase" href="#">Air Lab</a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-<!--             <div class="nav-link">
-                <a class="nav-item" data-bind="click: logout">Logout</a>
-            </div> -->
         </nav>
 
         <main class="py-4">

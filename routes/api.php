@@ -38,6 +38,7 @@ Route::group([
 	Route::post('uhoo/devices', 'ApiController@deviceView');
 	Route::post('uhoo/meters', 'ApiController@meterView');
 	Route::post('uhoo/last-meter', 'ApiController@lastMeter');
+	Route::post('uhoo/user/device', 'ApiController@userDevice');
 	Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
 
 });

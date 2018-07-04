@@ -27,6 +27,9 @@ function Model ()
     self.pages = ko.observableArray()
     self.meters = ko.observableArray()
     self.devices = ko.observableArray()
+    self.user = ko.observableArray()
+    self.userDevice = ko.observableArray()
+    self.deviceMeter = ko.observableArray()
 
     /**
      * [loginToken description]
@@ -55,15 +58,91 @@ function Model ()
         })  
     }
 
+    /**
+     * [check description]
+     * @return {[type]} [description]
+     */
+    self.check = function()
+    {
 
+    }
+
+    /**
+     * [registerToDB description]
+     * @return {[type]} [description]
+     */
     self.registerToDB = function()
 
     {
-        $.post(base_url + '/api/validate',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
+        $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
         {
             console.log(data)
         })
     }
+
+    /**
+     * [getMeters description]
+     * @return {[type]} [description]
+     */
+    self.getMeters = function(){
+        $.post(base_url + '/api/uhoo/meters', {token: self.token()}).done(function(data){
+            self.deviceMeter(data)
+            console.log(self.deviceMeter())
+        })
+    }
+
+    /**
+     * [getDevices description]
+     * @return {[type]} [description]
+     */
+    self.getDevices = function(){
+        $.post(base_url + '/api/uhoo/user/device', {token: self.token()}).done(function(data){
+            self.userDevice(data)
+            console.log(self.userDevice())
+        })
+    }
+
+    /**
+     * [profile description]
+     * @return {[type]} [description]
+     */
+    self.profile = function(){
+        $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
+            self.user(data)
+            console.log(self.user())
+        })
+    }
+
+    /**
+     * [choosePage description]
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+    self.choosePage = function(data)
+    {
+        data = data.toLowerCase()
+        self.currentPage(data)
+        console.log(self.currentPage())
+
+        if (data == "login") {
+            self.loginButton('Sign in')
+            self.currentPageData(self.loginInfo())
+            self.pages([{name: 'Register'}, {name: 'Forgot password'}])
+
+        }else if (data == "register"){
+            self.loginButton('Sign up')
+            self.currentPageData(self.registerInfo())
+            self.pages([{name: 'Login'}, {name: 'Forgot password'}])
+
+        }else{
+            self.loginButton('Send email')
+            self.currentPageData(self.forgetInfo())
+            self.pages([{name: 'Register'}, {name: 'Login'}])
+
+        }
+        console.log(self.currentPageData())
+    }
+    self.choosePage('login')
 
     /**
      * [logout description]
@@ -82,34 +161,6 @@ function Model ()
             console.log(data)
         })
     }
-
-    self.choosePage = function(data)
-    {
-        data = data.toLowerCase()
-        self.currentPage(data)
-        console.log(self.currentPage())
-
-        if (data == "login") {
-            self.loginButton('Sign in')
-            self.currentPageData(self.loginInfo())
-            self.pages([{name: 'Register'}, {name: 'Forget password'}])
-
-        }else if (data == "register"){
-            self.loginButton('Sign up')
-            self.currentPageData(self.registerInfo())
-            self.pages([{name: 'Login'}, {name: 'Forget password'}])
-
-        }else{
-            self.loginButton('Send email')
-            self.currentPageData(self.forgetInfo())
-            self.pages([{name: 'Register'}, {name: 'Login'}])
-
-        }
-
-        console.log(self.currentPageData())
-    }
-
-    self.choosePage('login')
 }
 
 ko.applyBindings(new Model())
