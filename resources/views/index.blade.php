@@ -177,7 +177,7 @@
                 <div data-bind="foreach: currentPageData">
                     <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name}">
                 </div>
-                <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken">Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken text:loginButton"></button>
             </form>
             <div class="form-row" data-bind="foreach: pages">
                 <div class="col-md-6 mt-2">

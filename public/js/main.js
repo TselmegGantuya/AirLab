@@ -8,6 +8,7 @@ function Model ()
 {
     var base_url = window.location.origin;
     var self = this
+    self.loginButton = ko.observable()
     self.loginInfo = ko.observableArray([
         {name:"email"},
         {name:"password"}
@@ -89,17 +90,17 @@ function Model ()
         console.log(self.currentPage())
 
         if (data == "login") {
-
+            self.loginButton('Sign in')
             self.currentPageData(self.loginInfo())
             self.pages([{name: 'Register'}, {name: 'Forget password'}])
 
         }else if (data == "register"){
-
+            self.loginButton('Sign up')
             self.currentPageData(self.registerInfo())
             self.pages([{name: 'Login'}, {name: 'Forget password'}])
 
         }else{
-
+            self.loginButton('Send email')
             self.currentPageData(self.forgetInfo())
             self.pages([{name: 'Register'}, {name: 'Login'}])
 
