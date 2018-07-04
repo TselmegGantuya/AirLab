@@ -36,48 +36,36 @@ function Model ()
      * @return {[type]} [description]
      */
     self.loginToken = function() {
-        $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
-        {
-
-            self.token(data['access_token'])
-            console.log(self.token())
-
-            $.post(base_url + '/api/uhoo/last-meter',{token:self.token()}).done(function(data)
+        if (self.loginButton() == "Sign in") {
+            $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
             {
-                self.meters(data)
-                $("#container").removeClass("d-none")
-                $("#loginCont").addClass("d-none")
+
+                self.token(data['access_token'])
+                console.log(self.token())
+
+                $.post(base_url + '/api/uhoo/last-meter',{token:self.token()}).done(function(data)
+                {
+                    self.meters(data)
+                    $("#container").removeClass("d-none")
+                    $("#loginCont").addClass("d-none")
+                })
+                     $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
+                {
+                    self.devices(data)
+                    $("#container").removeClass("d-none")
+                    $("#loginCont").addClass("d-none")
+                    console.log(self.devices())
+                })            
+            })  
+        } else if (self.loginButton() == "Sign up") {
+            $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
+            {
+                console.log(data)
             })
-                 $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
-            {
-                self.devices(data)
-                $("#container").removeClass("d-none")
-                $("#loginCont").addClass("d-none")
-                console.log(self.devices())
-            })            
-        })  
-    }
+        } else {
 
-    /**
-     * [check description]
-     * @return {[type]} [description]
-     */
-    self.check = function()
-    {
-
-    }
-
-    /**
-     * [registerToDB description]
-     * @return {[type]} [description]
-     */
-    self.registerToDB = function()
-
-    {
-        $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
-        {
-            console.log(data)
-        })
+        }
+        
     }
 
     /**
