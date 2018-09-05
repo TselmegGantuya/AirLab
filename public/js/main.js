@@ -49,21 +49,23 @@ function Model ()
                     $("#container").removeClass("d-none")
                     $("#loginCont").addClass("d-none")
                 })
-                     $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
+                $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
                 {
                     self.devices(data)
                     $("#container").removeClass("d-none")
                     $("#loginCont").addClass("d-none")
                     console.log(self.devices())
                 })            
-            })  
+            })
         } else if (self.loginButton() == "Sign up") {
             $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
             {
                 console.log(data)
+                self.loginButton("Sign in")
+                self.loginToken()
             })
         } else {
-
+            //forget password comes here
         }
         
     }
