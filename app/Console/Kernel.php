@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        '\App\Console\Commands\CallUhooApi',
     ];
 
     /**
@@ -24,8 +24,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('api:get-data')
+                 ->everyMinute();
+
+        // if (!strstr(shell_exec('ps xf'), 'artisan queue:work')) {
+        //     $schedule->command('queue:work')
+        //         ->everyMinute()
+        //         ->withoutOverlapping();
+        // }
     }
 
     /**
