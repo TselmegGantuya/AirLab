@@ -9,7 +9,7 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: profile">
-                            <button class="btn btn-info col" type="button"> Profile</button>
+                            <button class="btn btn-info col" type="button"> {{ __('all.profile') }}</button>
                         </a>
                     </li>
 <!--                     <li class="nav-item">
@@ -20,18 +20,18 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: getDevices">
-                            <button class="btn btn-info col" type="button"> Devices</button>
+                            <button class="btn btn-info col" type="button"> {{ __('all.devices') }}</button>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: getMeters">
-                            <button class="btn btn-info col" type="button"> Meters</button>
+                            <button class="btn btn-info col" type="button"> {{ __('all.records') }}</button>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: logout">
-                            <button class="btn btn-danger col" type="button"> Logout</button>
+                            <button class="btn btn-danger col" type="button"> {{ __('all.logout') }}</button>
                         </a>
                     </li>
                 </ul>
@@ -40,13 +40,13 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div id="profile" class="info">
-            <h2>Profile</h2>
+            <h2>{{ __('all.profile') }}</h2>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">E-mail</th>
+                            <th scope="col">{{ __('all.name') }}</th>
+                            <th scope="col">{{ __('all.e-mail') }}</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: user">
@@ -63,15 +63,15 @@
             </div>        
             </div>
 
-            <h2>User Devices</h2>
+            <h2>{{ __('all.user devices') }} </h2>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Mac Address</th>
-                            <th scope="col">Serial Number</th>
-                            <th scope="col">Organization</th>
+                            <th scope="col">{{ __('all.name') }}</th>
+                            <th scope="col">{{ __('all.mac address') }} </th>
+                            <th scope="col">{{ __('all.serial number') }}</th>
+                            <th scope="col">{{ __('all.organization') }}</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: userDevice">
@@ -91,22 +91,22 @@
                 </table>
             </div>  
 
-            <h2>Devices Meters</h2>
+            <h2>{{ __('all.device records') }}</h2>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Device Name</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Temperature</th>
-                            <th scope="col">Relative Humidity</th>
-                            <th scope="col">PM2.5</th>
-                            <th scope="col">TVOC</th>
-                            <th scope="col">CO2</th>
-                            <th scope="col">CO</th>
-                            <th scope="col">Air Pressure</th>
-                            <th scope="col">Ozone</th>
-                            <th scope="col">NO2</th>
+                            <th scope="col">{{ __('all.device name') }}</th>
+                            <th scope="col">{{ __('all.time') }}</th>
+                            <th scope="col">{{ __('all.temperature') }}</th>
+                            <th scope="col">{{ __('all.relative humidity') }}</th>
+                            <th scope="col">{{ __('all.pm2.5') }}</th>
+                            <th scope="col">T{{ __('all.tvoc') }}</th>
+                            <th scope="col">{{ __('all.co2') }}</th>
+                            <th scope="col">{{ __('all.co') }}</th>
+                            <th scope="col">{{ __('all.air pressure') }}</th>
+                            <th scope="col">{{ __('all.ozone') }}</th>
+                            <th scope="col">{{ __('all.no2') }}</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: deviceMeter">
@@ -140,22 +140,22 @@
                 </table>
             </div>
 
-            <h2>Last Meter</h2>
+            <h2>{{ __('all.last record') }}</h2>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Device Name</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Temperature</th>
-                            <th scope="col">Relative Humidity</th>
-                            <th scope="col">PM2.5</th>
-                            <th scope="col">TVOC</th>
-                            <th scope="col">CO2</th>
-                            <th scope="col">CO</th>
-                            <th scope="col">Air Pressure</th>
-                            <th scope="col">Ozone</th>
-                            <th scope="col">NO2</th>
+                            <th scope="col">{{ __('all.device name') }}</th>
+                            <th scope="col">{{ __('all.time') }}</th>
+                            <th scope="col">{{ __('all.temperature') }}</th>
+                            <th scope="col">{{ __('all.relative humidity') }}</th>
+                            <th scope="col">{{ __('all.pm2.5') }}</th>
+                            <th scope="col">T{{ __('all.tvoc') }}</th>
+                            <th scope="col">{{ __('all.co2') }}</th>
+                            <th scope="col">{{ __('all.co') }}</th>
+                            <th scope="col">{{ __('all.air pressure') }}</th>
+                            <th scope="col">{{ __('all.ozone') }}</th>
+                            <th scope="col">{{ __('all.no2') }}</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: meters">
@@ -189,15 +189,15 @@
                 </table>
             </div>
 
-            <h2>Devices</h2>
+            <h2>{{ __('all.devices') }}</h2>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Mac Address</th>
-                            <th scope="col">Serial Number</th>
-                            <th scope="col">Organization</th>
+                            <th scope="col">{{ __('all.name') }}</th>
+                            <th scope="col">{{ __('all.mac address') }}</th>
+                            <th scope="col">{{ __('all.serial number') }}</th>
+                            <th scope="col">{{ __('all.organization') }}</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: devices">

@@ -11,7 +11,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Name</th>
+                                <th scope="col">Name </th>
                                 <th scope="col">Mac Address</th>
                                 <th scope="col">Serial NUmber</th>
                                 <th scope="col">Organization</th>

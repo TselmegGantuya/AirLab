@@ -12,6 +12,15 @@ use App\Http\Controllers\AuthController;
 class ApiController extends Controller
 {
     /**
+     *Construct function
+     *
+     
+    public function __construct()
+    {
+        App::setlocale('en')
+    }*/
+
+    /**
      * Display all devices
      * 
      * [deviceView description]
