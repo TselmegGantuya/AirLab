@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Meter extends Model
+class Record extends Model
 {
 	public $device_name;
 
@@ -14,6 +14,6 @@ class Meter extends Model
 	 */
     public function device()
     {
-    	return $this->belongsTo('App\Device');
+    	return $this->belongsTo(Device::class);
     }
 }

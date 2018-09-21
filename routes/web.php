@@ -13,3 +13,5 @@
 Route::get('/', function () {
   	return view('index');
 });
+
+Route::get('meter', 'ApiController@recordView');

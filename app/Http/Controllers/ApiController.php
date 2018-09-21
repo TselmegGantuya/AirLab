@@ -3,14 +3,71 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Meter;
+use App\Record;
 use App\Device;
 use App\Organization;
+use App\User;
 use Carbon\Carbon;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
+    /**
+     * Display record details
+     * 
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function recordDetail()
+    {
+
+        $id = request('id');
+
+        $device = Device::findOrFail($id);
+        //->orderBy('id', 'desc')->first()
+        $record = Record::where('device_id', '=', $device->id)->first();
+
+        // return response()->json($record);
+        return $record;
+    }
+
+    /**
+     * Display recent record in DB
+     * 
+     * [lastrecord description]
+     * @return [type] [description]
+     */
+    public function lastRecord(){
+        // $record = Record::orderBy('id', 'desc')->first();
+        // $record->device_name = $record->device->name;
+        // return $record;
+
+        $devices = Device::all();
+        $records = Record::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+        $recordray = array();
+        
+        foreach ($organizations as $organization) {
+            if ($userInfo['name'] == $organization->name) {
+                foreach ($devices as $device) {
+                    if ($device->organization_id == $organization->id) {
+                        foreach ($records as $record) {
+                            $record->device_name = $record->device->name;
+                            if ($record->device_name == $device->name) {
+                                $recordray[] = $record;
+                            }
+                        }
+                    }
+                }
+            }   
+        }
+        return $recordray;
+    }
+
     /**
      * Display all devices
      * 
@@ -29,49 +86,54 @@ class ApiController extends Controller
     }
 
     /**
-     * Display all meters that belongs to logged in user.
+     * Display all records that belongs to logged in user.
      *
      * @return \Illuminate\Http\Response
      */
-    public function meterView(){
-        $meters = Meter::all();
+    public function recordView(){
+        $records = Record::all();
         $devices = Device::all();
         $organizations = Organization::all();
         $user = AuthController::me();
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
-        $meterray = array();
+        $recordray = array();
+        $users = User::all();
+        // $user = User::with('organization_id')->get();
+
+        // $categories = Category::with(['posts' => function ($query) {
+        //     $query->orderBy('created_at', 'desc')->take(5);
+        // }])->get();
+
+        // $devices = Device::where($user == 'organization_id')->get();
+
+        // $records = Meter::where($devices == 'device_id')->get();
+
+        // $recordray[] = $records;
+
+        // return $recordray;
 
         foreach ($organizations as $organization) {
-            if ($userInfo['name'] == $organization->name) {
-                foreach ($devices as $device) {
-                    if ($device->organization_id == $organization->id) {
-                        foreach ($meters as $meter) {
-                            $meter->device_name = $meter->device->name;
-
-                            if ($meter->device_name == $device->name) {
-                                $meterray[] = $meter;
+            //$userInfo['name']
+            foreach ($users as $user) {
+                if ($user->name == $organization->name) {
+                    foreach ($devices as $device) {
+                        if ($device->organization_id == $organization->id) {
+                            foreach ($records as $record) {
+                                $record->device_name = $record->device->name;
+                                // $record->device->serial_number;
+                                if ($record->device_name == $device->name) {
+                                    $recordray[] = $record;
+                                    // $record;
+                                    // $data = json_encode($recordray);
+                                }
                             }
                         }
                     }
-                }
-            }   
+                } 
+            }  
         }
-
-        return $meterray;
-    }
-
-    /**
-     * Display inserted last meter in DB
-     * 
-     * [lastMeter description]
-     * @return [type] [description]
-     */
-    public function lastMeter(){
-        $meter = Meter::orderBy('id', 'desc')->first();
-        $meter->device_name = $meter->device->name;
-        
-        return $meter;
+        return $recordray;
     }
 
     /**
@@ -82,15 +144,22 @@ class ApiController extends Controller
     public function userDevice()
     {
         $devices = Device::all();
+        $records = Record::all();
         $organizations = Organization::all();
         $user = AuthController::me();
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
         $userDevice = array();
 
+        // $user = User::with('organization_id')->get();
+        // $devices = Device::where($user->organization_id == 'organization_id')->get();
+        // $userDevice[] = $devices;
+        // return $userDevice;
+        
         foreach ($organizations as $organization) {
             if ($userInfo['name'] == $organization->name) {
                 foreach ($devices as $device) {
+                    $device->records;
                     if ($organization->name == $device->organization->name) {
                         $userDevice[] = $device;
                     }
@@ -102,16 +171,16 @@ class ApiController extends Controller
     }
 
     // /**
-    //  * Display meter details
+    //  * Display record details
     //  * 
     //  * @param  [type] $id [description]
     //  * @return [type]     [description]
     //  */
-    // public function meterDetail($id)
+    // public function recordDetail($id)
     // {
     //     $device = Device::findOrFail($id);
 
-    //     return view('uhoo_meter_detail', compact('device'));
+    //     return view('uhoo_record_detail', compact('device'));
     // }
 
     /**
@@ -199,25 +268,83 @@ class ApiController extends Controller
 
         $devices = Device::all();
 
-        // Save new meters data to DB
-        $meter = new Meter;
+        // Save new records data to DB
+        $record = new Record;
         foreach ($devices as $device) {
             if ($device->serial_number == $data['serialNumber']) {
-                $meter->device_id = $device->id;
+                $record->device_id = $device->id;
             }
         }
-        $meter->temperature = $response->Temperature;
-        $meter->relative_humidity = $response->{'Relative Humidity'};
-        $meter->pm2_5 = $response->{'PM2.5'};
-        $meter->tvoc = $response->TVOC;
-        $meter->co2 = $response->CO2;
-        $meter->co = $response->CO;
-        $meter->air_pressure = $response->{'Air Pressure'};
-        $meter->ozone = $response->Ozone;
-        $meter->no2 = $response->NO2; 
-        // $meter->save();
+        $record->temperature = $response->Temperature;
+        $record->relative_humidity = $response->{'Relative Humidity'};
+        $record->pm2_5 = $response->{'PM2.5'};
+        $record->tvoc = $response->TVOC;
+        $record->co2 = $response->CO2;
+        $record->co = $response->CO;
+        $record->air_pressure = $response->{'Air Pressure'};
+        $record->ozone = $response->Ozone;
+        $record->no2 = $response->NO2; 
+        // $record->save();
 
-        // Redirect to meters page
-        return redirect('api/uhoo/meters');
+        // Redirect to records page
+        return redirect('api/uhoo/records');
+    }
+
+    public function FunctionName()
+    {
+        $records = Record::all();
+        $record_levels = array();
+
+        foreach ($records as $record) {
+            // if ($record->temperature < 20.00) {
+            //     echo "Bad Temperature";
+            // }
+
+            // if ($record->relative_humidity > 50.00 ) {
+            //     echo "Bad Humidity";
+            // }
+
+            // if ($record->pm2_5 > 5.00) {
+            //     echo "Bad PM2.5";
+            // }
+
+            // if ($record->tvoc < 1000.00) {
+            //     echo "Bad TVOC";
+            // }
+
+            // if ($record->co2 > 600.00) {
+            //     echo "Bad CO2";
+            // }
+
+            // if ($record->co < 0.00) {
+            //     echo "Bad CO";
+            // }
+
+            // if ($record->air_pressure < 1500.00) {
+            //     echo "Bad Air Pressure";
+            // }
+
+            // if ($record->ozone > 5.00) {
+            //     echo "Bad Ozone";
+            // }
+
+            // if ($record->no2 > 0.50) {
+            //     echo "Bad NO2";
+            // }
+
+            $record_levels[] = $record;
+        }
+
+        return dd($record_levels);
+        
+            // "temperature" => "21.00"
+            // "relative_humidity" => "47.00"
+            // "pm2_5" => "8.30"
+            // "tvoc" => "196.00"
+            // "co2" => "400.00"
+            // "co" => "0.00"
+            // "air_pressure" => "1024.30"
+            // "ozone" => "5.90"
+            // "no2" => "0.70"
     }
 }
