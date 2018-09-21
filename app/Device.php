@@ -14,16 +14,16 @@ class Device extends Model
      */
     public function organization()
     {
-    	return $this->belongsTo('App\Organization');
+    	return $this->belongsTo(Organization::class);
     }
 
     /**
      * Device relationship with meters
      * @return [type] [description]
      */
-    public function meters()
+    public function records()
     {
-    	return $this->hasMany('App\Meter');
+    	return $this->hasMany(Record::class);
     }
 
     /**

@@ -32,13 +32,14 @@ Route::group([
     // Routes for Uhoo API
 	Route::post('uhoo/');
 	Route::post('uhoo/data/devices', 'ApiController@getUhooDevices');
-	Route::post('uhoo/data/meters', 'ApiController@getUhooData');
+	Route::post('uhoo/data/records', 'ApiController@getUhooData');
 
-	// Routes for Uhoo meters and devices view
+	// Routes for Uhoo records and devices view
 	Route::post('uhoo/devices', 'ApiController@deviceView');
-	Route::post('uhoo/meters', 'ApiController@meterView');
-	Route::post('uhoo/last-meter', 'ApiController@lastMeter');
+	Route::post('uhoo/records', 'ApiController@recordView');
+	Route::post('uhoo/record', 'ApiController@recordDetail');
+	Route::post('uhoo/last-record', 'ApiController@lastRecord');
 	Route::post('uhoo/user/device', 'ApiController@userDevice');
-	Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
+	// Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
 
 });
