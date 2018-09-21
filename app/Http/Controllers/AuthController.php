@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use User;
 
 class AuthController extends Controller
 {
@@ -52,6 +53,16 @@ class AuthController extends Controller
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function passwordReset(Request $request)
+    {
+      $name = $request->input('email');
+
+      if (User::where('email', '=', Input::get('email'))->exists()) {
+        
+      }
+
     }
 
     /**
