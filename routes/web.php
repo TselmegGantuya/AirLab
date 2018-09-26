@@ -12,7 +12,3 @@
 Route::get('/', function () {
   	return view('index');
 });
-
-Route::get('meter', 'ApiController@recordView');
-Route::get('mail/send', 'MailController@send');
-

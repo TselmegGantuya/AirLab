@@ -24,7 +24,10 @@ Route::group([
     'middleware' => 'api'
 
 ], function ($router) {
+	// Route for reset password and email
+	Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
+	// Routes for basic Log in
     Route::post('refresh', 'AuthController@refresh');
 	Route::post('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');

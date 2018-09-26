@@ -4,7 +4,7 @@
         }
     });
 
-
+//data tables
     ko.bindingHandlers.dataTablesForEach = {
     page: 0,
     init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -46,7 +46,7 @@
             ko.utils.domData.set(element, key, true);
         return { controlsDescendantBindings: true };
     }}; 
-
+// knockout js
 var ViewModel = function (){
 
     var base_url = window.location.origin;
@@ -67,8 +67,8 @@ var ViewModel = function (){
     ])
 
     self.profiles = ko.observableArray([
-        {name:"Email"},
-        {name:"Name"}
+        {name:"Name"},
+        {name:"Email"}
     ])
     self.dev = ko.observableArray([
         {name:"Device Name"},
@@ -76,6 +76,7 @@ var ViewModel = function (){
         {name:"Serial Number"}
     ])
     self.record = ko.observableArray([
+        {name:"Device Name"},
         {name:"Temperature"},
         {name:"Relative Humidity"},
         {name:"PM 2.5"},
@@ -86,22 +87,37 @@ var ViewModel = function (){
         {name:"Ozone"},
         {name:"NO2"}
     ])
+
     self.token = ko.observable()
     self.currentPageData = ko.observableArray()
     self.currentPage = ko.observable()
     self.currentTab = ko.observable()
     self.currentTabHead = ko.observableArray()
     self.currentTabData = ko.observableArray()
-    self.currentTabD = ko.observableArray()
+    self.currentTabDataProfile = ko.observableArray()
+    self.currentTabDataDevices = ko.observableArray()
+    self.currentTabDataRecords = ko.observableArray()
+
+    self.prof =  ko.observableArray()
     self.pages = ko.observableArray()
     self.records = ko.observableArray()
     self.devices = ko.observableArray()
     self.user = ko.observableArray()
+
     self.userDevice = ko.observableArray()
     self.deviceMeter = ko.observableArray()
     self.lastRecord = ko.observableArray()
     self.lastRecordHead = ko.observableArray()
     self.currentLastRecord = ko.observableArray()
+    self.lastCurrentTab = ko.observable()
+
+    self.showRow = ko.observable(false);
+    self.showDev = ko.observable(false);
+    self.showRec = ko.observable(false);
+
+    self.current_password = ko.observable()
+    self.new_password = ko.observable()
+    self.confirm_password = ko.observable()
 
     /**
     *
@@ -166,10 +182,42 @@ var ViewModel = function (){
     };
 
     /**
+     * [choosePage description]
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+   self.choosePage = function(data)
+    {
+        data = data.toLowerCase()
+        self.currentPage(data)
+        console.log(self.currentPage())
+
+        if (data == "login") {
+            self.loginButton('Sign in')
+            self.currentPageData(self.loginInfo())
+            self.pages([{name: 'Register'}, {name: 'Forgot password'}])
+
+        }else if (data == "register"){
+            self.loginButton('Sign up')
+            self.currentPageData(self.registerInfo())
+            self.pages([{name: 'Login'}, {name: 'Forgot password'}])
+
+        }else{
+            self.loginButton('Send email')
+            self.currentPageData(self.forgetInfo())
+            self.pages([{name: 'Register'}, {name: 'Login'}])
+
+        }
+        console.log(self.currentPageData())
+    }
+    self.choosePage('login')
+
+    /**
      * [loginToken description]
      * @return {[type]} [description]
      */
     self.loginToken = function() {
+
         if (self.loginButton() == "Sign in") {
             $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
             {
@@ -200,174 +248,146 @@ var ViewModel = function (){
                 self.loginButton("Sign in")
                 self.loginToken()
             })
-        } else {
-            //forget password comes here
+            $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
+                self.user(data['name'])
+                console.log(self.user())
+                console.log(self.records())
+            })            
         }
-        
     }
 
     /**
-     * [getMeters description]
+     * [registerToDB description]
      * @return {[type]} [description]
      */
-    self.getRecords = function(){
-        $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data){
-            self.currentTab("Records")
-            self.currentTabHead(self.record())
-
-            // $.each(data, function(index, el) {
-            //     console.log(index, el)
-            //     self.currentTabData(el)
-            // });
-
-            // for (var i = 0; i < data.length; i++) {
-            //     self.currentTabData(data[i])
-            //     console.log(data[i])
-            // }
-
-            // for (var i in data) {
-            //     self.currentTabData(data[i])
-            //     console.log(data[i])
-            // }
-
-            // self.currentTabData(data[0])
-            // console.log(data)
-
-            data.forEach(function(element) {
-               self.currentTabData(data)
-               console.log(element);
-            });
-
-        })
-    }
-
-    /**
-     * [getDevices description]
-     * @return {[type]} [description]
-     */
-    self.getDevices = function(){
-        $.post(base_url + '/api/uhoo/user/device', {token: self.token()}).done(function(data){
-            self.currentTab("Devices")
-            self.currentTabHead(self.dev())
-            // self.currentTabData(data)
-            // console.log(data)
-            // for (var i in self.currentTabData()) {
-            //     self.currentTabD.push(self.currentTabData()[i])
-            //     console.log(self.currentTabD())
-            // }
-
-            data.forEach(function(element) {
-               self.currentTabData(data)
-            });
-
-            // console.log(self.currentTabData()[0])
-
-            // for (var i = self.currentTabHead.length - 1; i >= 0; i--) {
-            //     self.currentTabData().push(data[self.currentTabHead[i]])
-            // }
-            // console.log(self.currentTabHead()[0].name)
-            // console.log(self.currentTabData())
-            
-            $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data) {
-                self.lastRecordHead(self.record())
-                for (var x in self.currentTabData()) {
-                    for (var i in data) {
-                        if (data[i].device_id == self.currentTabData()[x].id) {
-                            $.post(base_url + '/api/uhoo/record', {token: self.token(),id:self.currentTabData()[x].id}).done(function(data) {
-                                self.lastRecord.push(data)
-
-                                console.log(self.lastRecord())
-
-                            })
-                            // console.log(data[i].id)
-                            // console.log(self.currentTabData()[x].id)
-                            // console.log('yes')
-                            // return self.lastRecord(data[i])
-                            break;
-
-                        }
-                        else if(self.currentTabData().length == i ){
-                            console.log(self.currentTabData()[x].id)
-                            console.log('nothing found')
-                        }
-                        // console.log('i was here')
-                    }
-                }
-            })
-        })
-    }
-
-    self.getLastRecord = function(data){
-        self.currentLastRecord(self.lastRecord()[data])
-    }
-
-    /**
-     * [profile description]
-     * @return {[type]} [description]
-     */
-    self.profile = function(){
-        $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
-            self.currentTab("Profile")
-            self.currentTabHead(self.profiles())
-            self.currentTabData(data)
+    self.registerToDB = function(){
+        $.post(base_url + '/api/validate',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
+        {
             console.log(data)
         })
+
     }
-
-    /**
-     * [choosePage description]
-     * @param  {[type]} data [description]
-     * @return {[type]}      [description]
-     */
-    self.choosePage = function(data)
-    {
-        data = data.toLowerCase()
-        self.currentPage(data)
-        console.log(self.currentPage())
-
-        if (data == "login") {
-            self.loginButton('Sign in')
-            self.currentPageData(self.loginInfo())
-            self.pages([{name: 'Register'}, {name: 'Forgot password'}])
-
-        }else if (data == "register"){
-            self.loginButton('Sign up')
-            self.currentPageData(self.registerInfo())
-            self.pages([{name: 'Login'}, {name: 'Forgot password'}])
-
-        }else{
-            self.loginButton('Send email')
-            self.currentPageData(self.forgetInfo())
-            self.pages([{name: 'Register'}, {name: 'Login'}])
-
-        }
-        console.log(self.currentPageData())
-    }
-    self.choosePage('login')
 
     /**
      * [logout description]
      * @return {[type]} [description]
      */
     self.logout = function(){
-        $.post(base_url + '/api/logout', {token:self.token()}).done(function(data)
-        {
+        $.post(base_url + '/api/logout', {token:self.token()}).done(function(data){
             $("#container").addClass("d-none")
             $("#loginCont").removeClass("d-none")
             $('#email').val("")
             $('#password').val("")
             self.records("")
             self.devices("")
-
-            console.log(data)
+            // console.log(data)
         })
     }
+
+    /**
+     * [toggleVisibilityProfile description]
+     * @return {[type]} [description]
+     */
+    self.toggleVisibilityProfile = function() {
+        $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
+            self.currentTab("Profile")
+            self.currentTabHead(self.profiles())
+            self.currentTabDataProfile(data)
+            // console.log(self.currentTabDataProf(data))
+        })
+        self.showRow(!self.showRow());
+    };
+
+    /**
+     * [toggleVisibilityDevices description]
+     * @return {[type]} [description]
+     */
+    self.toggleVisibilityDevices = function() {
+        $.post(base_url + '/api/uhoo/user/device', {token: self.token()}).done(function(data){
+            self.currentTab("Devices")
+            self.currentTabHead(self.dev())
+
+            data.forEach(function(element) {
+               self.currentTabData(data)
+            });
+            
+            $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data) {
+
+                self.lastCurrentTab("Devices/Record")
+                self.lastRecordHead(self.record())
+                for (var x in self.currentTabData()) {
+                    for (var i in data) {
+                        if (data[i].device_id == self.currentTabData()[x].id) {
+                            $.post(base_url + '/api/uhoo/record', {token: self.token(),id:self.currentTabData()[x].id}).done(function(data) {
+                                self.lastRecord.push(data)
+                                // console.log(self.lastRecord())
+                            })
+                            break;
+                        }
+                        else if(self.currentTabData().length == i ){
+                            // console.log(self.currentTabData()[x].id)
+                            // console.log('nothing found')
+                        }
+                    }
+                }
+            })
+        })
+        self.showDev(!self.showDev());
+    };
+
+    /**
+     * [getLastRecord description]
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+
+    self.getLastRecord = function(data){
+        self.currentLastRecord(self.lastRecord()[data])
+
+    }
+
+    /**
+     * [toggleVisibilityRecords description]
+     * @return {[type]} [description]
+     */
+    self.toggleVisibilityRecords = function() {
+        $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data){
+            self.currentTab("Records")
+            self.currentTabHead(self.record())
+
+            data.forEach(function(element) {
+               self.currentTabDataRecords(data)
+               // console.log(element);
+            });
+        })
+        self.showRec(!self.showRec());
+    };
+
+    $('#openBtn').click(function(){
+        $('#myModal').modal({show:true})
+    });
+
+    // self.addTask = function() {
+    //     self.tasks.push(new Task({ title: this.newTaskText() }));
+    //     self.newTaskText("");
+    // };
+    self.saveToPhp = function() {
+        
+        console.log({id:$('#current_password').val()})
+        // $.ajax("/echo/json/", {
+        //     data: {
+        //         json: ko.toJSON({
+        //             tasks: this.tasks
+        //         })
+        //     },
+        //     type: "POST",
+        //     dataType: 'json',
+        //     success: function(result) {
+        //         alert(ko.toJSON(result))
+        //     }
+        // });
+    };
 }
 
 var vm = new ViewModel();
 ko.applyBindings(vm);
-// ko.applyBindings(new viewModel());
-
-// $(document).ready(function() {
-//     $('#myTable').DataTable({responsive:true});
-// } );
