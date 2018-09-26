@@ -1,7 +1,5 @@
 @extends('layouts.app')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.0/css/fixedColumns.dataTables.min.css">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
 @section('content')
 <div class="container-fluid d-none" id="container">
     <div class="row">
@@ -9,19 +7,19 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bind="click: profile">
+                        <a class="nav-link" href="#" data-bind="click: toggleVisibilityProfile">
                             <button class="btn btn-info col" type="button"> Profile</button>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bind="click: getDevices">
+                        <a class="nav-link" href="#" data-bind="click: toggleVisibilityDevices">
                             <button class="btn btn-info col" type="button"> Devices</button>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bind="click: getRecords">
-                            <button class="btn btn-info col" type="button"> Meters</button>
+                        <a class="nav-link" href="#" data-bind="click: toggleVisibilityRecords">
+                            <button class="btn btn-info col" type="button"> Records</button>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -36,50 +34,85 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div id="currentTab">
                 <h2 data-bind="text: user"></h2>
-                <p data-bind="text: currentTab"></p>
+                
+                <div data-bind="visible: showRow">
+                    <p data-bind="text: currentTab"></p>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr data-bind="foreach: currentTabHead">
+                                <th data-bind="text: name"></th>
+                            </tr>
+                        </thead>
+                            <tbody data-bind="foreach: $root.currentTabDataProfile" >
+                                <tr>
+                                    <td data-bind="text:name"></td>
+                                    <td data-bind="text:email"></td>
+                                </tr> 
+                            </tbody>
+                    </table>
 
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr data-bind="foreach: currentTabHead">
-                            <th data-bind="text: name"></th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach: $root.currentTabData" >
-<!--                         <tr>
-                            <td data-bind="text:email"></td>
-                            <td data-bind="text:name"></td>
-                        </tr>  --> 
+                    <div>
+                        <a href="#"  id="openBtn">
+                            <button type="button" class="btn btn-outline-dark">Change Password</button>
+                        </a>
+                        <a href="">
+                            <button type="button" class="btn btn-outline-dark">Change Email</button>                            
+                        </a>
+                    </div>
+                </div>
 
-<!--                         <tr>
-                            <td data-bind="text: temperature, click: function() { alert(device.name); }"></td>
-                            <td data-bind="text: relative_humidity"></td>
-                            <td data-bind="text: pm2_5"></td>
-                            <td data-bind="text: tvoc"></td>
-                            <td data-bind="text: co2"></td>
-                            <td data-bind="text: co"></td>
-                            <td data-bind="text: air_pressure"></td>
-                            <td data-bind="text: ozone"></td> $root.records().temperature) $root.lastRecord()
-                            <td data-bind="text: no2"></td>
-                        </tr> -->
-                        
-                        <tr>
-                            <td class="btn btn-success" data-target=".bd-example-modal-lg" data-toggle="modal" data-bind="text: name, click: $parent.getLastRecord($index())"></td>
-                            <td data-bind="text:mac_address"></td>
-                            <td data-bind="text:serial_number"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div data-bind="visible: showDev">
+                    <p data-bind="text: currentTab"></p>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr data-bind="foreach: currentTabHead">
+                                <th data-bind="text: name"></th>
+                            </tr>
+                        </thead>
+                            <tbody data-bind="foreach: $root.currentTabData" >
+                                <tr>
+                                    <td class="btn btn-success" data-target=".bd-example-modal-lg" data-toggle="modal" data-bind="text: name, click: $parent.getLastRecord($index())"></td>
+                                    <td data-bind="text:mac_address"></td>
+                                    <td data-bind="text:serial_number"></td>
+                                </tr> 
+                            </tbody>
+                    </table>                    
+                </div>
 
-                <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div data-bind="visible: showRec">
+                    <p data-bind="text: currentTab"></p>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr data-bind="foreach: currentTabHead">
+                                <th data-bind="text: name"></th>
+                            </tr>
+                        </thead>
+                            <tbody data-bind="foreach: $root.currentTabDataRecords" >
+                                <tr>
+                                    <td class="btn btn-success" data-bind="text: device.name"></td>
+                                    <td data-bind="text: temperature"></td>
+                                    <td data-bind="text: relative_humidity"></td>
+                                    <td data-bind="text: pm2_5"></td>
+                                    <td data-bind="text: tvoc"></td>
+                                    <td data-bind="text: co2"></td>
+                                    <td data-bind="text: co"></td>
+                                    <td data-bind="text: air_pressure"></td>
+                                    <td data-bind="text: ozone"></td>
+                                    <td data-bind="text: no2"></td>
+                                </tr> 
+                            </tbody>
+                    </table>                    
+                </div>
 
+            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-<!--                         <button type="button" class="close" data-dismiss="modal">&times;</button>
- -->                        <h4 class="modal-title">Device Details</h4>
+                        <h4 class="modal-title">Device Records</h4>
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive">
+                            <p data-bind="text: lastCurrentTab"></p>
                             <table class="table table-striped table-bordered">
                                 <thead>
                                     <tr data-bind="foreach: lastRecordHead">
@@ -108,6 +141,71 @@
                 </div>
             </div>
         </main>
+
+        <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h3>Change Password <span class="extra-title muted"></span></h3>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="modal-body form-horizontal">
+
+                            @if (session('error'))
+                                <div class="alert alert-danger">{{ session('error') }}</div>
+                            @endif
+
+                            @if (session('success'))
+                                <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
+
+                            <form data-bind="submit: saveToPhp">
+                                <div class="form-group">
+                                  <div class="control-group">
+                                        <label for="current_password" class="control-label">Current Password</label>
+                                        <div class="controls">
+                                            <input type="password" data-bind="value: current_password" class="form-control"  id="current_password">
+                                        </div>
+                                    </div>
+
+                                    @if ($errors->has('current_password'))
+                                        <span class="help-block"><strong>{{ $errors->first('current_password') }}</strong></span>
+                                    @endif
+
+                                    <div class="control-group">
+                                        <label for="new_password" class="control-label">New Password</label>
+                                        <div class="controls">
+                                            <input type="password" data-bind="value: new_password" class="form-control"  id="new_password">
+                                        </div>
+                                    </div>
+
+                                    @if ($errors->has('new_password'))
+                                        <span class="help-block"><strong>{{ $errors->first('new_password') }}</strong></span>
+                                    @endif
+
+                                    <div class="control-group">
+                                        <label for="confirm_password" class="control-label">Confirm Password</label>
+                                        <div class="controls">
+                                            <input type="password" data-bind="value: confirm_password" class="form-control"  id="confirm_password">
+                                        </div>
+                                    </div>  
+
+                                    <div class="modal-footer">
+                                        <button href="#" class="btn" data-dismiss="modal" aria-hidden="true" id="password_modal_save">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -133,7 +231,3 @@
     </div>
 </div>
 @endsection
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/fixedcolumns/3.2.0/js/dataTables.fixedColumns.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>

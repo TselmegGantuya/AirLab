@@ -33,42 +33,6 @@ class ApiController extends Controller
     }
 
     /**
-     * Display recent record in DB
-     * 
-     * [lastrecord description]
-     * @return [type] [description]
-     */
-    public function lastRecord(){
-        // $record = Record::orderBy('id', 'desc')->first();
-        // $record->device_name = $record->device->name;
-        // return $record;
-
-        $devices = Device::all();
-        $records = Record::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-        $recordray = array();
-        
-        foreach ($organizations as $organization) {
-            if ($userInfo['name'] == $organization->name) {
-                foreach ($devices as $device) {
-                    if ($device->organization_id == $organization->id) {
-                        foreach ($records as $record) {
-                            $record->device_name = $record->device->name;
-                            if ($record->device_name == $device->name) {
-                                $recordray[] = $record;
-                            }
-                        }
-                    }
-                }
-            }   
-        }
-        return $recordray;
-    }
-
-    /**
      * Display all devices
      * 
      * [deviceView description]
@@ -116,7 +80,7 @@ class ApiController extends Controller
         foreach ($organizations as $organization) {
             //$userInfo['name']
             foreach ($users as $user) {
-                if ($user->name == $organization->name) {
+                if ($userInfo['name'] == $organization->name) {
                     foreach ($devices as $device) {
                         if ($device->organization_id == $organization->id) {
                             foreach ($records as $record) {
@@ -169,19 +133,6 @@ class ApiController extends Controller
 
         return $userDevice;
     }
-
-    // /**
-    //  * Display record details
-    //  * 
-    //  * @param  [type] $id [description]
-    //  * @return [type]     [description]
-    //  */
-    // public function recordDetail($id)
-    // {
-    //     $device = Device::findOrFail($id);
-
-    //     return view('uhoo_record_detail', compact('device'));
-    // }
 
     /**
      * Method for getting a list of all available devices.
@@ -288,63 +239,5 @@ class ApiController extends Controller
 
         // Redirect to records page
         return redirect('api/uhoo/records');
-    }
-
-    public function FunctionName()
-    {
-        $records = Record::all();
-        $record_levels = array();
-
-        foreach ($records as $record) {
-            // if ($record->temperature < 20.00) {
-            //     echo "Bad Temperature";
-            // }
-
-            // if ($record->relative_humidity > 50.00 ) {
-            //     echo "Bad Humidity";
-            // }
-
-            // if ($record->pm2_5 > 5.00) {
-            //     echo "Bad PM2.5";
-            // }
-
-            // if ($record->tvoc < 1000.00) {
-            //     echo "Bad TVOC";
-            // }
-
-            // if ($record->co2 > 600.00) {
-            //     echo "Bad CO2";
-            // }
-
-            // if ($record->co < 0.00) {
-            //     echo "Bad CO";
-            // }
-
-            // if ($record->air_pressure < 1500.00) {
-            //     echo "Bad Air Pressure";
-            // }
-
-            // if ($record->ozone > 5.00) {
-            //     echo "Bad Ozone";
-            // }
-
-            // if ($record->no2 > 0.50) {
-            //     echo "Bad NO2";
-            // }
-
-            $record_levels[] = $record;
-        }
-
-        return dd($record_levels);
-        
-            // "temperature" => "21.00"
-            // "relative_humidity" => "47.00"
-            // "pm2_5" => "8.30"
-            // "tvoc" => "196.00"
-            // "co2" => "400.00"
-            // "co" => "0.00"
-            // "air_pressure" => "1024.30"
-            // "ozone" => "5.90"
-            // "no2" => "0.70"
     }
 }

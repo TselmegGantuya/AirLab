@@ -24,7 +24,10 @@ Route::group([
     'middleware' => 'api'
 
 ], function ($router) {
+	// Route for reset password and email
+	Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
+	// Routes for basic Log in
     Route::post('refresh', 'AuthController@refresh');
 	Route::post('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
@@ -38,7 +41,6 @@ Route::group([
 	Route::post('uhoo/devices', 'ApiController@deviceView');
 	Route::post('uhoo/records', 'ApiController@recordView');
 	Route::post('uhoo/record', 'ApiController@recordDetail');
-	Route::post('uhoo/last-record', 'ApiController@lastRecord');
 	Route::post('uhoo/user/device', 'ApiController@userDevice');
 	// Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
 
