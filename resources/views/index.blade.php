@@ -107,7 +107,14 @@
                     </div>
                 </div>
             </div>
+           
         </main>
+         <div>
+                <form enctype="multipart/form-data" id = "uploadForm">
+                    <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+                </form>
+                <canvas id="background" ></canvas>
+            </div>
     </div>
 </div>
 

@@ -103,15 +103,6 @@ var ViewModel = function (){
     self.lastRecordHead = ko.observableArray()
     self.currentLastRecord = ko.observableArray()
 
-
-    /**
-     * [check description]
-     * @return {[type]} [description]
-     */
-    self.check = function(){
-        
-    }
-
     /**
     *
     *  canvas coordinates
@@ -122,12 +113,12 @@ var ViewModel = function (){
     {
         let xy = getMousePos(canvas,event)
         console.log(getMousePos(canvas,event))
-        
+        //post coordination
         context.fillStyle = "#FF0000";  
         context.fillRect(xy['x'],xy['y'],10,10)
     })
     function getMousePos(canvas, event) {
-        var rect = canvas.getBoundingClientRect()-
+        var rect = canvas.getBoundingClientRect()
         return {
             x: event.clientX - rect.left,
             y: event.clientY - rect.top
@@ -154,13 +145,23 @@ var ViewModel = function (){
                 return function(event){
                     var img = new Image();
                     img.addEventListener("load", function() {
-                    context.drawImage(img, 0, 0);
+                        context.drawImage(img, 0, 0);
                     });
                     img.src = event.target.result;
-                }                        
+                }                
             })(f);
+            var formData = new FormData();
+
+              // HTML file input, chosen by user
+            formData.append("blueprint", f);
+            formData.append("token", self.token());
+            
+            var request = new XMLHttpRequest();
+            request.open("POST", base_url + '/api/blueprint/upload');
+            request.send(formData);
               // Read in the image file as a data URL.
-            reader.readAsDataURL(f);
+            reader.readAsDataURL(f);    
+
         }
     };
 
@@ -176,18 +177,20 @@ var ViewModel = function (){
                 self.token(data['access_token'])
                 console.log(self.token())
 
-                $.post(base_url + '/api/uhoo/last-meter',{token:self.token()}).done(function(data)
+                $.post(base_url + '/api/uhoo/records',{token:self.token()}).done(function(data)
                 {
-                    self.meters(data)
+                    self.records(data)
                     $("#container").removeClass("d-none")
                     $("#loginCont").addClass("d-none")
                 })
                 $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
                 {
                     self.devices(data)
-                    $("#container").removeClass("d-none")
-                    $("#loginCont").addClass("d-none")
-                    console.log(self.devices())
+                }) 
+                $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
+                    self.user(data['name'])
+                    console.log(self.user())
+                    console.log(self.records())
                 })            
             })
         } else if (self.loginButton() == "Sign up") {
@@ -265,7 +268,7 @@ var ViewModel = function (){
             // console.log(self.currentTabHead()[0].name)
             // console.log(self.currentTabData())
             
-            $.post(base_url + '/api/uhoo/last-record', {token: self.token()}).done(function(data) {
+            $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data) {
                 self.lastRecordHead(self.record())
                 for (var x in self.currentTabData()) {
                     for (var i in data) {

@@ -29,6 +29,9 @@ Route::group([
 	Route::post('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     
+    // Routes for Blueprint
+    Route::post('blueprint/upload', 'BlueprintController@uploadBP');
+
     // Routes for Uhoo API
 	Route::post('uhoo/');
 	Route::post('uhoo/data/devices', 'ApiController@getUhooDevices');
@@ -38,8 +41,7 @@ Route::group([
 	Route::post('uhoo/devices', 'ApiController@deviceView');
 	Route::post('uhoo/records', 'ApiController@recordView');
 	Route::post('uhoo/record', 'ApiController@recordDetail');
-	Route::post('uhoo/last-record', 'ApiController@lastRecord');
 	Route::post('uhoo/user/device', 'ApiController@userDevice');
-	// Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
+
 
 });
