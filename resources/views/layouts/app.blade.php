@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -28,8 +28,8 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                     Left Side Of Navbar 
-                   
+                     Left Side Of Navbar
+
                 </div>
             </div>
         </nav> -->
@@ -51,7 +51,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ url('js/knockout.js') }}" ></script> 
-    <script src="{{ url('js/main.js') }}" ></script> 
+    <script src="{{ url('js/knockout.js') }}" ></script>
+    <script src="{{ url('js/main.js') }}" ></script>
 </body>
 </html>

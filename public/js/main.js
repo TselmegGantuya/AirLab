@@ -6,8 +6,10 @@
 
 function Model ()
 {
+    var counter = 0;
     var base_url = window.location.origin;
-    var self = this
+    var self = this;
+    self.none = ko.observable('none')
     self.loginButton = ko.observable()
     self.loginInfo = ko.observableArray([
         {name:"email"},
@@ -16,7 +18,7 @@ function Model ()
     self.registerInfo = ko.observableArray([
         {name:"email"},
         {name:"name"},
-        {name:"password"}   
+        {name:"password"}
     ])
     self.forgetInfo = ko.observableArray([
         {name:"email"}
@@ -30,6 +32,17 @@ function Model ()
     self.user = ko.observableArray()
     self.userDevice = ko.observableArray()
     self.deviceMeter = ko.observableArray()
+    self.organization = ko.observableArray()
+    self.devicesOrganization = ko.observableArray()
+    self.newDevices = ko.observableArray()
+    self.showOrgDevices = ko.observable(false)
+    self.showNewDevices = ko.observable(false)
+    self.orgId = ko.observable()
+
+    //test
+    self.checkSession = function() {
+      console.log();
+    }
 
     /**
      * [loginToken description]
@@ -49,13 +62,16 @@ function Model ()
                     $("#container").removeClass("d-none")
                     $("#loginCont").addClass("d-none")
                 })
+                /*
                 $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
                 {
+                  console.log(data)
                     self.devices(data)
-                    $("#container").removeClass("d-none")
-                    $("#loginCont").addClass("d-none")
-                    console.log(self.devices())
-                })            
+
+
+                })
+                */
+                self.getOrganizations()
             })
         } else if (self.loginButton() == "Sign up") {
             $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
@@ -67,7 +83,7 @@ function Model ()
         } else {
             //forget password comes here
         }
-        
+
     }
 
     /**
@@ -92,6 +108,118 @@ function Model ()
         })
     }
 
+    /**
+     * [getOrganizations description]
+     * @return {[type]} [description]
+     */
+     /*START STEFAN CODE*/
+    self.getOrganizations = function(){
+        $.post(base_url + '/api/uhoo/organizations', {token: self.token()}).done(function(data){
+            self.organization(data)
+            console.log(self.organization())
+        })
+    }
+    /**
+     * [organizationCheckbox description]
+     * @return {[type]} [description]
+     */
+    self.organizationRadiobox = function(data,event) {
+
+      self.showOrgDevices(false)
+      self.showNewDevices(false)
+
+      if (event.target.checked) {
+        //id organization
+        self.orgId = event.target.value;
+        //get all devices with no organization
+        $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{token: self.token(),id:self.orgId}).done(function(data){
+
+            if (data[0]['organization_id'] != null ){
+              self.devicesOrganization(data)
+              self.showOrgDevices(!self.showOrgDevices());
+            }
+        })
+        $.post(base_url + '/api/uhoo/getNewDevices' ,{token: self.token()}).done(function(data){
+            if (data[0]['organization_id'] == null ){
+              self.newDevices(data)
+              self.showNewDevices(!self.showNewDevices());
+            }
+        })
+      }
+      return true; // to trigger the browser default bahaviour
+    }
+
+    self.devicesOwner = function(data) {
+      console.log('Sup1')
+      var items=document.getElementsByName('devicesOrganization');
+      var selectedItems = [];
+      for(var i=0; i<items.length; i++){
+        if(items[i].type=='checkbox' && items[i].checked==true)
+        selectedItems.push(items[i].value+"\n");
+      }
+      if (selectedItems != 0) {
+        $.post(base_url + '/api/uhoo/deleteDevicesOrganization' ,{token: self.token(), device_id:selectedItems}).done(function(data){
+          if (data == 1) {
+            $.post(base_url + '/api/uhoo/getNewDevices' ,{token: self.token()}).done(function(data){
+                if (data[0]['organization_id'] == null ){
+                  self.newDevices(data)
+                  self.showNewDevices();
+                }
+                else {
+                  console.log('Geen nieuwe devices');
+                }
+            })
+            $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{token: self.token(),id:self.orgId}).done(function(data){
+                if (data[0]['organization_id'] != null ){
+                  self.devicesOrganization(data)
+                  self.showOrgDevices(self.showOrgDevices());
+                }
+                else {
+                  console.log('Geen nieuwe devices');
+                }
+            })
+          }else {
+            console.log('Deleten niet gelukt')
+          }
+        })
+      }
+    }
+
+    self.newDevice = function(data) {
+      var items=document.getElementsByName('newDevices');
+      var selectedItems = [];
+      for(var i=0; i<items.length; i++){
+        if(items[i].type=='checkbox' && items[i].checked==true)
+        selectedItems.push(items[i].value+"\n");
+      }
+      if (selectedItems != 0) {
+        $.post(base_url + '/api/uhoo/addDeviceOrg' ,{token: self.token(), organization_id:self.orgId, device_id:selectedItems}).done(function(data){
+          if (data == 1) {
+            $.post(base_url + '/api/uhoo/getNewDevices' ,{token: self.token()}).done(function(data){
+                if (data[0]['organization_id'] == null ){
+                  self.newDevices(data)
+                  self.showNewDevices();
+                }
+                else {
+                  console.log('Geen nieuwe devices');
+                }
+            })
+            $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{token: self.token(),id:self.orgId}).done(function(data){
+                if (data[0]['organization_id'] != null ){
+                  self.devicesOrganization(data)
+                  self.showOrgDevices(self.showOrgDevices());
+                }
+                else {
+                  console.log('Geen devices van organization');
+                }
+            })
+          }else {
+            console.log('Updaten niet gelukt')
+          }
+        })
+      }
+    }
+    /*END STEFAN CODE*/
     /**
      * [profile description]
      * @return {[type]} [description]
@@ -152,5 +280,6 @@ function Model ()
         })
     }
 }
+
 
 ko.applyBindings(new Model())

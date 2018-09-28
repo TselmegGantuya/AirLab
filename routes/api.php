@@ -25,10 +25,10 @@ Route::group([
 
 ], function ($router) {
 
-    Route::post('refresh', 'AuthController@refresh');
+  Route::post('refresh', 'AuthController@refresh');
 	Route::post('me', 'AuthController@me');
-    Route::post('logout', 'AuthController@logout');
-    
+  Route::post('logout', 'AuthController@logout');
+
     // Routes for Uhoo API
 	Route::post('uhoo/');
 	Route::post('uhoo/data/devices', 'ApiController@getUhooDevices');
@@ -40,5 +40,16 @@ Route::group([
 	Route::post('uhoo/last-meter', 'ApiController@lastMeter');
 	Route::post('uhoo/user/device', 'ApiController@userDevice');
 	Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
+  // Getting all organizations
 
+  //START STEFAN
+  Route::post('uhoo/organizations', 'ApiController@getOrganizations');
+  //Getting all devices no class_parent
+  Route::post('uhoo/getDevicesOrganization/', 'ApiController@getDevicesOrganization');
+  Route::post('uhoo/getNewDevices/', 'ApiController@getNewDevices');
+  //Add device to organization
+  Route::post('uhoo/addDeviceOrg/', 'ApiController@addDeviceOrg');
+  //Delete device from organization
+  Route::post('uhoo/deleteDevicesOrganization/', 'ApiController@deleteDevicesOrganization');
+  //END STEFAN
 });
