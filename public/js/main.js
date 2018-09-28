@@ -5,54 +5,6 @@ $.ajaxSetup({
 });
 /**
 *
-*   Data tables
-*/  
-    ko.bindingHandlers.dataTablesForEach = {
-    page: 0,
-    init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-      var options = ko.unwrap(valueAccessor());
-      ko.unwrap(options.data);
-      if(options.dataTableOptions.paging){
-        valueAccessor().data.subscribe(function (changes) {
-            var table = $(element).closest('table').DataTable();
-            ko.bindingHandlers.dataTablesForEach.page = table.page();
-            table.destroy();
-        }, null, 'arrayChange');          
-      }
-        var nodes = Array.prototype.slice.call(element.childNodes, 0);
-        ko.utils.arrayForEach(nodes, function (node) {
-            if (node && node.nodeType !== 1) {
-                node.parentNode.removeChild(node);  
-            }
-        });
-        return ko.bindingHandlers.foreach.init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    },
-    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {        
-        var options = ko.unwrap(valueAccessor()),
-            key = 'DataTablesForEach_Initialized';
-        ko.unwrap(options.data);
-        var table;
-        if(!options.dataTableOptions.paging){
-          table = $(element).closest('table').DataTable();
-            table.destroy();
-        }
-        ko.bindingHandlers.foreach.update(element, valueAccessor, allBindings, viewModel, bindingContext);
-        table = $(element).closest('table').DataTable(options.dataTableOptions);
-        if (options.dataTableOptions.paging) {
-           if (table.page.info().pages - ko.bindingHandlers.dataTablesForEach.page == 0) 
-               table.page(--ko.bindingHandlers.dataTablesForEach.page).draw(false);                
-           else 
-               table.page(ko.bindingHandlers.dataTablesForEach.page).draw(false);                
-        }        
-        if (!ko.utils.domData.get(element, key) && (options.data || options.length))
-            ko.utils.domData.set(element, key, true);
-        return { controlsDescendantBindings: true };
-    }}; 
-
-
-
-/**
-*
 *   Knockoutjs
 */
 var ViewModel = function (){
@@ -98,23 +50,39 @@ var ViewModel = function (){
         {name:"CO"},
         {name:"Air Pressure"},
         {name:"Ozone"},
-        {name:"NO2"}
+        {name:"NO2"},
     ])
-
+    self.recordHead = ko.observableArray([
+        {name:"Temperature"},
+        {name:"Relative Humidity"},
+        {name:"PM 2.5"},
+        {name:"TVOC"},
+        {name:"CO2"},
+        {name:"CO"},
+        {name:"Air Pressure"},
+        {name:"Ozone"},
+        {name:"NO2"},
+    ])
     self.token = ko.observable()
-    self.currentPageData = ko.observableArray()
     self.currentPage = ko.observable()
     self.currentTab = ko.observable()
+    self.lastCurrentTab = ko.observable()
+    self.showRow = ko.observable(false);
+    self.showDev = ko.observable(false);
+    self.showRec = ko.observable(false);
+    self.current_password = ko.observable()
+    self.new_password = ko.observable()
+    self.confirm_password = ko.observable()
+
     self.currentTabHead = ko.observableArray()
     self.currentTabData = ko.observableArray()
+    self.currentPageData = ko.observableArray()
     self.currentTabDataProfile = ko.observableArray()
     self.currentTabDataDevices = ko.observableArray()
     self.currentTabDataRecords = ko.observableArray()
-
     self.prof =  ko.observableArray()
     self.pages = ko.observableArray()
     self.user = ko.observableArray()
-
     self.userDevice = ko.observableArray()
     self.deviceMeter = ko.observableArray()
     self.lastRecord = ko.observableArray()
@@ -136,6 +104,7 @@ var ViewModel = function (){
     self.showOrgDevices = ko.observable(false)
     self.showNewDevices = ko.observable(false)
     self.orgId = ko.observable()
+
 
     /**
     *
@@ -420,7 +389,7 @@ var ViewModel = function (){
             $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data) {
 
                 self.lastCurrentTab("Devices/Record")
-                self.lastRecordHead(self.record())
+                self.lastRecordHead(self.recordHead())
                 for (var x in self.currentTabData()) {
                     for (var i in data) {
                         if (data[i].device_id == self.currentTabData()[x].id) {
@@ -470,13 +439,18 @@ var ViewModel = function (){
         self.showRec(!self.showRec());
         self.showDev(false);
         self.showRow(false);
+
     };
 
+    /**
+     * [description]
+     * @param  {[type]} ){                     $('#myModal').modal({show:true})    } [description]
+     * @return {[type]}     [description]
+     */
     $('#openBtn').click(function(){
         $('#myModal').modal({show:true})
     });
     self.enterPage = function() {
-
         
         if (localStorage.getItem('token'))
         {
@@ -489,10 +463,18 @@ var ViewModel = function (){
         }
         self.choosePage('login')
     }
-    self.saveToPhp = function() {
-
-    }
     self.enterPage()
+
+    /**
+     * [saveToPhp description]
+     * @return {[type]} [description]
+     */
+    self.saveToPhp = function() {
+        var formData = $('#pass_form').serialize();
+        $.post(base_url + '/api/uhoo/password/reset',{token: self.token(),formData}).done(function(data){
+            console.log('Check PHP')
+        });
+    };
 }
 
 var vm = new ViewModel();
