@@ -25,7 +25,7 @@ Route::group([
 
 ], function ($router) {
 	// Route for reset password and email
-	Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+	Route::post('uhoo/password/reset', 'ApiController@changePassword');
 
 	// Routes for basic Log in
     Route::post('refresh', 'AuthController@refresh');
@@ -42,6 +42,4 @@ Route::group([
 	Route::post('uhoo/records', 'ApiController@recordView');
 	Route::post('uhoo/record', 'ApiController@recordDetail');
 	Route::post('uhoo/user/device', 'ApiController@userDevice');
-	// Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
-
 });

@@ -55,9 +55,9 @@
                         <a href="#"  id="openBtn">
                             <button type="button" class="btn btn-outline-dark">Change Password</button>
                         </a>
-                        <a href="">
+<!--                         <a href="">
                             <button type="button" class="btn btn-outline-dark">Change Email</button>                            
-                        </a>
+                        </a> -->
                     </div>
                 </div>
 
@@ -153,20 +153,12 @@
                     <div class="modal-body">
                         <div class="modal-body form-horizontal">
 
-                            @if (session('error'))
-                                <div class="alert alert-danger">{{ session('error') }}</div>
-                            @endif
-
-                            @if (session('success'))
-                                <div class="alert alert-success">{{ session('success') }}</div>
-                            @endif
-
-                            <form data-bind="submit: saveToPhp">
+                            <form data-bind="submit: saveToPhp" id="pass_form">
                                 <div class="form-group">
                                   <div class="control-group">
                                         <label for="current_password" class="control-label">Current Password</label>
                                         <div class="controls">
-                                            <input type="password" data-bind="value: current_password" class="form-control"  id="current_password">
+                                            <input type="password" data-bind="value: current_password" class="form-control"  name="current_password">
                                         </div>
                                     </div>
 
@@ -177,7 +169,7 @@
                                     <div class="control-group">
                                         <label for="new_password" class="control-label">New Password</label>
                                         <div class="controls">
-                                            <input type="password" data-bind="value: new_password" class="form-control"  id="new_password">
+                                            <input type="password" data-bind="value: new_password" class="form-control"  name="new_password">
                                         </div>
                                     </div>
 
@@ -188,7 +180,7 @@
                                     <div class="control-group">
                                         <label for="confirm_password" class="control-label">Confirm Password</label>
                                         <div class="controls">
-                                            <input type="password" data-bind="value: confirm_password" class="form-control"  id="confirm_password">
+                                            <input type="password" data-bind="value: confirm_password" class="form-control"  name="confirm_password">
                                         </div>
                                     </div>  
 

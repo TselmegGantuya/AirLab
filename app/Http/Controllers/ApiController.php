@@ -3,16 +3,59 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Record;
 use App\Device;
 use App\Organization;
 use App\User;
 use Carbon\Carbon;
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
+    /**
+     * [Method for changing/updating password]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function changePassword(Request $request){
+        $user = Auth::user();
+
+        if (Hash::check($request->get('current_password'), Auth::user()->password)) {
+            //Change the password
+            $user->fill([
+                'password' => Hash::make($request->get('new_password'))
+            ])->save();
+ 
+            // $request->session()->flash('success', 'Your password has been changed.');
+        }
+           dd('yes');
+
+        // if (!(Hash::check($request->get('current_password'), Auth::user()->password))) {
+        //     // The passwords matches
+        //     return redirect()->back()->with("error","Your current password does not matche with the password you provided. Please try again.");
+        // }
+
+        // if(strcmp($request->get('current_password'), $request->get('new_password')) == 0){
+        //     //Current password and new password are same
+        //     return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
+        // }
+
+        // $validatedData = $request->validate([
+        //     'current_password' => 'required',
+        //     'new_password' => 'required|string|min:6|confirmed',
+        //     'confirm_password' => 'required|string|min:6|confirmed'
+        // ]);
+
+        // //Change Password
+        // $user = Auth::user();
+        // $user->password = bcrypt($request->get('new_password'));
+        // $user->save();
+        return redirect('/');
+    }
+
     /**
      * Display record details
      * 
@@ -130,8 +173,8 @@ class ApiController extends Controller
                 }
             }   
         }
-
         return $userDevice;
+        // dd($device);
     }
 
     /**
