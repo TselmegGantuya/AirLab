@@ -20,7 +20,6 @@ class CreateDevicesTable extends Migration
             $table->string('serial_number')->nullable();
             $table->integer('organization_id')->unsigned()->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

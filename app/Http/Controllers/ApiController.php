@@ -31,7 +31,6 @@ class ApiController extends Controller
  
             // $request->session()->flash('success', 'Your password has been changed.');
         }
-           dd('yes');
 
         // if (!(Hash::check($request->get('current_password'), Auth::user()->password))) {
         //     // The passwords matches

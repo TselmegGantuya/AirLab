@@ -1,207 +1,200 @@
 $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-    }
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+  }
 });
 /**
 *
 *   Knockoutjs
 */
 var ViewModel = function (){
+  var localStorage = window.localStorage;
+  var base_url = window.location.origin;
+  var self = this
+  self.files = ko.observableArray()
+  self.none = ko.observable('none')
+
+  self.loginButton = ko.observable()
+  self.loginInfo = ko.observableArray([
+    {name:"email"},
+    {name:"password"}
+  ])
+  self.registerInfo = ko.observableArray([
+    {name:"email"},
+    {name:"name"},
+    {name:"password"}
+  ])
+  self.forgetInfo = ko.observableArray([
+    {name:"email"}
+  ])
+
+  self.profiles = ko.observableArray([
+    {name:"Name"},
+    {name:"Email"}
+  ])
+  self.dev = ko.observableArray([
+    {name:"Device Name"},
+    {name:"Mac Address"},
+    {name:"Serial Number"}
+  ])
+  self.record = ko.observableArray([
+    {name:"Device Name"},
+    {name:"Temperature"},
+    {name:"Relative Humidity"},
+    {name:"PM 2.5"},
+    {name:"TVOC"},
+    {name:"CO2"},
+    {name:"CO"},
+    {name:"Air Pressure"},
+    {name:"Ozone"},
+    {name:"NO2"},
+  ])
+  self.recordHead = ko.observableArray([
+    {name:"Temperature"},
+    {name:"Relative Humidity"},
+    {name:"PM 2.5"},
+    {name:"TVOC"},
+    {name:"CO2"},
+    {name:"CO"},
+    {name:"Air Pressure"},
+    {name:"Ozone"},
+    {name:"NO2"},
+  ])
+  self.token = ko.observable()
+  self.currentPage = ko.observable()
+  self.currentTab = ko.observable()
+  self.lastCurrentTab = ko.observable()
+  self.showRow = ko.observable(false);
+  self.showDev = ko.observable(false);
+  self.showRec = ko.observable(false);
+  self.current_password = ko.observable()
+  self.new_password = ko.observable()
+  self.confirm_password = ko.observable()
+
+  self.currentTabHead = ko.observableArray()
+  self.currentTabData = ko.observableArray()
+  self.currentPageData = ko.observableArray()
+  self.currentTabDataProfile = ko.observableArray()
+  self.currentTabDataDevices = ko.observableArray()
+  self.currentTabDataRecords = ko.observableArray()
+  self.prof =  ko.observableArray()
+  self.pages = ko.observableArray()
+  self.user = ko.observableArray()
+  self.userDevice = ko.observableArray()
+  self.deviceMeter = ko.observableArray()
+  self.lastRecord = ko.observableArray()
+  self.lastRecordHead = ko.observableArray()
+  self.currentLastRecord = ko.observableArray()
+  self.lastCurrentTab = ko.observable()
+
+  self.showRow = ko.observable(false);
+  self.showDev = ko.observable(false);
+  self.showRec = ko.observable(false);
+
+  self.current_password = ko.observable()
+  self.new_password = ko.observable()
+  self.confirm_password = ko.observable()
+
+  self.organization = ko.observableArray()
+  self.devicesOrganization = ko.observableArray()
+  self.newDevices = ko.observableArray()
+  self.showOrgDevices = ko.observable(false)
+  self.showNewDevices = ko.observable(false)
+  self.orgId = ko.observable()
 
 
-    var localStorage = window.localStorage;
-    var base_url = window.location.origin;
-    var self = this
-    self.files = ko.observableArray()
-
-
-    self.none = ko.observable('none')
-    self.loginButton = ko.observable()
-    self.loginInfo = ko.observableArray([
-        {name:"email"},
-        {name:"password"}
-    ])
-    self.registerInfo = ko.observableArray([
-        {name:"email"},
-        {name:"name"},
-        {name:"password"}
-    ])
-    self.forgetInfo = ko.observableArray([
-        {name:"email"}
-    ])
-
-    self.profiles = ko.observableArray([
-        {name:"Name"},
-        {name:"Email"}
-    ])
-    self.dev = ko.observableArray([
-        {name:"Device Name"},
-        {name:"Mac Address"},
-        {name:"Serial Number"}
-    ])
-    self.record = ko.observableArray([
-        {name:"Device Name"},
-        {name:"Temperature"},
-        {name:"Relative Humidity"},
-        {name:"PM 2.5"},
-        {name:"TVOC"},
-        {name:"CO2"},
-        {name:"CO"},
-        {name:"Air Pressure"},
-        {name:"Ozone"},
-        {name:"NO2"},
-    ])
-    self.recordHead = ko.observableArray([
-        {name:"Temperature"},
-        {name:"Relative Humidity"},
-        {name:"PM 2.5"},
-        {name:"TVOC"},
-        {name:"CO2"},
-        {name:"CO"},
-        {name:"Air Pressure"},
-        {name:"Ozone"},
-        {name:"NO2"},
-    ])
-    self.token = ko.observable()
-    self.currentPage = ko.observable()
-    self.currentTab = ko.observable()
-    self.lastCurrentTab = ko.observable()
-    self.showRow = ko.observable(false);
-    self.showDev = ko.observable(false);
-    self.showRec = ko.observable(false);
-    self.current_password = ko.observable()
-    self.new_password = ko.observable()
-    self.confirm_password = ko.observable()
-
-    self.currentTabHead = ko.observableArray()
-    self.currentTabData = ko.observableArray()
-    self.currentPageData = ko.observableArray()
-    self.currentTabDataProfile = ko.observableArray()
-    self.currentTabDataDevices = ko.observableArray()
-    self.currentTabDataRecords = ko.observableArray()
-    self.prof =  ko.observableArray()
-    self.pages = ko.observableArray()
-    self.user = ko.observableArray()
-    self.userDevice = ko.observableArray()
-    self.deviceMeter = ko.observableArray()
-    self.lastRecord = ko.observableArray()
-    self.lastRecordHead = ko.observableArray()
-    self.currentLastRecord = ko.observableArray()
-    self.lastCurrentTab = ko.observable()
-
-    self.showRow = ko.observable(false);
-    self.showDev = ko.observable(false);
-    self.showRec = ko.observable(false);
-
-    self.current_password = ko.observable()
-    self.new_password = ko.observable()
-    self.confirm_password = ko.observable()
-
-    self.organization = ko.observableArray()
-    self.devicesOrganization = ko.observableArray()
-    self.newDevices = ko.observableArray()
-    self.showOrgDevices = ko.observable(false)
-    self.showNewDevices = ko.observable(false)
-    self.orgId = ko.observable()
-
-
-    /**
-    *
-    *  Canvas coordinates
-    */
-    var canvas = document.getElementById('background')
-    var context = canvas.getContext('2d')
-    /**
-    *
-    *   Devices placement 
-    */
-    $('#background').click(function(event)
-    {
-        let xy = getMousePos(canvas,event)
-        console.log(getMousePos(canvas,event))
-        //post coordination
-        context.fillStyle = "#FF0000";  
-        context.fillRect(xy['x'],xy['y'],10,10)
-    })
-    function getMousePos(canvas, event) {
-        var rect = canvas.getBoundingClientRect()
-        return {
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top
-            }
+  /**
+  *
+  *  Canvas coordinates
+  */
+  var canvas = document.getElementById('background')
+  var context = canvas.getContext('2d')
+  /**
+  *
+  *   Devices placement 
+  */
+  $('#background').click(function(event)
+  {
+    let xy = getMousePos(canvas,event)
+    console.log(getMousePos(canvas,event))
+    //post coordination
+    context.fillStyle = "#FF0000";  
+    context.fillRect(xy['x'],xy['y'],10,10)
+  })
+  function getMousePos(canvas, event) {
+    var rect = canvas.getBoundingClientRect()
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
     }
-    /**
-    *
-    *   Upload image
-    */
-        self.fileSelect= function (element,event) {
-        var files =  event.target.files;// FileList object
-        // Loop through the FileList and render image files as thumbnails.
-        for (var i = 0, f; f = files[i]; i++) {
+  }
+  /**
+  *
+  *   Upload image
+  */
+  self.fileSelect= function (element,event) {
+    var files =  event.target.files;// FileList object
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
 
-          // Only process image files.
-            if (!f.type.match('image.*')) {
-                continue;
-            }          
+      // Only process image files.
+      if (!f.type.match('image.*')) {
+        continue;
+      }          
+      var reader = new FileReader();
 
-            var reader = new FileReader();
+      // Closure to capture the file information.
+      reader.onload = (function() {
+        return function(event){
+          var img = new Image();
+          img.addEventListener("load", function() {
+            context.drawImage(img, 0, 0);
+          });
+          img.src = event.target.result;
+        }                
+      })(f);
+      var formData = new FormData();
 
-              // Closure to capture the file information.
-            reader.onload = (function() {
-                return function(event){
-                    var img = new Image();
-                    img.addEventListener("load", function() {
-                        context.drawImage(img, 0, 0);
-                    });
-                    img.src = event.target.result;
-                }                
-            })(f);
-            var formData = new FormData();
-
-              // HTML file input, chosen by user
-            formData.append("blueprint", f);
-            formData.append("token", self.token());
+      // HTML file input, chosen by user
+      formData.append("blueprint", f);
+      formData.append("token", self.token());
             
-            var request = new XMLHttpRequest();
-            request.open("POST", base_url + '/api/blueprint/upload');
-            request.send(formData);
-              // Read in the image file as a data URL.
-            reader.readAsDataURL(f);    
-
-        }
-    };
-
-    /**
-     * [choosePage description]
-     * @param  {[type]} data [description]
-     * @return {[type]}      [description]
-     */
-   self.choosePage = function(data)
-    {
-        data = data.toLowerCase()
-        self.currentPage(data)
-
-        if (data == "login") {
-            self.loginButton('Sign in')
-            self.currentPageData(self.loginInfo())
-            self.pages([{name: 'Register'}, {name: 'Forgot password'}])
-
-        }else if (data == "register"){
-            self.loginButton('Sign up')
-            self.currentPageData(self.registerInfo())
-            self.pages([{name: 'Login'}, {name: 'Forgot password'}])
-
-        }else{
-            self.loginButton('Send email')
-            self.currentPageData(self.forgetInfo())
-            self.pages([{name: 'Register'}, {name: 'Login'}])
-
-        }
+      var request = new XMLHttpRequest();
+      request.open("POST", base_url + '/api/blueprint/upload');
+      request.send(formData);
+      // Read in the image file as a data URL.
+      reader.readAsDataURL(f);    
 
     }
-    
+  };
 
+  /**
+  * [choosePage description]
+  * @param  {[type]} data [description]
+  * @return {[type]}      [description]
+  */
+  self.choosePage = function(data)
+  {
+    data = data.toLowerCase()
+    self.currentPage(data)
+
+    if (data == "login") {
+      self.loginButton('Sign in')
+      self.currentPageData(self.loginInfo())
+      self.pages([{name: 'Register'}, {name: 'Forgot password'}])
+    }
+    else if (data == "register"){
+      self.loginButton('Sign up')
+      self.currentPageData(self.registerInfo())
+      self.pages([{name: 'Login'}, {name: 'Forgot password'}])
+    }
+    else{
+        self.loginButton('Send email')
+        self.currentPageData(self.forgetInfo())
+        self.pages([{name: 'Register'}, {name: 'Login'}])
+    }
+  }
+    
     /**
      * [loginToken description]
      * @return {[type]} [description]
@@ -458,7 +451,8 @@ var ViewModel = function (){
             $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
                 self.user(data['name'])
                 $("#container").removeClass("d-none")
-                $("#loginCont").addClass("d-none")            
+                $("#loginCont").addClass("d-none")    
+                self.getOrganizations()        
             }).fail()
         }
         self.choosePage('login')
