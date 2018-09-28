@@ -140,7 +140,71 @@
                     </div>
                 </div>
             </div>
-           
+            <!--STEFAN-->
+            <!--Admin device to organization-->
+            <div class="container">
+            	<div class="row">
+                    <div class="col-md-4">
+                	    <div class="card" style="margin:50px 0">
+                            <!-- Default panel contents -->
+                            <div class="card-header">Organizations</div>
+                            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                              <div data-bind="foreach: organization">
+                                <li class="list-group-item">
+                                    <span data-bind="text: $data.name">Some org</span>
+                                    <label class="checkbox">
+                                        <input type="radio" name="organization" data-bind="value: id, click: $root.organizationRadiobox" />
+                                        <span class="success"></span>
+                                    </label>
+                                </li>
+                              </div>
+                            </ul>
+                        </div>
+                    </div>
+                    <div data-bind='visible: showOrgDevices' class="col-md-4">
+                	    <div class="card" style="margin:50px 0">
+                            <!-- Default panel contents -->
+                            <div class="card-header">Devices from organization</div>
+                            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                              <div data-bind="foreach: devicesOrganization">
+                                <li class="list-group-item">
+                                    <span data-bind="text: $data.name">Some org</span>
+                                    <label class="checkbox">
+                                        <input type="checkbox" data-bind="value: id" name="devicesOrganization" />
+                                        <span class="success"></span>
+                                    </label>
+                                </li>
+                              </div>
+                            </ul>
+                            <div class="card-footer">
+                              <button class="btn btn-danger" data-bind="click: devicesOwner" type="button" name="button">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-bind='visible: showNewDevices' class="col-md-4">
+                      <div class="card" style="margin:50px 0">
+                            <!-- Default panel contents -->
+                            <div class="card-header">New devices</div>
+                            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                              <div data-bind="foreach: newDevices">
+                                <li class="list-group-item">
+                                    <span data-bind="text: $data.name">Some org</span>
+                                    <label class="checkbox">
+                                        <input type="checkbox" data-bind="value: id" name="newDevices" />
+                                        <span class="success"></span>
+                                    </label>
+                                </li>
+                              </div>
+                            </ul>
+                            <div class="card-footer">
+                              <button class="btn btn-primary" data-bind="click: newDevice" type="button" name="button">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--STEFAN END-->
+        
         </main>
 
         <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
@@ -234,4 +298,5 @@
 
     </div>
 </div>
+
 @endsection

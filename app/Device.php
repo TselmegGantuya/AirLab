@@ -3,11 +3,22 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Device extends Model
 {
-    public $organization_name;
+  use SoftDeletes;
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    //START STEFAN
+    protected $dates = ['deleted_at'];
+
+    public $organization;
+    //END STEFAN
     /**
      * Device relationship with an organization
      * @return [type] [description]

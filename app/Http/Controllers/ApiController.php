@@ -34,21 +34,97 @@ class ApiController extends Controller
 
     /**
      * Display all devices
-     * 
+     *
      * [deviceView description]
      * @return [type] [description]
      */
+    // START STEFAN CODE
+    public function getOrganizations()
+    {
+
+      $organizations = Organization::all();
+
+      return $organizations;
+    }
+    /**
+     * Display all devices from organization
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function getDevicesOrganization(Request $request)
+    {
+
+      if ($request->id) {
+        $orgDevices = Device::where('organization_id', $request->id)->get();
+      }
+        return $orgDevices;
+    }
+    /**
+     * Display all devices with no organization
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function getNewDevices()
+    {
+      $cleanDevices = Device::where('organization_id', NULL)->get();
+      return $cleanDevices;
+    }
+    /**
+     * Display
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function addDeviceOrg(Request $request)
+    {
+      $status = 0;
+      foreach ($request->device_id as $id) {
+        Device::where('id', $id)->update(['organization_id' => $request->organization_id]);
+        $status = 1;
+      }
+      return $status;
+    }
+    /**
+     * Display
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function deleteDevicesOrganization(Request $request)
+    {
+      $status = 0;
+      foreach ($request->device_id as $id) {
+        Device::where('id', $id)->update(['organization_id' => NULL]);
+        //softdelete concept
+        //Device::where('id', $id)->delete();
+        $status = 1;
+      }
+      return $status;
+    }
+    // END STEFAN CODE
+    /**
+     * Display all devices
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    /*
     public function deviceView()
     {
         $devices = Device::all();
 
         foreach ($devices as $device) {
-            $device->organization_name = $device->organization->name;
+          if ($device->organization_id == true) {
+            $device->organization;
+          }else {
+            $device->organization_name = 'none';
+          }
         }
-
         return $devices;
     }
-
+    */
     /**
      * Display all records that belongs to logged in user.
      *
@@ -128,7 +204,7 @@ class ApiController extends Controller
                         $userDevice[] = $device;
                     }
                 }
-            }   
+            }
         }
 
         return $userDevice;
@@ -136,7 +212,7 @@ class ApiController extends Controller
 
     /**
      * Method for getting a list of all available devices.
-     * 
+     *
      * [getUhooData description]
      * @return [type] [description]
      * @return \Illuminate\Http\Response
@@ -157,7 +233,7 @@ class ApiController extends Controller
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         curl_exec($curl);
-        
+
         $result = curl_exec($curl);
         $response = json_decode($result);
 
@@ -179,10 +255,10 @@ class ApiController extends Controller
                     foreach ($organizations as $organization) {
                         if ($userInfo['name'] == $organization->name) {
                             $device->organization_id = $organization->id;
-                        }   
+                        }
                     }
-                    // $device->save();   
-                }               
+                    // $device->save();
+                }
             }
         }
 
@@ -192,7 +268,7 @@ class ApiController extends Controller
 
     /**
      * Method for getting a data per minute.
-     * 
+     *
      * [getUhooData description]
      * @return [type] [description]
      * @return \Illuminate\Http\Response
