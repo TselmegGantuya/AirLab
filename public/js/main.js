@@ -1,10 +1,12 @@
-    $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-        }
-    });
-
-//data tables
+$.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+});
+/**
+*
+*   Data tables
+*/  
     ko.bindingHandlers.dataTablesForEach = {
     page: 0,
     init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -46,9 +48,16 @@
             ko.utils.domData.set(element, key, true);
         return { controlsDescendantBindings: true };
     }}; 
-// knockout js
+
+
+
+/**
+*
+*   Knockoutjs
+*/
 var ViewModel = function (){
 
+    var localStorage = window.localStorage;
     var base_url = window.location.origin;
     var self = this
     self.files = ko.observableArray()
@@ -100,8 +109,6 @@ var ViewModel = function (){
 
     self.prof =  ko.observableArray()
     self.pages = ko.observableArray()
-    self.records = ko.observableArray()
-    self.devices = ko.observableArray()
     self.user = ko.observableArray()
 
     self.userDevice = ko.observableArray()
@@ -121,10 +128,14 @@ var ViewModel = function (){
 
     /**
     *
-    *  canvas coordinates
+    *  Canvas coordinates
     */
     var canvas = document.getElementById('background')
     var context = canvas.getContext('2d')
+    /**
+    *
+    *   Devices placement 
+    */
     $('#background').click(function(event)
     {
         let xy = getMousePos(canvas,event)
@@ -142,7 +153,7 @@ var ViewModel = function (){
     }
     /**
     *
-    *   upload image
+    *   Upload image
     */
         self.fileSelect= function (element,event) {
         var files =  event.target.files;// FileList object
@@ -190,7 +201,6 @@ var ViewModel = function (){
     {
         data = data.toLowerCase()
         self.currentPage(data)
-        console.log(self.currentPage())
 
         if (data == "login") {
             self.loginButton('Sign in')
@@ -208,9 +218,9 @@ var ViewModel = function (){
             self.pages([{name: 'Register'}, {name: 'Login'}])
 
         }
-        console.log(self.currentPageData())
+
     }
-    self.choosePage('login')
+    
 
     /**
      * [loginToken description]
@@ -221,51 +231,22 @@ var ViewModel = function (){
         if (self.loginButton() == "Sign in") {
             $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
             {
-
                 self.token(data['access_token'])
-                console.log(self.token())
-
-                $.post(base_url + '/api/uhoo/records',{token:self.token()}).done(function(data)
+                localStorage.setItem('token',self.token())
+                $.post(base_url + '/api/me', {token:self.token()}).done(function(data)
                 {
-                    self.records(data)
-                    $("#container").removeClass("d-none")
-                    $("#loginCont").addClass("d-none")
-                })
-                $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
-                {
-                    self.devices(data)
-                }) 
-                $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
                     self.user(data['name'])
-                    console.log(self.user())
-                    console.log(self.records())
-                })            
+                })
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")            
             })
         } else if (self.loginButton() == "Sign up") {
             $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
             {
-                console.log(data)
                 self.loginButton("Sign in")
                 self.loginToken()
-            })
-            $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
-                self.user(data['name'])
-                console.log(self.user())
-                console.log(self.records())
-            })            
+            })          
         }
-    }
-
-    /**
-     * [registerToDB description]
-     * @return {[type]} [description]
-     */
-    self.registerToDB = function(){
-        $.post(base_url + '/api/validate',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
-        {
-            console.log(data)
-        })
-
     }
 
     /**
@@ -278,9 +259,7 @@ var ViewModel = function (){
             $("#loginCont").removeClass("d-none")
             $('#email').val("")
             $('#password').val("")
-            self.records("")
-            self.devices("")
-            // console.log(data)
+            localStorage.removeItem('myCat')
         })
     }
 
@@ -293,9 +272,10 @@ var ViewModel = function (){
             self.currentTab("Profile")
             self.currentTabHead(self.profiles())
             self.currentTabDataProfile(data)
-            // console.log(self.currentTabDataProf(data))
         })
         self.showRow(!self.showRow());
+        self.showDev(false);
+        self.showRec(false);
     };
 
     /**
@@ -320,7 +300,6 @@ var ViewModel = function (){
                         if (data[i].device_id == self.currentTabData()[x].id) {
                             $.post(base_url + '/api/uhoo/record', {token: self.token(),id:self.currentTabData()[x].id}).done(function(data) {
                                 self.lastRecord.push(data)
-                                // console.log(self.lastRecord())
                             })
                             break;
                         }
@@ -333,6 +312,8 @@ var ViewModel = function (){
             })
         })
         self.showDev(!self.showDev());
+        self.showRow(false);
+        self.showRec(false);
     };
 
     /**
@@ -357,36 +338,35 @@ var ViewModel = function (){
 
             data.forEach(function(element) {
                self.currentTabDataRecords(data)
-               // console.log(element);
+
             });
         })
         self.showRec(!self.showRec());
+        self.showDev(false);
+        self.showRow(false);
     };
 
     $('#openBtn').click(function(){
         $('#myModal').modal({show:true})
     });
+    self.enterPage = function() {
 
-    // self.addTask = function() {
-    //     self.tasks.push(new Task({ title: this.newTaskText() }));
-    //     self.newTaskText("");
-    // };
-    self.saveToPhp = function() {
         
-        console.log({id:$('#current_password').val()})
-        // $.ajax("/echo/json/", {
-        //     data: {
-        //         json: ko.toJSON({
-        //             tasks: this.tasks
-        //         })
-        //     },
-        //     type: "POST",
-        //     dataType: 'json',
-        //     success: function(result) {
-        //         alert(ko.toJSON(result))
-        //     }
-        // });
-    };
+        if (localStorage.getItem('token'))
+        {
+            self.token(localStorage.getItem('token'))
+            $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
+                self.user(data['name'])
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")            
+            }).fail()
+        }
+        self.choosePage('login')
+    }
+    self.saveToPhp = function() {
+
+    }
+    self.enterPage()
 }
 
 var vm = new ViewModel();
