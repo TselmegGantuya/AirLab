@@ -11,6 +11,7 @@
                             <button class="btn btn-info col" type="button"> Profile</button>
                         </a>
                     </li>
+                    <div class = 'admin'>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: toggleVisibilityDevices">
                             <button class="btn btn-info col" type="button"> Devices</button>
@@ -22,6 +23,7 @@
                             <button class="btn btn-info col" type="button"> Records</button>
                         </a>
                     </li>
+                    </div>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: logout">
                             <button class="btn btn-danger col" type="button"> Logout</button>
@@ -30,8 +32,7 @@
                 </ul>
             </div>
         </nav>
-
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" class = 'admin'>
             <div id="currentTab">
                 <h2 data-bind="text: user"></h2>
                 
@@ -244,7 +245,6 @@
                 </div>
             </div>
         </div>
-
         <form enctype="multipart/form-data" id = "uploadForm">
             <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
         </form>
