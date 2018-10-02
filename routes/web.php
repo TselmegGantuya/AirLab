@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,3 +12,5 @@
 Route::get('/', function () {
   	return view('index');
 });
+
+Route::get('mail/send', 'MailController@send');

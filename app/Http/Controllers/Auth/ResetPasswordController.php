@@ -30,10 +30,12 @@ class ResetPasswordController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @return voids
      */
     public function __construct()
     {
         $this->middleware('guest');
     }
+
+
 }
