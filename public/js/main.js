@@ -149,7 +149,10 @@ var ViewModel = function (){
         return function(event){
           var img = new Image();
           img.addEventListener("load", function() {
-            context.drawImage(img, 0, 0);
+            context.drawImage(img, 
+              canvas.width / 2 - img.width / 2,
+              canvas.height / 2 - img.height / 2
+              );
           });
           img.src = event.target.result;
         }                
