@@ -11,13 +11,13 @@
                             <button class="btn btn-info col" type="button"> Profile</button>
                         </a>
                     </li>
-                    <div class = 'admin'>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: toggleVisibilityDevices">
                             <button class="btn btn-info col" type="button"> Devices</button>
                         </a>
                     </li>
-
+                    <div class = 'admin'>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bind="click: toggleVisibilityRecords">
                             <button class="btn btn-info col" type="button"> Records</button>
