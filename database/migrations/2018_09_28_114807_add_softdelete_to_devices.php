@@ -26,7 +26,7 @@ class AddSoftdeleteToDevices extends Migration
     public function down()
     {
        Schema::table('devices', function($table) {
-            $table->softDeletes();
+            $table->dropSoftDeletes();
         });
     }
 }

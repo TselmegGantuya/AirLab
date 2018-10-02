@@ -426,13 +426,12 @@ var ViewModel = function (){
 
             data.forEach(function(element) {
                self.currentTabDataRecords(data)
-
+               // console.log(element);
             });
         })
         self.showRec(!self.showRec());
-        self.showDev(false);
         self.showRow(false);
-
+        self.showDev(false);
     };
 
     /**

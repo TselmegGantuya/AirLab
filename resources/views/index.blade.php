@@ -50,7 +50,6 @@
                                 </tr> 
                             </tbody>
                     </table>
-
                     <div>
                         <a href="#"  id="openBtn">
                             <button type="button" class="btn btn-outline-dark">Change Password</button>
@@ -63,26 +62,29 @@
 
                 <div data-bind="visible: showDev">
                     <p data-bind="text: currentTab"></p>
-                      <!--Admin device to organization-->
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card" style="margin:50px 0">
-                            <!-- Default panel contents -->
-                            <div class="card-header">Organizations</div>
-                            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
-                              <div data-bind="foreach: organization">
-                                <li class="list-group-item">
-                                    <span data-bind="text: $data.name">Some org</span>
-                                    <label class="checkbox">
-                                        <input type="radio" name="organization" data-bind="value: id, click: $root.organizationRadiobox" />
-                                        <span class="success"></span>
-                                    </label>
-                                </li>
-                              </div>
-                            </ul>
+                    <!--Admin device to organization-->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card" style="margin:50px 0">
+                                    <!-- Default panel contents -->
+                                    <div class="card-header">Organizations</div>
+                                    <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                                      <div data-bind="foreach: organization">
+                                        <li class="list-group-item">
+                                            <span data-bind="text: $data.name">Some org</span>
+                                            <label class="checkbox">
+                                                <input type="radio" name="organization" data-bind="value: id, click: $root.organizationRadiobox" />
+                                                <span class="success"></span>
+                                            </label>
+                                        </li>
+                                      </div>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                     <div data-bind='visible: showOrgDevices' class="col-md-4">
                         <div class="card" style="margin:50px 0">
                             <!-- Default panel contents -->
@@ -103,6 +105,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div data-bind='visible: showNewDevices' class="col-md-4">
                       <div class="card" style="margin:50px 0">
                             <!-- Default panel contents -->
@@ -123,8 +126,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
                 </div>
 
                 <div data-bind="visible: showRec">
@@ -152,44 +153,42 @@
                     </table>                    
                 </div>
 
-            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Device Records</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <p data-bind="text: lastCurrentTab"></p>
-                            <table class="table table-striped table-bordered">
-                                <thead>
-                                    <tr data-bind="foreach: lastRecordHead">
-                                        <th data-bind="text: name"></th>
-                                    </tr>
-                                </thead>
-                                <tbody data-bind="foreach: $root.currentLastRecord" >                                
-                                    <tr>
-                                        <td data-bind="text:temperature"></td>
-                                        <td data-bind="text:relative_humidity"></td>
-                                        <td data-bind="text:pm2_5"></td>
-                                        <td data-bind="text:tvoc"></td>
-                                        <td data-bind="text:co2"></td>
-                                        <td data-bind="text:co"></td>
-                                        <td data-bind="text:air_pressure"></td>
-                                        <td data-bind="text:ozone"></td>
-                                        <td data-bind="text:no2"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>                    
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Device Records</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <p data-bind="text: lastCurrentTab"></p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr data-bind="foreach: lastRecordHead">
+                                            <th data-bind="text: name"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: $root.currentLastRecord" >                                
+                                        <tr>
+                                            <td data-bind="text:temperature"></td>
+                                            <td data-bind="text:relative_humidity"></td>
+                                            <td data-bind="text:pm2_5"></td>
+                                            <td data-bind="text:tvoc"></td>
+                                            <td data-bind="text:co2"></td>
+                                            <td data-bind="text:co"></td>
+                                            <td data-bind="text:air_pressure"></td>
+                                            <td data-bind="text:ozone"></td>
+                                            <td data-bind="text:no2"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>                    
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-        
         </main>
 
         <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
@@ -202,7 +201,6 @@
 
                     <div class="modal-body">
                         <div class="modal-body form-horizontal">
-
                             <form data-bind="submit: saveToPhp" id="pass_form">
                                 <div class="form-group">
                                   <div class="control-group">
@@ -240,19 +238,18 @@
                                     </div>
                                 </div>
                             </form>
-
                         </div>
                     </div>
 
                 </div>
             </div>
         </div>
-        <div>
-            <form enctype="multipart/form-data" id = "uploadForm">
-                <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
-            </form>
-            <canvas id="background" ></canvas>
-        </div>
+
+        <form enctype="multipart/form-data" id = "uploadForm">
+            <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+        </form>
+        <canvas id="background" ></canvas>
+
     </div>
 </div>
 
