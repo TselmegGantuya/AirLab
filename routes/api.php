@@ -55,10 +55,10 @@ Route::group([
   Route::post('uhoo/organizations', 'ApiController@getOrganizations');
   //Getting all devices no class_parent
   Route::post('uhoo/getDevicesOrganization', 'ApiController@getDevicesOrganization');
-  Route::post('uhoo/getNewDevices/', 'ApiController@getNewDevices');
+  Route::post('uhoo/getNewDevices', 'ApiController@getNewDevices');
   //Add device to organization
-  Route::post('uhoo/addDeviceOrg/', 'ApiController@addDeviceOrg');
+  Route::post('uhoo/addDeviceOrg', 'ApiController@addDeviceOrg');
   //Delete device from organization
-  Route::post('uhoo/deleteDevicesOrganization/', 'ApiController@deleteDevicesOrganization');
+  Route::post('uhoo/deleteDevicesOrganization', 'ApiController@deleteDevicesOrganization');
   //END STEFAN
 });
