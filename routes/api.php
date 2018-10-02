@@ -54,7 +54,7 @@ Route::group([
   //START STEFAN
   Route::post('uhoo/organizations', 'ApiController@getOrganizations');
   //Getting all devices no class_parent
-  Route::post('uhoo/getDevicesOrganization/', 'ApiController@getDevicesOrganization');
+  Route::post('uhoo/getDevicesOrganization', 'ApiController@getDevicesOrganization');
   Route::post('uhoo/getNewDevices/', 'ApiController@getNewDevices');
   //Add device to organization
   Route::post('uhoo/addDeviceOrg/', 'ApiController@addDeviceOrg');

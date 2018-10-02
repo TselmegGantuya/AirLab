@@ -80,6 +80,7 @@ var ViewModel = function (){
   self.prof =  ko.observableArray()
   self.pages = ko.observableArray()
   self.user = ko.observableArray()
+  self.userRole = ko.observable();
   self.userDevice = ko.observableArray()
   self.deviceMeter = ko.observableArray()
   self.lastRecord = ko.observableArray()
@@ -200,7 +201,6 @@ var ViewModel = function (){
      * @return {[type]} [description]
      */
     self.loginToken = function() {
-
         if (self.loginButton() == "Sign in") {
             $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
             {
@@ -209,6 +209,14 @@ var ViewModel = function (){
                 $.post(base_url + '/api/me', {token:self.token()}).done(function(data)
                 {
                     self.user(data['name'])
+                    if ( data['role'] == 1 ) {
+                      self.userRole('user')
+                      $('.admin').addClass("d-none")
+                    }
+                    else if ( data['role'] == 2 ) {
+                      self.userRole('admin')
+                      $('#uploadForm').addClass("d-none")
+                    }
                 })
 
                 $("#container").removeClass("d-none")
@@ -236,6 +244,8 @@ var ViewModel = function (){
             $('#email').val("")
             $('#password').val("")
             localStorage.removeItem('myCat')
+            $('#uploadForm').removeClass("d-none")
+            $('.admin').removeClass("d-none")
         })
     }
 
@@ -259,7 +269,12 @@ var ViewModel = function (){
      * @return {[type]} [description]
      */
      /*START STEFAN CODE*/
+
     self.getOrganizations = function(){
+      if(self.userRole() == 'user')
+      {
+        return '401';
+      }
         $.post(base_url + '/api/uhoo/organizations', {token: self.token()}).done(function(data){
             self.organization(data)
             console.log(self.organization())
@@ -270,10 +285,12 @@ var ViewModel = function (){
      * @return {[type]} [description]
      */
     self.organizationRadiobox = function(data,event) {
-
+      if(self.userRole() == 'user')
+      {
+        return '401';
+      }
       self.showOrgDevices(false)
       self.showNewDevices(false)
-
       if (event.target.checked) {
         //id organization
         self.orgId = event.target.value;
@@ -286,7 +303,7 @@ var ViewModel = function (){
             }
         })
         $.post(base_url + '/api/uhoo/getNewDevices' ,{token: self.token()}).done(function(data){
-            if (data[0]['organization_id'] == null ){
+            if (data != ''){
               self.newDevices(data)
               self.showNewDevices(!self.showNewDevices());
             }
@@ -296,7 +313,10 @@ var ViewModel = function (){
     }
 
     self.devicesOwner = function(data) {
-      console.log('Sup1')
+      if(self.userRole() == 'user')
+      {
+        return '401';
+      }
       var items=document.getElementsByName('devicesOrganization');
       var selectedItems = [];
       for(var i=0; i<items.length; i++){
@@ -332,6 +352,10 @@ var ViewModel = function (){
     }
 
     self.newDevice = function(data) {
+      if(self.userRole() == 'user')
+      {
+        return '401';
+      }
       var items=document.getElementsByName('newDevices');
       var selectedItems = [];
       for(var i=0; i<items.length; i++){
@@ -372,34 +396,10 @@ var ViewModel = function (){
      * @return {[type]} [description]
      */
     self.toggleVisibilityDevices = function() {
-        $.post(base_url + '/api/uhoo/user/device', {token: self.token()}).done(function(data){
-            self.currentTab("Devices")
-            self.currentTabHead(self.dev())
-
-            data.forEach(function(element) {
-               self.currentTabData(data)
-            });
-
-            $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data) {
-
-                self.lastCurrentTab("Devices/Record")
-                self.lastRecordHead(self.recordHead())
-                for (var x in self.currentTabData()) {
-                    for (var i in data) {
-                        if (data[i].device_id == self.currentTabData()[x].id) {
-                            $.post(base_url + '/api/uhoo/record', {token: self.token(),id:self.currentTabData()[x].id}).done(function(data) {
-                                self.lastRecord.push(data)
-                            })
-                            break;
-                        }
-                        else if(self.currentTabData().length == i ){
-                            // console.log(self.currentTabData()[x].id)
-                            // console.log('nothing found')
-                        }
-                    }
-                }
-            })
-        })
+      if(self.userRole() == 'user')
+      {
+        return '401';
+      }
         self.showDev(!self.showDev());
         self.showRow(false);
         self.showRec(false);
@@ -420,6 +420,10 @@ var ViewModel = function (){
      * @return {[type]} [description]
      */
     self.toggleVisibilityRecords = function() {
+      if(self.userRole() == 'user')
+      {
+        return '401';
+      }
         $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data){
             self.currentTab("Records")
             self.currentTabHead(self.record())
@@ -454,6 +458,14 @@ var ViewModel = function (){
             self.token(localStorage.getItem('token'))
             $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
                 self.user(data['name'])
+                if ( data['role'] == 1 ) {
+                  self.userRole('user')
+                  $('.admin').addClass("d-none")
+                }
+                else if ( data['role'] == 2 ) {
+                  self.userRole('admin')
+                  $('#uploadForm').addClass("d-none")
+                }
                 $("#container").removeClass("d-none")
                 $("#loginCont").addClass("d-none")
                 self.getOrganizations()
