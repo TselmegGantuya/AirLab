@@ -1,112 +1,258 @@
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-    }
-  });
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+  }
+});
+/**
+*
+*   Knockoutjs
+*/
+var ViewModel = function (){
+  var localStorage = window.localStorage;
+  var base_url = window.location.origin;
+  var self = this
+  self.files = ko.observableArray()
+  self.none = ko.observable('none')
 
-function Model ()
-{
-    var counter = 0;
-    var base_url = window.location.origin;
-    var self = this;
-    self.none = ko.observable('none')
-    self.loginButton = ko.observable()
-    self.loginInfo = ko.observableArray([
-        {name:"email"},
-        {name:"password"}
-    ])
-    self.registerInfo = ko.observableArray([
-        {name:"email"},
-        {name:"name"},
-        {name:"password"}
-    ])
-    self.forgetInfo = ko.observableArray([
-        {name:"email"}
-    ])
-    self.token = ko.observable()
-    self.currentPageData = ko.observableArray()
-    self.currentPage = ko.observable()
-    self.pages = ko.observableArray()
-    self.meters = ko.observableArray()
-    self.devices = ko.observableArray()
-    self.user = ko.observableArray()
-    self.userDevice = ko.observableArray()
-    self.deviceMeter = ko.observableArray()
-    self.organization = ko.observableArray()
-    self.devicesOrganization = ko.observableArray()
-    self.newDevices = ko.observableArray()
-    self.showOrgDevices = ko.observable(false)
-    self.showNewDevices = ko.observable(false)
-    self.orgId = ko.observable()
+  self.loginButton = ko.observable()
+  self.loginInfo = ko.observableArray([
+    {name:"email"},
+    {name:"password"}
+  ])
+  self.registerInfo = ko.observableArray([
+    {name:"email"},
+    {name:"name"},
+    {name:"password"}
+  ])
+  self.forgetInfo = ko.observableArray([
+    {name:"email"}
+  ])
 
-    //test
-    self.checkSession = function() {
-      console.log();
+  self.profiles = ko.observableArray([
+    {name:"Name"},
+    {name:"Email"}
+  ])
+  self.dev = ko.observableArray([
+    {name:"Device Name"},
+    {name:"Mac Address"},
+    {name:"Serial Number"}
+  ])
+  self.record = ko.observableArray([
+    {name:"Device Name"},
+    {name:"Temperature"},
+    {name:"Relative Humidity"},
+    {name:"PM 2.5"},
+    {name:"TVOC"},
+    {name:"CO2"},
+    {name:"CO"},
+    {name:"Air Pressure"},
+    {name:"Ozone"},
+    {name:"NO2"},
+  ])
+  self.recordHead = ko.observableArray([
+    {name:"Temperature"},
+    {name:"Relative Humidity"},
+    {name:"PM 2.5"},
+    {name:"TVOC"},
+    {name:"CO2"},
+    {name:"CO"},
+    {name:"Air Pressure"},
+    {name:"Ozone"},
+    {name:"NO2"},
+  ])
+  self.token = ko.observable()
+  self.currentPage = ko.observable()
+  self.currentTab = ko.observable()
+  self.lastCurrentTab = ko.observable()
+  self.showRow = ko.observable(false);
+  self.showDev = ko.observable(false);
+  self.showRec = ko.observable(false);
+  self.current_password = ko.observable()
+  self.new_password = ko.observable()
+  self.confirm_password = ko.observable()
+
+  self.currentTabHead = ko.observableArray()
+  self.currentTabData = ko.observableArray()
+  self.currentPageData = ko.observableArray()
+  self.currentTabDataProfile = ko.observableArray()
+  self.currentTabDataDevices = ko.observableArray()
+  self.currentTabDataRecords = ko.observableArray()
+  self.prof =  ko.observableArray()
+  self.pages = ko.observableArray()
+  self.user = ko.observableArray()
+  self.userDevice = ko.observableArray()
+  self.deviceMeter = ko.observableArray()
+  self.lastRecord = ko.observableArray()
+  self.lastRecordHead = ko.observableArray()
+  self.currentLastRecord = ko.observableArray()
+  self.lastCurrentTab = ko.observable()
+
+  self.showRow = ko.observable(false);
+  self.showDev = ko.observable(false);
+  self.showRec = ko.observable(false);
+
+  self.current_password = ko.observable()
+  self.new_password = ko.observable()
+  self.confirm_password = ko.observable()
+
+  self.organization = ko.observableArray()
+  self.devicesOrganization = ko.observableArray()
+  self.newDevices = ko.observableArray()
+  self.showOrgDevices = ko.observable(false)
+  self.showNewDevices = ko.observable(false)
+  self.orgId = ko.observable()
+
+
+  /**
+  *
+  *  Canvas coordinates
+  */
+  var canvas = document.getElementById('background')
+  var context = canvas.getContext('2d')
+  /**
+  *
+  *   Devices placement
+  */
+  $('#background').click(function(event)
+  {
+    let xy = getMousePos(canvas,event)
+    console.log(getMousePos(canvas,event))
+    //post coordination
+    context.fillStyle = "#FF0000";
+    context.fillRect(xy['x'],xy['y'],10,10)
+  })
+  function getMousePos(canvas, event) {
+    var rect = canvas.getBoundingClientRect()
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
     }
+  }
+  /**
+  *
+  *   Upload image
+  */
+  self.fileSelect= function (element,event) {
+    var files =  event.target.files;// FileList object
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
+
+      // Only process image files.
+      if (!f.type.match('image.*')) {
+        continue;
+      }
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = (function() {
+        return function(event){
+          var img = new Image();
+          img.addEventListener("load", function() {
+            context.drawImage(img, 0, 0);
+          });
+          img.src = event.target.result;
+        }
+      })(f);
+      var formData = new FormData();
+
+      // HTML file input, chosen by user
+      formData.append("blueprint", f);
+      formData.append("token", self.token());
+
+      var request = new XMLHttpRequest();
+      request.open("POST", base_url + '/api/blueprint/upload');
+      request.send(formData);
+      // Read in the image file as a data URL.
+      reader.readAsDataURL(f);
+
+    }
+  };
+
+  /**
+  * [choosePage description]
+  * @param  {[type]} data [description]
+  * @return {[type]}      [description]
+  */
+  self.choosePage = function(data)
+  {
+    data = data.toLowerCase()
+    self.currentPage(data)
+
+    if (data == "login") {
+      self.loginButton('Sign in')
+      self.currentPageData(self.loginInfo())
+      self.pages([{name: 'Register'}, {name: 'Forgot password'}])
+    }
+    else if (data == "register"){
+      self.loginButton('Sign up')
+      self.currentPageData(self.registerInfo())
+      self.pages([{name: 'Login'}, {name: 'Forgot password'}])
+    }
+    else{
+        self.loginButton('Send email')
+        self.currentPageData(self.forgetInfo())
+        self.pages([{name: 'Register'}, {name: 'Login'}])
+    }
+  }
 
     /**
      * [loginToken description]
      * @return {[type]} [description]
      */
     self.loginToken = function() {
+
         if (self.loginButton() == "Sign in") {
             $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
             {
-
                 self.token(data['access_token'])
-                console.log(self.token())
-
-                $.post(base_url + '/api/uhoo/last-meter',{token:self.token()}).done(function(data)
+                localStorage.setItem('token',self.token())
+                $.post(base_url + '/api/me', {token:self.token()}).done(function(data)
                 {
-                    self.meters(data)
-                    $("#container").removeClass("d-none")
-                    $("#loginCont").addClass("d-none")
+                    self.user(data['name'])
                 })
-                /*
-                $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
-                {
-                  console.log(data)
-                    self.devices(data)
 
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
 
-                })
-                */
                 self.getOrganizations()
             })
         } else if (self.loginButton() == "Sign up") {
             $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
             {
-                console.log(data)
                 self.loginButton("Sign in")
                 self.loginToken()
             })
-        } else {
-            //forget password comes here
         }
-
     }
 
     /**
-     * [getMeters description]
+     * [logout description]
      * @return {[type]} [description]
      */
-    self.getMeters = function(){
-        $.post(base_url + '/api/uhoo/meters', {token: self.token()}).done(function(data){
-            self.deviceMeter(data)
-            console.log(self.deviceMeter())
+    self.logout = function(){
+        $.post(base_url + '/api/logout', {token:self.token()}).done(function(data){
+            $("#container").addClass("d-none")
+            $("#loginCont").removeClass("d-none")
+            $('#email').val("")
+            $('#password').val("")
+            localStorage.removeItem('myCat')
         })
     }
 
     /**
-     * [getDevices description]
+     * [toggleVisibilityProfile description]
      * @return {[type]} [description]
      */
-    self.getDevices = function(){
-        $.post(base_url + '/api/uhoo/user/device', {token: self.token()}).done(function(data){
-            self.userDevice(data)
-            console.log(self.userDevice())
+    self.toggleVisibilityProfile = function() {
+        $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
+            self.currentTab("Profile")
+            self.currentTabHead(self.profiles())
+            self.currentTabDataProfile(data)
         })
-    }
+        self.showRow(!self.showRow());
+        self.showDev(false);
+        self.showRec(false);
+    };
 
     /**
      * [getOrganizations description]
@@ -220,66 +366,114 @@ function Model ()
       }
     }
     /*END STEFAN CODE*/
+
     /**
      * [profile description]
      * @return {[type]} [description]
      */
-    self.profile = function(){
-        $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
-            self.user(data)
-            console.log(self.user())
+    self.toggleVisibilityDevices = function() {
+        $.post(base_url + '/api/uhoo/user/device', {token: self.token()}).done(function(data){
+            self.currentTab("Devices")
+            self.currentTabHead(self.dev())
+
+            data.forEach(function(element) {
+               self.currentTabData(data)
+            });
+
+            $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data) {
+
+                self.lastCurrentTab("Devices/Record")
+                self.lastRecordHead(self.recordHead())
+                for (var x in self.currentTabData()) {
+                    for (var i in data) {
+                        if (data[i].device_id == self.currentTabData()[x].id) {
+                            $.post(base_url + '/api/uhoo/record', {token: self.token(),id:self.currentTabData()[x].id}).done(function(data) {
+                                self.lastRecord.push(data)
+                            })
+                            break;
+                        }
+                        else if(self.currentTabData().length == i ){
+                            // console.log(self.currentTabData()[x].id)
+                            // console.log('nothing found')
+                        }
+                    }
+                }
+            })
         })
-    }
+        self.showDev(!self.showDev());
+        self.showRow(false);
+        self.showRec(false);
+    };
 
     /**
-     * [choosePage description]
+     * [getLastRecord description]
      * @param  {[type]} data [description]
      * @return {[type]}      [description]
      */
-    self.choosePage = function(data)
-    {
-        data = data.toLowerCase()
-        self.currentPage(data)
-        console.log(self.currentPage())
+    self.getLastRecord = function(data){
+        self.currentLastRecord(self.lastRecord()[data])
 
-        if (data == "login") {
-            self.loginButton('Sign in')
-            self.currentPageData(self.loginInfo())
-            self.pages([{name: 'Register'}, {name: 'Forgot password'}])
-
-        }else if (data == "register"){
-            self.loginButton('Sign up')
-            self.currentPageData(self.registerInfo())
-            self.pages([{name: 'Login'}, {name: 'Forgot password'}])
-
-        }else{
-            self.loginButton('Send email')
-            self.currentPageData(self.forgetInfo())
-            self.pages([{name: 'Register'}, {name: 'Login'}])
-
-        }
-        console.log(self.currentPageData())
     }
-    self.choosePage('login')
 
     /**
-     * [logout description]
+     * [toggleVisibilityRecords description]
      * @return {[type]} [description]
      */
-    self.logout = function(){
-        $.post(base_url + '/api/logout', {token:self.token()}).done(function(data)
-        {
-            $("#container").addClass("d-none")
-            $("#loginCont").removeClass("d-none")
-            $('#email').val("")
-            $('#password').val("")
-            self.meters("")
-            self.devices("")
+    self.toggleVisibilityRecords = function() {
+        $.post(base_url + '/api/uhoo/records', {token: self.token()}).done(function(data){
+            self.currentTab("Records")
+            self.currentTabHead(self.record())
 
-            console.log(data)
+            data.forEach(function(element) {
+               self.currentTabDataRecords(data)
+               // console.log(element);
+            });
         })
+        self.showRec(!self.showRec());
+        self.showRow(false);
+        self.showDev(false);
+    };
+
+    /**
+     * [description]
+     * @param  {[type]} ){                     $('#myModal').modal({show:true})    } [description]
+     * @return {[type]}     [description]
+     */
+    $('#openBtn').click(function(){
+        $('#myModal').modal({show:true})
+    });
+
+    /**
+    *
+    *
+    */
+    self.enterPage = function() {
+
+        if (localStorage.getItem('token'))
+        {
+            self.token(localStorage.getItem('token'))
+            $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
+                self.user(data['name'])
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
+                self.getOrganizations()
+            }).fail()
+        }
+        self.choosePage('login')
     }
+    self.enterPage()
+
+    /**
+     * [saveToPhp description]
+     * @return {[type]} [description]
+     */
+    self.saveToPhp = function() {
+        var formData = $('#pass_form').serialize();
+        $.post(base_url + '/api/uhoo/password/reset',{token: self.token(),formData}).done(function(data){
+            console.log('Check PHP')
+        });
+    };
 }
 
-
-ko.applyBindings(new Model())
+var vm = new ViewModel();
+ko.applyBindings(vm);

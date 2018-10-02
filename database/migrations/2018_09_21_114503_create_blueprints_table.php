@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDevicesTable extends Migration
+class CreateBlueprintsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateDevicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('devices', function (Blueprint $table) {
+        Schema::create('blueprints', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->nullable();
-            $table->string('mac_address')->nullable();
-            $table->string('serial_number')->nullable();
-            $table->integer('organization_id')->unsigned()->nullable();
+            $table->string('name');
+            $table->integer('organization_id');
+            $table->string('path');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateDevicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('devices');
+        Schema::dropIfExists('blueprints');
     }
 }

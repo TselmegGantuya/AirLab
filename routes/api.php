@@ -24,21 +24,30 @@ Route::group([
     'middleware' => 'api'
 
 ], function ($router) {
+	// Route for reset password and email
+	Route::post('uhoo/password/reset', 'ApiController@changePassword');
 
-  Route::post('refresh', 'AuthController@refresh');
+
+	// Routes for basic Log in
+    Route::post('refresh', 'AuthController@refresh');
 	Route::post('me', 'AuthController@me');
-  Route::post('logout', 'AuthController@logout');
+    Route::post('logout', 'AuthController@logout');
+    
+    // Routes for Blueprint
+    Route::post('blueprint/upload', 'BlueprintController@uploadBP');
+
 
     // Routes for Uhoo API
 	Route::post('uhoo/');
 	Route::post('uhoo/data/devices', 'ApiController@getUhooDevices');
-	Route::post('uhoo/data/meters', 'ApiController@getUhooData');
+	Route::post('uhoo/data/records', 'ApiController@getUhooData');
 
-	// Routes for Uhoo meters and devices view
+	// Routes for Uhoo records and devices view
 	Route::post('uhoo/devices', 'ApiController@deviceView');
-	Route::post('uhoo/meters', 'ApiController@meterView');
-	Route::post('uhoo/last-meter', 'ApiController@lastMeter');
+	Route::post('uhoo/records', 'ApiController@recordView');
+	Route::post('uhoo/record', 'ApiController@recordDetail');
 	Route::post('uhoo/user/device', 'ApiController@userDevice');
+
 	Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
   // Getting all organizations
 
