@@ -245,15 +245,16 @@
                 </div>
             </div>
         </div>
+        <script type="text/html" id="blueprintPage">
         <form enctype="multipart/form-data" id = "uploadForm">
             <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
         </form>
         <canvas id="background" width="1000" height="1000" ></canvas>
-
+</script>
     </div>
 </div>
-<div data-bind="template: { name: 'loginPageVis', data: buyer }"></div>
-<script type="text/html" id="loginPageVis">
+<div data-bind="template: { name: currentTemplate, data: buyer }"></div>
+<script type="text/html" id="loginPage">
     <div class="text-center" id ="loginCont">
         <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
         <div class="col-md-4 offset-md-4">

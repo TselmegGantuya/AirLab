@@ -22,7 +22,7 @@ var loginModel = function (){
   self.pages = ko.observableArray()
   self.currentPage = ko.observable()
   self.currentPageData = ko.observableArray()
-  self.loginPageVis = ko.observable(true)
+  self.currentTemplate = ko.observable('loginPage')
      /**
      * [loginToken description]
      * @return {[type]} [description]
@@ -102,11 +102,11 @@ var loginModel = function (){
       	self.loginPageVis = ko.observable(false)
       	if(self.userRole() == 'user')
       	{
-      		//ko.applyBindings(model)
+      		//ko.applyBindings(userModel)
       	}
       	else
       	{
-      		//ko.applyBindings(admin())
+      		//ko.applyBindings(adminModel())
       	}
       }
     }
