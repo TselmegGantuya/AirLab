@@ -20,7 +20,7 @@
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
-<body>
+<body id= 'main'>
     <div id="app">
 <!--         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
@@ -64,7 +64,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ url('js/knockout.js') }}" ></script> 
+    <script src="{{ url('js/require.js') }}" ></script>
     <script src="{{ url('js/main.js') }}" ></script>
     <script src="{{ url('js/login.js') }}" ></script>
+    <script src="{{ url('js/dashboard.js') }}" ></script>
 </body>
 </html>

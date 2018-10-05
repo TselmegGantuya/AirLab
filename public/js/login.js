@@ -9,6 +9,7 @@ $.ajaxSetup({
 */
 var loginModel = function (){
   var self = this
+  self.userRole = ko.observable()
 	self.loginButton = ko.observable()
   self.loginInfo = ko.observableArray([
     {name:"email"},
@@ -20,6 +21,7 @@ var loginModel = function (){
   self.loginButton = ko.observable()
   self.token = ko.observable()
   self.pages = ko.observableArray()
+  self.nav = ko.observable(false)
   self.currentPage = ko.observable()
   self.currentPageData = ko.observableArray()
   self.currentTemplate = ko.observable('loginPage')
@@ -28,47 +30,41 @@ var loginModel = function (){
      * @return {[type]} [description]
      */
   self.loginToken = function() {
+  	
     $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
     {
       self.token(data['access_token'])
       localStorage.setItem('token',self.token())
       $.ajaxSetup({
 			  headers: {
-			    'token': self.token()
+			    'Authorization': 'Bearer '+ self.token()
 			  }
 			})
-      if(self.setRole())
-      {
-      	self.loginPageVis = ko.observable(false)
-      	if(self.userRole() == 'user')
-      	{
-      		//ko.applyBindings(model)
-      	}
-      	else
-      	{
-      		//ko.applyBindings(admin())
-      	}
-      }
-    })
-  }
-
-
-  self.setRole = function()
-  {
-  	$.post(base_url + '/api/me').done(function(data)
+		$.post(base_url + '/api/me').done(function(data)
     {
+    	
       if ( data['role'] == 1 )
       {
-        self.userRole('user')    
+        self.userRole('user')   
+        console.log('set to user')
+        ko.cleanNode($("#main")[0])
+        var newModel = new dashModel()
+        ko.applyBindings(newModel)
       }
       else if ( data['role'] == 2 ) {
   	    self.userRole('admin')
+  	    console.log('set to admin')
       }
+      
     }).fail(function(xhr, status, error){
-    	 alert("Login expired");
-    	 return false;
+    	 console.log("Login expired")
+    })
+    	
     })
   }
+
+
+
 
   self.choosePage = function(data)
   {
@@ -88,32 +84,38 @@ var loginModel = function (){
   }
 
 
-  self.enterPage = function() {      
+  self.enterPage = function() {   
+  self.choosePage('login')   
     if (localStorage.getItem('token'))
     {
       self.token(localStorage.getItem('token'))
       $.ajaxSetup({
 			  headers: {
-			    'token': self.token()
+			    'Authorization': 'Bearer '+ self.token()
 			  }
 			})
-      if(self.setRole())
+    $.post(base_url + '/api/me').done(function(data)
+    {
+    	
+      if ( data['role'] == 1 )
       {
-      	self.loginPageVis = ko.observable(false)
-      	if(self.userRole() == 'user')
-      	{
-      		//ko.applyBindings(userModel)
-      	}
-      	else
-      	{
-      		//ko.applyBindings(adminModel())
-      	}
+        self.userRole('user')   
+        console.log('set to user')
+        ko.cleanNode($("#main")[0])
+        var newModel = new dashModel()
+        ko.applyBindings(newModel)
       }
-    }
-    self.choosePage('login')
+      else if ( data['role'] == 2 ) {
+  	    self.userRole('admin')
+  	    console.log('set to admin')
+      }
+      
+    }).fail(function(xhr, status, error){
+    	 console.log("Login expired")
+    })
+	} 
   }
   self.enterPage()
 }
-
 var model = new loginModel()
 ko.applyBindings(model)
