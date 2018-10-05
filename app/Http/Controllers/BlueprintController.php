@@ -16,7 +16,7 @@ class BlueprintController extends Controller
     public function uploadBP(Request $request)
     {
         $user = auth()->user();
-        $path = $request->file('blueprint')->store('local');
+        $path = $request->file('blueprint')->store('public');
         $blueprint = new Blueprint;
         $blueprint->name = 'file';
         $blueprint->organization_id = $user->organization_id;
@@ -24,7 +24,7 @@ class BlueprintController extends Controller
         $blueprint->save();
         return 'success';
     }
-    public function getbp()
+    public function getBP()
     {
         $user = auth()->user();
         $bps = Blueprint::where('organization_id', $user->organization_id)->get();

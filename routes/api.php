@@ -35,6 +35,7 @@ Route::group([
     
     // Routes for Blueprint
     Route::post('blueprint/upload', 'BlueprintController@uploadBP');
+    Route::post('blueprint/get', 'BlueprintController@getBP');
 
 
     // Routes for Uhoo API

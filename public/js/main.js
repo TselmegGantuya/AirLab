@@ -79,8 +79,6 @@ var ViewModel = function (){
   self.showNewDevices = ko.observable(false)
   self.orgId = ko.observable()
 
-
-
     /**
      * [logout description]
      * @return {[type]} [description]
@@ -103,6 +101,7 @@ var ViewModel = function (){
      * [getOrganizations description]
      * @return {[type]} [description]
      */
+    
      /*START STEFAN CODE*/
 
     self.getOrganizations = function(){
@@ -225,7 +224,6 @@ var ViewModel = function (){
       }
     }
     /*END STEFAN CODE*/
-
     /**
      * [profile description]
      * @return {[type]} [description]
