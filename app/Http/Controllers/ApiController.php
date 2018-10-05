@@ -28,7 +28,7 @@ class ApiController extends Controller
             $user->fill([
                 'password' => Hash::make($request->get('new_password'))
             ])->save();
- 
+            
             // $request->session()->flash('success', 'Your password has been changed.');
         }
 
@@ -55,6 +55,28 @@ class ApiController extends Controller
         return redirect('/');
     }
 
+    public function adminAddBlueprint()
+    {
+        $records = Record::all();
+        $devices = Device::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+        $recordray = array();
+        $users = User::all();
+
+        if ($userInfo->role_id == $role->admin) {
+            $blueprint = new Blueprint;
+            $blueprint->name;
+            $blueprint->organization_id = $userInfo->organization_id;
+            $blueprint->path;
+            $blueprint->save();
+        }
+    }
+
+
+
     /**
      * Display record details
      * 
@@ -63,13 +85,10 @@ class ApiController extends Controller
      */
     public function recordDetail()
     {
-
         $id = request('id');
-
         $device = Device::findOrFail($id);
         //->orderBy('id', 'desc')->first()
         $record = Record::where('device_id', '=', $device->id)->first();
-
         // return response()->json($record);
         return $record;
     }
@@ -83,9 +102,7 @@ class ApiController extends Controller
     // START STEFAN CODE
     public function getOrganizations()
     {
-
       $organizations = Organization::all();
-
       return $organizations;
     }
     /**
@@ -96,7 +113,6 @@ class ApiController extends Controller
      */
     public function getDevicesOrganization(Request $request)
     {
-
       if ($request->id) {
         $orgDevices = Device::where('organization_id', $request->id)->get();
       }

@@ -209,11 +209,11 @@ var ViewModel = function (){
                 $.post(base_url + '/api/me', {token:self.token()}).done(function(data)
                 {
                     self.user(data['name'])
-                    if ( data['role'] == 1 ) {
+                    if ( data['role_id'] == 2 ) {
                       self.userRole('user')
                       $('.admin').addClass("d-none")     
                     }
-                    else if ( data['role'] == 2 ) {
+                    else if ( data['role_id'] == 1 ) {
                       self.userRole('admin')
                       $('#uploadForm').addClass("d-none")
                     }
@@ -268,6 +268,7 @@ var ViewModel = function (){
      * [getOrganizations description]
      * @return {[type]} [description]
      */
+    
      /*START STEFAN CODE*/
 
     self.getOrganizations = function(){
@@ -390,6 +391,7 @@ var ViewModel = function (){
       }
     }
     /*END STEFAN CODE*/
+    
     /**
      * [profile description]
      * @return {[type]} [description]
