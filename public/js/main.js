@@ -14,10 +14,7 @@ var ViewModel = function (){
   var self = this
   self.files = ko.observableArray()
   self.none = ko.observable('none')
-  self.profiles = ko.observableArray([
-    {name:"Name"},
-    {name:"Email"}
-  ])
+
   self.dev = ko.observableArray([
     {name:"Device Name"},
     {name:"Mac Address"},
@@ -48,24 +45,21 @@ var ViewModel = function (){
   ])
 
   self.currentPage = ko.observable()
-  self.currentTab = ko.observable()
+
   self.lastCurrentTab = ko.observable()
   self.showRow = ko.observable(false);
   self.showDev = ko.observable(false);
   self.showRec = ko.observable(false);
-  self.current_password = ko.observable()
-  self.new_password = ko.observable()
-  self.confirm_password = ko.observable()
 
-  self.currentTabHead = ko.observableArray()
-  self.currentTabData = ko.observableArray()
+
+
   self.currentPageData = ko.observableArray()
   self.currentTabDataProfile = ko.observableArray()
   self.currentTabDataDevices = ko.observableArray()
   self.currentTabDataRecords = ko.observableArray()
   self.prof =  ko.observableArray()
   self.pages = ko.observableArray()
-  self.user = ko.observableArray()
+
   self.userRole = ko.observable();
   self.userDevice = ko.observableArray()
   self.deviceMeter = ko.observableArray()
@@ -78,10 +72,6 @@ var ViewModel = function (){
   self.showDev = ko.observable(false);
   self.showRec = ko.observable(false);
 
-  self.current_password = ko.observable()
-  self.new_password = ko.observable()
-  self.confirm_password = ko.observable()
-
   self.organization = ko.observableArray()
   self.devicesOrganization = ko.observableArray()
   self.newDevices = ko.observableArray()
@@ -90,110 +80,6 @@ var ViewModel = function (){
   self.orgId = ko.observable()
 
 
-  /**
-  *
-  *  Canvas coordinates
-  */
-  var canvas = document.getElementById('background')
-  var context = canvas.getContext('2d')
-  /**
-  *
-  *   Devices placement
-  */
-  $('#background').click(function(event)
-  {
-    let xy = getMousePos(canvas,event)
-    console.log(getMousePos(canvas,event))
-    //post coordination
-    context.fillStyle = "#FF0000";
-    context.fillRect(xy['x'],xy['y'],10,10)
-  })
-  function getMousePos(canvas, event) {
-    var rect = canvas.getBoundingClientRect()
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    }
-  }
-  /**
-  *
-  *   Upload image
-  */
-  self.fileSelect= function (element,event) {
-    var files =  event.target.files;// FileList object
-    // Loop through the FileList and render image files as thumbnails.
-    for (var i = 0, f; f = files[i]; i++) {
-
-      // Only process image files.
-      if (!f.type.match('image.*')) {
-        continue;
-      }
-      var reader = new FileReader();
-
-      // Closure to capture the file information.
-      reader.onload = (function() {
-        return function(event){
-          var img = new Image();
-          img.addEventListener("load", function() {
-            context.drawImage(img,
-              canvas.width / 2 - img.width / 2,
-              canvas.height / 2 - img.height / 2
-              );
-          });
-          img.src = event.target.result;
-        }
-      })(f);
-      var formData = new FormData();
-
-      // HTML file input, chosen by user
-      formData.append("blueprint", f);
-      formData.append("token", self.token());
-
-      var request = new XMLHttpRequest();
-      request.open("POST", base_url + '/api/blueprint/upload');
-      request.send(formData);
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(f);
-
-    }
-  }
-
-    /**
-     * [loginToken description]
-     * @return {[type]} [description]
-     */
-    self.loginToken = function() {
-        if (self.loginButton() == "Sign in") {
-            $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
-            {
-                self.token(data['access_token'])
-                localStorage.setItem('token',self.token())
-                $.post(base_url + '/api/me', {token:self.token()}).done(function(data)
-                {
-                    self.user(data['name'])
-                    if ( data['role'] == 1 ) {
-                      self.userRole('user')
-                      $('.admin').addClass("d-none")
-                    }
-                    else if ( data['role'] == 2 ) {
-                      self.userRole('admin')
-                      $('#uploadForm').addClass("d-none")
-                    }
-                })
-
-                $("#container").removeClass("d-none")
-                $("#loginCont").addClass("d-none")
-
-                self.getOrganizations()
-            })
-        } else if (self.loginButton() == "Sign up") {
-            $.post(base_url + '/api/create',{email:$('#email').val(), password:$('#password').val(), name:$('#name').val()}).done(function(data)
-            {
-                self.loginButton("Sign in")
-                self.loginToken()
-            })
-        }
-    }
 
     /**
      * [logout description]
@@ -211,20 +97,7 @@ var ViewModel = function (){
         })
     }
 
-    /**
-     * [toggleVisibilityProfile description]
-     * @return {[type]} [description]
-     */
-    self.toggleVisibilityProfile = function() {
-        $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
-            self.currentTab("Profile")
-            self.currentTabHead(self.profiles())
-            self.currentTabDataProfile(data)
-        })
-        self.showRow(!self.showRow());
-        self.showDev(false);
-        self.showRec(false);
-    };
+
 
     /**
      * [getOrganizations description]
@@ -405,49 +278,11 @@ var ViewModel = function (){
      * @param  {[type]} ){                     $('#myModal').modal({show:true})    } [description]
      * @return {[type]}     [description]
      */
-    $('#openBtn').click(function(){
-        $('#myModal').modal({show:true})
-    });
 
-    /**
-    *
-    *
-    */
-    self.enterPage = function() {
-
-        if (localStorage.getItem('token'))
-        {
-            self.token(localStorage.getItem('token'))
-            $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
-                self.user(data['name'])
-                if ( data['role'] == 1 ) {
-                  self.userRole('user')
-                  $('.admin').addClass("d-none")
-                }
-                else if ( data['role'] == 2 ) {
-                  self.userRole('admin')
-                  $('#uploadForm').addClass("d-none")
-                }
-                $("#container").removeClass("d-none")
-                $("#loginCont").addClass("d-none")
-                self.getOrganizations()
-            }).fail()
-        }
-        self.choosePage('login')
-    }
-    self.enterPage()
 
     /**
      * [saveToPhp description]
      * @return {[type]} [description]
      */
-    self.saveToPhp = function() {
-        var formData = $('#pass_form').serialize();
-        $.post(base_url + '/api/uhoo/password/reset',{token: self.token(),formData}).done(function(data){
-            console.log('Check PHP')
-        });
-    };
-}
 
-var vm = new ViewModel();
-ko.applyBindings(vm);
+}
