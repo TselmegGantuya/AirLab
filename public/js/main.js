@@ -2,32 +2,18 @@ $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
   }
-});
+})
+var localStorage = window.localStorage
+var base_url = window.location.origin
 /**
 *
 *   Knockoutjs
 */
 var ViewModel = function (){
-  var localStorage = window.localStorage;
-  var base_url = window.location.origin;
+
   var self = this
   self.files = ko.observableArray()
   self.none = ko.observable('none')
-
-  self.loginButton = ko.observable()
-  self.loginInfo = ko.observableArray([
-    {name:"email"},
-    {name:"password"}
-  ])
-  self.registerInfo = ko.observableArray([
-    {name:"email"},
-    {name:"name"},
-    {name:"password"}
-  ])
-  self.forgetInfo = ko.observableArray([
-    {name:"email"}
-  ])
-
   self.profiles = ko.observableArray([
     {name:"Name"},
     {name:"Email"}
@@ -60,7 +46,7 @@ var ViewModel = function (){
     {name:"Ozone"},
     {name:"NO2"},
   ])
-  self.token = ko.observable()
+
   self.currentPage = ko.observable()
   self.currentTab = ko.observable()
   self.lastCurrentTab = ko.observable()
@@ -149,7 +135,7 @@ var ViewModel = function (){
         return function(event){
           var img = new Image();
           img.addEventListener("load", function() {
-            context.drawImage(img, 
+            context.drawImage(img,
               canvas.width / 2 - img.width / 2,
               canvas.height / 2 - img.height / 2
               );
@@ -169,33 +155,6 @@ var ViewModel = function (){
       // Read in the image file as a data URL.
       reader.readAsDataURL(f);
 
-    }
-  };
-
-  /**
-  * [choosePage description]
-  * @param  {[type]} data [description]
-  * @return {[type]}      [description]
-  */
-  self.choosePage = function(data)
-  {
-    data = data.toLowerCase()
-    self.currentPage(data)
-
-    if (data == "login") {
-      self.loginButton('Sign in')
-      self.currentPageData(self.loginInfo())
-      self.pages([{name: 'Register'}, {name: 'Forgot password'}])
-    }
-    else if (data == "register"){
-      self.loginButton('Sign up')
-      self.currentPageData(self.registerInfo())
-      self.pages([{name: 'Login'}, {name: 'Forgot password'}])
-    }
-    else{
-        self.loginButton('Send email')
-        self.currentPageData(self.forgetInfo())
-        self.pages([{name: 'Register'}, {name: 'Login'}])
     }
   }
 
