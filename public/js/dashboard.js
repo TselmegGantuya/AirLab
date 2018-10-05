@@ -7,6 +7,7 @@ var dashModel = function (){
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
   self.token = ko.observable()
+
   if (localStorage.getItem('token'))
   {
     self.token(localStorage.getItem('token'))
@@ -31,6 +32,7 @@ var dashModel = function (){
       y: event.clientY - rect.top
     }
   }
+
   /**
   *
   *   Upload image
@@ -45,7 +47,7 @@ var dashModel = function (){
       // Only process image files.
       if (!f.type.match('image.*')) {
         continue;
-      }          
+      }
       var reader = new FileReader();
 
       // Closure to capture the file information.
@@ -74,4 +76,23 @@ var dashModel = function (){
       reader.readAsDataURL(f);    
     }
   }
+
+  self.enterPage = function () {
+    $.post(base_url + '/api/blueprint/get').done(function(data){
+      var cv = document.getElementById("currentBP");
+      var ctx = cv.getContext("2d");
+      var dataPath = data[0].path;
+      var path = dataPath.replace('public/', '');
+
+      let img = new Image();
+      img.src = base_url + '/storage/' + path
+      img.addEventListener("load", function() {
+          ctx.drawImage(img, 
+          cv.width / 2 - img.width / 2,
+          cv.height / 2 - img.height / 2
+          );
+      });
+    })
+  }
+  self.enterPage()
 }
