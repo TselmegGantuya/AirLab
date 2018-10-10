@@ -1,10 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
+<<<<<<< HEAD
 
 
 
             <script type="text/html" id='profileTemplate'>
+=======
+<div class="container-fluid d-none" id="container">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bind="click: toggleVisibilityProfile">
+                            <button class="btn btn-info col" type="button"> Profile</button>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bind="click: toggleVisibilityDevices">
+                            <button class="btn btn-info col" type="button"> Devices</button>
+                        </a>
+                    </li>
+                    <div class = 'admin'>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bind="click: toggleVisibilityRecords">
+                            <button class="btn btn-info col" type="button"> Records</button>
+                        </a>
+                    </li>
+                    </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bind="click: logout">
+                            <button class="btn btn-danger col" type="button"> Logout</button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" class = 'admin'>
+            <div id="currentTab">
+>>>>>>> 4c973e35d3a0195207d001601d7c7b3e737b7d80
                 <h2 data-bind="text: user"></h2>
                 <div>
                     <p>Profile</p>
