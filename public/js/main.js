@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -14,6 +15,63 @@ var ViewModel = function (){
   var self = this
   self.files = ko.observableArray()
   self.none = ko.observable('none')
+=======
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
+
+function Model ()
+{
+    var base_url = window.location.origin;
+    var self = this
+    self.loginInfo = ko.observableArray([
+        {name:"email"},
+        {name:"password"}
+    ])
+    self.registerInfo = ko.observableArray([
+        {name:"email"},
+        {name:"name"},
+        {name:"password"}
+    ])
+    self.forgetInfo = ko.observableArray([
+        {name:"email"}
+    ])
+    self.token = ko.observable()
+    self.currentPageData = ko.observableArray()
+    self.currentPage = ko.observable()
+    self.pages = ko.observableArray()
+    self.meters = ko.observableArray()
+    self.devices = ko.observableArray()
+
+    /**
+     * [loginToken description]
+     * @return {[type]} [description]
+     */
+    self.loginToken = function() {
+        $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
+        {
+
+            self.token(data['access_token'])
+            console.log(self.token())
+
+            $.post(base_url + '/api/uhoo/last-meter',{token:self.token()}).done(function(data)
+            {
+                self.meters(data)
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
+            })
+                 $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
+            {
+                self.devices(data)
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
+                console.log(self.devices())
+            })
+        })
+    }
+>>>>>>> 349e74f6283bb50fa4f9eab5864302851c271057
 
   self.dev = ko.observableArray([
     {name:"Device Name"},
