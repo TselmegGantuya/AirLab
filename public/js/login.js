@@ -3,6 +3,31 @@ $.ajaxSetup({
     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
   }
 })
+$( document ).ajaxError(function( event, jqXHR, settings, thrownError) {
+  var msg = ''
+  if (jqXHR.status === 0) {
+    msg = 'Not connect.\n Verify Network.'
+  } else if (jqXHR.status == 404) {
+    msg = 'Requested page not found. [404]'
+  } else if (jqXHR.status == 500) {
+    msg = 'Internal Server Error [500].'
+  } else if (jqXHR.status == 401) {
+    msg = 'Login expired.'
+    localStorage.removeItem('token')
+    ko.cleanNode($("#main")[0])
+    var newModel = new loginModel()
+    ko.applyBindings(newModel)
+  } else if (exception === 'parsererror') {
+    msg = 'Requested JSON parse failed.'
+  } else if (exception === 'timeout') {
+    msg = 'Time out error.'
+  } else if (exception === 'abort') {
+    msg = 'Ajax request aborted.'
+  } else {
+    msg = 'Uncaught Error.\n' + jqXHR.responseText
+  }
+  alert(msg)
+})
 /**
 *
 *   Knockoutjs
@@ -29,11 +54,11 @@ var loginModel = function (){
   self.loadModel = function(data) {
     switch(data) {
       case 'pro':
-        break;
+        break
       case 'dev':
-        break;
+        break
       case 'out':
-        break;
+        break
     }
   }
      /**
@@ -73,8 +98,6 @@ var loginModel = function (){
 
     })
   }
-
-
 
 
   self.choosePage = function(data)
@@ -121,8 +144,6 @@ var loginModel = function (){
   	    console.log('set to admin')
       }
 
-    }).fail(function(xhr, status, error){
-    	 console.log("Login expired")
     })
 	}
   }

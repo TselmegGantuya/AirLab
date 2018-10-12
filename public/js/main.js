@@ -233,10 +233,10 @@ var ViewModel = function (){
       {
         return '401';
       }
-        self.showDev(!self.showDev());
-        self.showRow(false);
-        self.showRec(false);
-    };
+        self.showDev(!self.showDev())
+        self.showRow(false)
+        self.showRec(false)
+    }
 
     /**
      * [getLastRecord description]

@@ -7,7 +7,8 @@ var dashModel = function (){
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
   self.token = ko.observable()
-
+  self.blueprintData = ko.observableArray() 
+  self.currentBlueprint = ko.observableArray()
   if (localStorage.getItem('token'))
   {
     self.token(localStorage.getItem('token'))
@@ -18,20 +19,19 @@ var dashModel = function (){
         ko.cleanNode($("#main")[0])
         var newModel = new profileModel()
         ko.applyBindings(newModel)
-        break;
+        break
       case 'dev':
         ko.cleanNode($("#main")[0])
         var newModel = new dashModel()
         ko.applyBindings(newModel)
-        break;
+        break
       case 'out':
         ko.cleanNode($("#main")[0])
         var newModel = new dashModel()
         ko.applyBindings(newModel)
-        break;
+        break
     }
   }
-
   /**
   *
   *   Devices placement
@@ -41,8 +41,9 @@ var dashModel = function (){
     let xy = getMousePos(canvas,event)
     console.log(getMousePos(canvas,event))
     //post coordination
-    context.fillStyle = "#FF0000";
+    context.fillStyle = "#FF0000"
     context.fillRect(xy['x'],xy['y'],8,8)
+
   })
   function getMousePos(canvas, event) {
     var rect = canvas.getBoundingClientRect()
@@ -51,13 +52,29 @@ var dashModel = function (){
       y: event.clientY - rect.top
     }
   }
+  self.currentBlueprint.subscribe(function(){
+    let canvas = document.getElementById("currentBP")
+    let context = canvas.getContext("2d")
+    context.clearRect(0, 0, canvas.width, canvas.height)
+    let path = self.currentBlueprint()['path']
+    console.log(self.currentBlueprint())
+    let img = new Image()
+    img.src = base_url + '/storage/' + path
+    img.addEventListener("load", function() {
+      context.drawImage(img, 
+      canvas.width / 2 - img.width / 2,
+      canvas.height / 2 - img.height / 2
+      )
+    })
 
+  })
+  
   /**
   *
   *   Upload image
   */
   self.fileSelect= function (element,event) {
-    var files =  event.target.files;// FileList object
+    var files =  event.target.files// FileList object
     // Loop through the FileList and render image files as thumbnails.
     var canvas = document.getElementById('background')
   	var context = canvas.getContext('2d')
@@ -65,52 +82,43 @@ var dashModel = function (){
 
       // Only process image files.
       if (!f.type.match('image.*')) {
-        continue;
+        continue
       }
-      var reader = new FileReader();
+      var reader = new FileReader()
 
       // Closure to capture the file information.
       reader.onload = (function() {
         return function(event){
-          var img = new Image();
+          var img = new Image()
           img.addEventListener("load", function() {
             context.drawImage(img,
               canvas.width / 2 - img.width / 2,
               canvas.height / 2 - img.height / 2
-              );
-          });
-          img.src = event.target.result;
+              )
+          })
+          img.src = event.target.result
         }
-      })(f);
-      var formData = new FormData();
+      })(f)
+      var formData = new FormData()
 
       // HTML file input, chosen by user
-      formData.append("blueprint", f);
-      formData.append("token", self.token());
+      formData.append("blueprint", f)
+      formData.append("token", self.token())
 
-      var request = new XMLHttpRequest();
-      request.open("POST", base_url + '/api/blueprint/upload');
-      request.send(formData);
+      var request = new XMLHttpRequest()
+      request.open("POST", base_url + '/api/blueprint/upload')
+      request.send(formData)
       // Read in the image file as a data URL.
-      reader.readAsDataURL(f);
+      reader.readAsDataURL(f)
     }
   }
-
   self.enterPage = function () {
     $.post(base_url + '/api/blueprint/get').done(function(data){
-      var cv = document.getElementById("currentBP");
-      var ctx = cv.getContext("2d");
-      var dataPath = data[0].path;
-      var path = dataPath.replace('public/', '');
-
-      let img = new Image();
-      img.src = base_url + '/storage/' + path
-      img.addEventListener("load", function() {
-          ctx.drawImage(img, 
-          cv.width / 2 - img.width / 2,
-          cv.height / 2 - img.height / 2
-          );
-      });
+      for (var i = 0, d; d = data[i]; i++) {
+        self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+      }
+      console.log(self.blueprintData())
+      self.currentBlueprint(self.blueprintData()[0])
     })
   }
   self.enterPage()

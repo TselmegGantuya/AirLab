@@ -188,6 +188,10 @@
 </script>
 
 <script type="text/html" id="blueprintPage">
+    <select data-bind= "options: blueprintData,
+                        optionsText: 'name',
+                        value: currentBlueprint">
+    </select> 
     <canvas id="currentBP" width="800" height="500"></canvas>
 
     <form enctype="multipart/form-data" id = "uploadForm">
