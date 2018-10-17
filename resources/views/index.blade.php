@@ -38,6 +38,16 @@
                 
                 <div data-bind="visible: showRow">
                     <p data-bind="text: currentTab"></p>
+                    <!-- ALL devices [LARS] -->
+                    <div data-bind="foreach: allColorDevices" class="card-columns">
+                        <div class="card text-white  mb-3" data-bind="css: $data.color " style="max-width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title d-inline" data-bind="text: $data.name"></h5>
+                                <!-- <a data-toggle="modal" data-target="#editNameModal" data-id="bla"><i class="fas fa-edit d-inline float-right"></i></a>-->
+                                <p class="card-text" data-bind="text: $data.message"></p>
+                            </div>
+                        </div>
+                    </div> 
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr data-bind="foreach: currentTabHead">
@@ -55,12 +65,12 @@
                         <a href="#"  id="openBtn">
                             <button type="button" class="btn btn-outline-dark">Change Password</button>
                         </a>
-<!--                         <a href="">
+                        <!--                         
+                            <a href="">
                             <button type="button" class="btn btn-outline-dark">Change Email</button>                            
                         </a> -->
                     </div>
                 </div>
-
                 <div data-bind="visible: showDev">
                     <p data-bind="text: currentTab"></p>
                     <!--Admin device to organization-->

@@ -103,7 +103,8 @@ var ViewModel = function (){
   self.showNewDevices = ko.observable(false)
   self.orgId = ko.observable()
 
-
+  self.user = ko.observable()
+  self.allColorDevices = ko.observableArray();
   /**
   *
   *  Canvas coordinates
@@ -280,7 +281,7 @@ var ViewModel = function (){
       }
         $.post(base_url + '/api/uhoo/organizations', {token: self.token()}).done(function(data){
             self.organization(data)
-            console.log(self.organization())
+            console.log(self.organization());
         })
     }
     /**
@@ -393,6 +394,22 @@ var ViewModel = function (){
       }
     }
     /*END STEFAN CODE*/
+
+    /* START CODE LARS */
+    self.colorDevices = function(){
+      $.post(base_url + '/api/me', {token: self.token()})
+        .done(function(data){
+          self.user(data)
+          //get devices with organization
+          $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
+                .done(function(data){
+                self.allColorDevices(data)
+            })
+        })
+    }
+  
+
+    /* END CODE LARS */
     /**
      * [profile description]
      * @return {[type]} [description]
@@ -466,7 +483,8 @@ var ViewModel = function (){
                 }
                 $("#container").removeClass("d-none")
                 $("#loginCont").addClass("d-none")    
-                self.getOrganizations()        
+                self.getOrganizations() 
+                self.colorDevices()     
             }).fail()
         }
         self.choosePage('login')

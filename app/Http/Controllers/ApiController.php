@@ -217,9 +217,59 @@ class ApiController extends Controller
         }
         return $recordray;
     }
-
+    //code Lars
     /**
-     * Method to get all devices that belongs to logged in user
+     * function to get all devices with values
+     * Colors:
+        green = bg-success
+        orange = bg-warning
+        red = bg-danger
+        undefiend = secondary
+     * @return [type] [description]
+     */
+    public function getDevicesWithData(Request $request)
+    {
+      if ($request->id) {
+            $device = array();
+            $orgDevices = Device::where('organization_id', $request->id)->get();
+            $orgDeviceData = array();
+            foreach ($orgDevices as $device) {
+            
+                $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
+                if(isset($deviceData)){
+                    $color = "bg-success";
+                    $message = "All values are great!";
+                    //Check warning for temperature
+                    if($deviceData['temperature'] <= 20 || $deviceData['temperature'] >= 27){
+                        $color = "bg-warning";
+                        $message = "The temperature is under the 20 degrees or above the 27 degrees";
+                    }
+                    //Check danger for temprature
+                    if($deviceData['temperature'] <= 10 || $deviceData['temperature'] >= 40){
+                        $color = "bg-danger";
+                        $message = "The temperature is under de 10 degrees or above the 40 degrees";
+                    }
+                    //Check warning for relative humidity
+                    if($deviceData['relative_humidity'] <= 30 || $deviceData['relative_humidity'] >= 50){
+                        $color = "bg-warning";
+                        $message = "The  humidity is under the 30% or above 50%";
+                    }
+                }else{
+                    $color = "bg-secondary";
+                    $message = "There is no data for this device";
+                }
+                //set color by device
+                $orgDeviceData[] = array(
+                    'name' => $device['name'],
+                    'color' => $color,
+                    'message' => $message,
+                );
+            }
+      }
+      return $orgDeviceData;
+    }
+    /**
+     * Method to get all devices tha belongs to logged in user
      * [userDevice description]
      * @return [type] [description]
      */
