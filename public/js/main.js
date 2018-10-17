@@ -1,37 +1,78 @@
+<<<<<<< HEAD
 $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
   }
-});
+})
+var localStorage = window.localStorage
+var base_url = window.location.origin
 /**
 *
 *   Knockoutjs
 */
 var ViewModel = function (){
-  var localStorage = window.localStorage;
-  var base_url = window.location.origin;
+
   var self = this
   self.files = ko.observableArray()
   self.none = ko.observable('none')
+=======
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
 
-  self.loginButton = ko.observable()
-  self.loginInfo = ko.observableArray([
-    {name:"email"},
-    {name:"password"}
-  ])
-  self.registerInfo = ko.observableArray([
-    {name:"email"},
-    {name:"name"},
-    {name:"password"}
-  ])
-  self.forgetInfo = ko.observableArray([
-    {name:"email"}
-  ])
+function Model ()
+{
+    var base_url = window.location.origin;
+    var self = this
+    self.loginInfo = ko.observableArray([
+        {name:"email"},
+        {name:"password"}
+    ])
+    self.registerInfo = ko.observableArray([
+        {name:"email"},
+        {name:"name"},
+        {name:"password"}
+    ])
+    self.forgetInfo = ko.observableArray([
+        {name:"email"}
+    ])
+    self.token = ko.observable()
+    self.currentPageData = ko.observableArray()
+    self.currentPage = ko.observable()
+    self.pages = ko.observableArray()
+    self.meters = ko.observableArray()
+    self.devices = ko.observableArray()
 
-  self.profiles = ko.observableArray([
-    {name:"Name"},
-    {name:"Email"}
-  ])
+    /**
+     * [loginToken description]
+     * @return {[type]} [description]
+     */
+    self.loginToken = function() {
+        $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
+        {
+
+            self.token(data['access_token'])
+            console.log(self.token())
+
+            $.post(base_url + '/api/uhoo/last-meter',{token:self.token()}).done(function(data)
+            {
+                self.meters(data)
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
+            })
+                 $.post(base_url + '/api/uhoo/devices', {token:self.token()}).done(function(data)
+            {
+                self.devices(data)
+                $("#container").removeClass("d-none")
+                $("#loginCont").addClass("d-none")
+                console.log(self.devices())
+            })
+        })
+    }
+>>>>>>> 349e74f6283bb50fa4f9eab5864302851c271057
+
   self.dev = ko.observableArray([
     {name:"Device Name"},
     {name:"Mac Address"},
@@ -60,26 +101,23 @@ var ViewModel = function (){
     {name:"Ozone"},
     {name:"NO2"},
   ])
-  self.token = ko.observable()
+
   self.currentPage = ko.observable()
-  self.currentTab = ko.observable()
+
   self.lastCurrentTab = ko.observable()
   self.showRow = ko.observable(false);
   self.showDev = ko.observable(false);
   self.showRec = ko.observable(false);
-  self.current_password = ko.observable()
-  self.new_password = ko.observable()
-  self.confirm_password = ko.observable()
 
-  self.currentTabHead = ko.observableArray()
-  self.currentTabData = ko.observableArray()
+
+
   self.currentPageData = ko.observableArray()
   self.currentTabDataProfile = ko.observableArray()
   self.currentTabDataDevices = ko.observableArray()
   self.currentTabDataRecords = ko.observableArray()
   self.prof =  ko.observableArray()
   self.pages = ko.observableArray()
-  self.user = ko.observableArray()
+
   self.userRole = ko.observable();
   self.userDevice = ko.observableArray()
   self.deviceMeter = ko.observableArray()
@@ -92,10 +130,6 @@ var ViewModel = function (){
   self.showDev = ko.observable(false);
   self.showRec = ko.observable(false);
 
-  self.current_password = ko.observable()
-  self.new_password = ko.observable()
-  self.confirm_password = ko.observable()
-
   self.organization = ko.observableArray()
   self.devicesOrganization = ko.observableArray()
   self.newDevices = ko.observableArray()
@@ -103,6 +137,7 @@ var ViewModel = function (){
   self.showNewDevices = ko.observable(false)
   self.orgId = ko.observable()
 
+<<<<<<< HEAD
   self.user = ko.observable()
   self.allColorDevices = ko.observableArray();
   /**
@@ -236,6 +271,9 @@ var ViewModel = function (){
             })          
         }
     }
+=======
+
+>>>>>>> 3ab3b8e62e79847b5c7433792b753414ae209096
 
     /**
      * [logout description]
@@ -253,20 +291,7 @@ var ViewModel = function (){
         })
     }
 
-    /**
-     * [toggleVisibilityProfile description]
-     * @return {[type]} [description]
-     */
-    self.toggleVisibilityProfile = function() {
-        $.post(base_url + '/api/me', {token:self.token()}).done(function(data){
-            self.currentTab("Profile")
-            self.currentTabHead(self.profiles())
-            self.currentTabDataProfile(data)
-        })
-        self.showRow(!self.showRow());
-        self.showDev(false);
-        self.showRec(false);
-    };
+
 
     /**
      * [getOrganizations description]
@@ -395,6 +420,7 @@ var ViewModel = function (){
     }
     /*END STEFAN CODE*/
 
+<<<<<<< HEAD
     /* START CODE LARS */
     self.colorDevices = function(){
       $.post(base_url + '/api/me', {token: self.token()})
@@ -410,6 +436,8 @@ var ViewModel = function (){
   
 
     /* END CODE LARS */
+=======
+>>>>>>> 3ab3b8e62e79847b5c7433792b753414ae209096
     /**
      * [profile description]
      * @return {[type]} [description]
@@ -429,7 +457,6 @@ var ViewModel = function (){
      * @param  {[type]} data [description]
      * @return {[type]}      [description]
      */
-
     self.getLastRecord = function(data){
         self.currentLastRecord(self.lastRecord()[data])
 
@@ -463,6 +490,7 @@ var ViewModel = function (){
      * @param  {[type]} ){                     $('#myModal').modal({show:true})    } [description]
      * @return {[type]}     [description]
      */
+<<<<<<< HEAD
     $('#openBtn').click(function(){
         $('#myModal').modal({show:true})
     });
@@ -490,19 +518,13 @@ var ViewModel = function (){
         self.choosePage('login')
     }
     self.enterPage()
+=======
+
+>>>>>>> 3ab3b8e62e79847b5c7433792b753414ae209096
 
     /**
      * [saveToPhp description]
      * @return {[type]} [description]
      */
-    self.saveToPhp = function() {
-        var formData = $('#pass_form').serialize();
-        $.post(base_url + '/api/uhoo/password/reset',{token: self.token(),formData}).done(function(data){
-            console.log('Check PHP')
-        });
-    };
+
 }
-
-var vm = new ViewModel();
-ko.applyBindings(vm);
-

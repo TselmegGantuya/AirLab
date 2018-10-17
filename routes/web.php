@@ -11,4 +11,8 @@
 */
 Route::get('/', function () {
   	return view('index');
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 349e74f6283bb50fa4f9eab5864302851c271057

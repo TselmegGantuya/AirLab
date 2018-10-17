@@ -28,7 +28,7 @@ class ApiController extends Controller
             $user->fill([
                 'password' => Hash::make($request->get('new_password'))
             ])->save();
- 
+
             // $request->session()->flash('success', 'Your password has been changed.');
         }
 
@@ -57,7 +57,7 @@ class ApiController extends Controller
 
     /**
      * Display record details
-     * 
+     *
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
@@ -212,8 +212,8 @@ class ApiController extends Controller
                             }
                         }
                     }
-                } 
-            }  
+                }
+            }
         }
         return $recordray;
     }
@@ -287,7 +287,7 @@ class ApiController extends Controller
         // $devices = Device::where($user->organization_id == 'organization_id')->get();
         // $userDevice[] = $devices;
         // return $userDevice;
-        
+
         foreach ($organizations as $organization) {
             if ($userInfo['name'] == $organization->name) {
                 foreach ($devices as $device) {
@@ -402,7 +402,7 @@ class ApiController extends Controller
         $record->co = $response->CO;
         $record->air_pressure = $response->{'Air Pressure'};
         $record->ozone = $response->Ozone;
-        $record->no2 = $response->NO2; 
+        $record->no2 = $response->NO2;
         // $record->save();
 
         // Redirect to records page
