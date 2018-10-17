@@ -14,7 +14,6 @@ var ViewModel = function (){
   var self = this
   self.files = ko.observableArray()
   self.none = ko.observable('none')
-
   self.dev = ko.observableArray([
     {name:"Device Name"},
     {name:"Mac Address"},
@@ -71,8 +70,6 @@ var ViewModel = function (){
   self.showRow = ko.observable(false);
   self.showDev = ko.observable(false);
   self.showRec = ko.observable(false);
-
-    
      /*START STEFAN CODE*/
 
     self.getOrganizations = function(){
@@ -82,7 +79,7 @@ var ViewModel = function (){
       }
         $.post(base_url + '/api/uhoo/organizations', {token: self.token()}).done(function(data){
             self.organization(data)
-            console.log(self.organization())
+            console.log(self.organization());
         })
     }
     /**
@@ -195,6 +192,21 @@ var ViewModel = function (){
       }
     }
     /*END STEFAN CODE*/
+    /* START CODE LARS */
+    self.colorDevices = function(){
+      $.post(base_url + '/api/me', {token: self.token()})
+        .done(function(data){
+          self.user(data)
+          //get devices with organization
+          $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
+                .done(function(data){
+                self.allColorDevices(data)
+            })
+        })
+    }
+  
+
+    /* END CODE LARS */
     /**
      * [profile description]
      * @return {[type]} [description]
@@ -240,18 +252,5 @@ var ViewModel = function (){
         self.showRec(!self.showRec());
         self.showRow(false);
         self.showDev(false);
-    };
-
-    /**
-     * [description]
-     * @param  {[type]} ){                     $('#myModal').modal({show:true})    } [description]
-     * @return {[type]}     [description]
-     */
-
-
-    /**
-     * [saveToPhp description]
-     * @return {[type]} [description]
-     */
-
+    }
 }
