@@ -65,6 +65,9 @@ var loginModel = function (){
       else if ( data['role'] == 2 ) {
   	    self.userRole('admin')
   	    console.log('set to admin')
+        ko.cleanNode($("#main")[0])
+        var newModel = new dashModel()
+        ko.applyBindings(newModel)
       }
 
     }).fail(function(xhr, status, error){

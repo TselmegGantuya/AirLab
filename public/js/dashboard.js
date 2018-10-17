@@ -20,12 +20,12 @@ var dashModel = function (){
         break;
       case 'dev':
         ko.cleanNode($("#main")[0])
-        var newModel = new dashModel()
+        var newModel = new adminDevicesModel()
         ko.applyBindings(newModel)
         break;
       case 'out':
         ko.cleanNode($("#main")[0])
-        var newModel = new dashModel()
+        var newModel = new logoutModel()
         ko.applyBindings(newModel)
         break;
     }

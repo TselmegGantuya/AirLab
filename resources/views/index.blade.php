@@ -72,19 +72,18 @@
             </script>
 
             <script type="text/html" id="deviceTemplate">
-                <div data-bind="visible: showDev">
-                    <p data-bind="text: currentTab"></p>
+                    <p>Devices</p>
                     <!--Admin device to organization-->
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <div class="card" style="margin:50px 0">
                                     <!-- Default panel contents -->
                                     <div class="card-header">Organizations</div>
                                     <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
                                       <div data-bind="foreach: organization">
                                         <li class="list-group-item">
-                                            <span data-bind="text: $data.name">Some org</span>
+                                            <span data-bind="text: $data.name"></span>
                                             <label class="checkbox">
                                                 <input type="radio" name="organization" data-bind="value: id, click: $root.organizationRadiobox" />
                                                 <span class="success"></span>
@@ -97,48 +96,49 @@
                         </div>
                     </div>
 
-                    <div data-bind='visible: showOrgDevices' class="col-md-4">
-                        <div class="card" style="margin:50px 0">
-                            <!-- Default panel contents -->
-                            <div class="card-header">Devices from organization</div>
-                            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
-                              <div data-bind="foreach: devicesOrganization">
-                                <li class="list-group-item">
-                                    <span data-bind="text: $data.name">Some org</span>
-                                    <label class="checkbox">
-                                        <input type="checkbox" data-bind="value: id" name="devicesOrganization" />
-                                        <span class="success"></span>
-                                    </label>
-                                </li>
-                              </div>
-                            </ul>
-                            <div class="card-footer">
-                              <button class="btn btn-danger" data-bind="click: devicesOwner" type="button" name="button">Delete</button>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div data-bind='visible: showNewDevices' class="col-md-4">
+                  <div data-bind='visible: showOrgDevices' class="col-md-12">
                       <div class="card" style="margin:50px 0">
-                            <!-- Default panel contents -->
-                            <div class="card-header">New devices</div>
-                            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
-                              <div data-bind="foreach: newDevices">
-                                <li class="list-group-item">
-                                    <span data-bind="text: $data.name">Some org</span>
-                                    <label class="checkbox">
-                                        <input type="checkbox" data-bind="value: id" name="newDevices" />
-                                        <span class="success"></span>
-                                    </label>
-                                </li>
-                              </div>
-                            </ul>
-                            <div class="card-footer">
-                              <button class="btn btn-primary" data-bind="click: newDevice" type="button" name="button">Save</button>
+                          <!-- Default panel contents -->
+                          <div class="card-header">Devices from organization</div>
+                          <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                            <div data-bind="foreach: devicesOrganization">
+                              <li class="list-group-item">
+                                  <span data-bind="text: $data.name"></span>
+                                  <label class="checkbox">
+                                      <input type="checkbox" data-bind="value: id" name="devicesOrganization" />
+                                      <span class="success"></span>
+                                  </label>
+                              </li>
                             </div>
-                        </div>
+                          </ul>
+                          <div class="card-footer">
+                            <button class="btn btn-danger" data-bind="click: devicesOwner" type="button" name="button">Delete</button>
+                          </div>
+                      </div>
+                  </div>
+
+
+                  <div data-bind='visible: showNewDevices' class="col-md-12">
+                    <div class="card" style="margin:50px 0">
+                          <!-- Default panel contents -->
+                          <div class="card-header">New devices</div>
+                          <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                            <div data-bind="foreach: newDevices">
+                              <li class="list-group-item">
+                                  <span data-bind="text: $data.name"></span>
+                                  <label class="checkbox">
+                                      <input type="checkbox" data-bind="value: id" name="newDevices" />
+                                      <span class="success"></span>
+                                  </label>
+                              </li>
+                            </div>
+                          </ul>
+                          <div class="card-footer">
+                            <button class="btn btn-primary" data-bind="click: newDevice" type="button" name="button">Save</button>
+                          </div>
+                      </div>
                     </div>
-                </div>
             </script>
             <script type="text/html" id ="recordsTemplate">
                 <div data-bind="visible: showRec">
@@ -176,7 +176,7 @@
 <script type="text/html" id="loginPage">
     <div class="text-center" id ="loginCont">
         <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
-        <div class="col-md-4 offset-md-4">
+        <div class="col-md-12 offset-md-4">
 
                 <form class="form-signin" >
                     <div data-bind="foreach: currentPageData">
@@ -185,7 +185,7 @@
                     <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken, text:loginButton"></button>
                 </form>
                       <div class="form-row" data-bind="foreach: pages">
-                <div class="col-md-6 mt-2">
+                <div class="col-md-12 mt-2">
                     <a href="#" class="form-control btn btn-info" data-bind="click: $root.choosePage.bind($data, name), text: name"></a>
                 </div>
             </div>
