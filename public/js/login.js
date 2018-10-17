@@ -136,6 +136,7 @@ var loginModel = function (){
         self.userRole('user')
         console.log('set to user')
         ko.cleanNode($("#main")[0])
+        self.currentTemplate = ko.observable('blueprintPage')
         var newModel = new dashModel()
         ko.applyBindings(newModel)
       }

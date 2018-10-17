@@ -190,8 +190,13 @@
 <script type="text/html" id="blueprintPage">
     <select data-bind= "options: blueprintData,
                         optionsText: 'name',
-                        value: currentBlueprint">
-    </select> 
+                        value: currentBlueprint,
+                        event:{ change:$root.selectFunc}">
+    </select>
+    <form>
+        <input type = "text" id = "changeName">
+        <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
+    </form>
     <canvas id="currentBP" width="800" height="500"></canvas>
 
     <form enctype="multipart/form-data" id = "uploadForm">

@@ -24,6 +24,17 @@ class BlueprintController extends Controller
         $blueprint->save();
         return 'success';
     }
+    public function changeName(Request $request)
+    {
+        $user = auth()->user();
+        $bp = Blueprint::FindOrFail($request->input('id'));
+        if($user->organization_id == $bp->organization_id)
+        {
+            $bp->name = $request->input('name');
+            $bp->save();
+        }
+
+    }
     public function getBP()
     {
         $user = auth()->user();

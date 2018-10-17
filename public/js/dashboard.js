@@ -2,13 +2,14 @@
 *
 *   Knockoutjs
 */
+
 var dashModel = function (){
   var self = this
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
   self.token = ko.observable()
   self.blueprintData = ko.observableArray() 
-  self.currentBlueprint = ko.observableArray()
+  self.currentBlueprint = ko.observable({ id:'1', name:'file', path:'/AjZx9PYst2lIXcg7ASdBwYTBBm2ZIH17yz9UE7el.jpeg'})
   if (localStorage.getItem('token'))
   {
     self.token(localStorage.getItem('token'))
@@ -45,6 +46,7 @@ var dashModel = function (){
     context.fillRect(xy['x'],xy['y'],8,8)
 
   })
+  
   function getMousePos(canvas, event) {
     var rect = canvas.getBoundingClientRect()
     return {
@@ -52,7 +54,8 @@ var dashModel = function (){
       y: event.clientY - rect.top
     }
   }
-  self.currentBlueprint.subscribe(function(){
+  
+  self.selectFunc  = function(){
     let canvas = document.getElementById("currentBP")
     let context = canvas.getContext("2d")
     context.clearRect(0, 0, canvas.width, canvas.height)
@@ -66,14 +69,25 @@ var dashModel = function (){
       canvas.height / 2 - img.height / 2
       )
     })
+  }
 
-  })
+
+
+  self.changeNameBTN = function(){
+    let id =  self.currentBlueprint()['id']
+    let oldie = self.currentBlueprint()
+    self.currentBlueprint().name = $('#changeName').val()
+    $.post(base_url + "/api/blueprint/changeName",{name:$('#changeName').val(),id:id}).done(function(){
+      self.blueprintData.replace(oldie,self.currentBlueprint())
+      console.log(self.blueprintData())
+    })
+  }
   
   /**
   *
   *   Upload image
   */
-  self.fileSelect= function (element,event) {
+  self.fileSelect = function (element,event) {
     var files =  event.target.files// FileList object
     // Loop through the FileList and render image files as thumbnails.
     var canvas = document.getElementById('background')
@@ -113,11 +127,10 @@ var dashModel = function (){
     }
   }
   self.enterPage = function () {
-    $.post(base_url + '/api/blueprint/get').done(function(data){
+    $.get(base_url + '/api/blueprint/get').done(function(data){
       for (var i = 0, d; d = data[i]; i++) {
         self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
-      }
-      console.log(self.blueprintData())
+      } 
       self.currentBlueprint(self.blueprintData()[0])
     })
   }
