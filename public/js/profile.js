@@ -27,12 +27,12 @@ var profileModel = function (){
         break;
       case 'dev':
         ko.cleanNode($("#main")[0])
-        var newModel = new dashModel()
+        var newModel = new adminDevicesModel()
         ko.applyBindings(newModel)
         break;
       case 'out':
         ko.cleanNode($("#main")[0])
-        var newModel = new dashModel()
+        var newModel = new logoutModel()
         ko.applyBindings(newModel)
         break;
     }
@@ -49,7 +49,7 @@ var profileModel = function (){
           self.currentTabData(data)
       })
   }
-  
+
   self.openBtn = function(){
     console.log('hi')
       $('#myModal').modal({show:true})

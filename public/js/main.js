@@ -72,35 +72,6 @@ var ViewModel = function (){
   self.showDev = ko.observable(false);
   self.showRec = ko.observable(false);
 
-  self.organization = ko.observableArray()
-  self.devicesOrganization = ko.observableArray()
-  self.newDevices = ko.observableArray()
-  self.showOrgDevices = ko.observable(false)
-  self.showNewDevices = ko.observable(false)
-  self.orgId = ko.observable()
-
-    /**
-     * [logout description]
-     * @return {[type]} [description]
-     */
-    self.logout = function(){
-        $.post(base_url + '/api/logout', {token:self.token()}).done(function(data){
-            $("#container").addClass("d-none")
-            $("#loginCont").removeClass("d-none")
-            $('#email').val("")
-            $('#password').val("")
-            localStorage.removeItem('myCat')
-            $('#uploadForm').removeClass("d-none")
-            $('.admin').removeClass("d-none")
-        })
-    }
-
-
-
-    /**
-     * [getOrganizations description]
-     * @return {[type]} [description]
-     */
     
      /*START STEFAN CODE*/
 

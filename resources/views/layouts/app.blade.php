@@ -69,5 +69,8 @@
     <script src="{{ url('js/login.js') }}" ></script>
     <script src="{{ url('js/dashboard.js') }}" ></script>
     <script src="{{ url('js/profile.js') }}" ></script>
+    <script src="{{ url('js/logout.js') }}" ></script>
+    <script src="{{ url('js/devices_admin.js') }}" ></script>
+
 </body>
 </html>
