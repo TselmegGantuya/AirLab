@@ -174,19 +174,28 @@
 </script>
 
 <script type="text/html" id="blueprintPage">
-    <canvas id="currentBP" width="800" height="500"></canvas>
+    <div data-bind="event: {mouseover: blueprintdash}">
+        <div id="bp">
+            <canvas style="background:green" id="currentBP" width="1000" height="500"  class="droppable" onmouseover="console.log('green!')"></canvas>    
+        </div>
 
-    <form enctype="multipart/form-data" id = "uploadForm">
-        <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
-    </form>
-    <canvas id="background" width="1000" height="1000" ></canvas>
-
+        <ul class="nav flex-column">
+            <div data-bind="foreach: $root.blueprintData" class="nav-item">
+                    <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger"></li>
+            </div>
+        </ul>
+        
+        <form enctype="multipart/form-data" id = "uploadForm">
+            <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+        </form>
+        <canvas id="background" width="1000" height="1000" ></canvas>
+    </div>
 </script>
 
 <script type="text/html" id="loginPage">
     <div class="text-center" id ="loginCont">
         <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
-        <div class="col-md-4 offset-md-4">
+        <!-- <div class="col-md-4 offset-md-4"> -->
             <form class="form-signin" >
                 <div data-bind="foreach: currentPageData">
                     <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name}">
@@ -199,7 +208,7 @@
                 </div>
             </div>
             <p class="mt-5 mb-3 text-muted">&copy; 2018 Air Lab</p>
-        </div>
+        <!-- </div> -->
     </div>
 </script>
 
@@ -207,7 +216,6 @@
     <div class= 'container-fluid'>
         <div class='row'>
             <div class="col-md-2 bg-light sidebar" data-bind="visible:nav">
-                <nav>
                     <div class="sidebar-sticky">
                         <ul class="nav flex-column">
                             <li class="nav-item">
@@ -215,12 +223,25 @@
                                     <button class="btn btn-info col" type="button"> Profile</button>
                                 </a>
                             </li>
-                            
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-bind="click: $data.toggleVisibilityDevices">
                                     <button class="btn btn-info col" type="button"> Devices</button>
                                 </a>
                             </li>
+<!--                             <div  class="nav-link">
+                                <button class="btn btn-info col">
+                                    <span>Drag & Drop: Apparaten</span>
+                                    <span style="display:none">Close</span>
+                                </button>
+                                    <ol id="list" class="nav flex-column">
+                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
+                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
+                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
+                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
+                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
+                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
+                                    </ol>
+                            </div> -->
                             <div class = 'admin'>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#" data-bind="click: $data.toggleVisibilityRecords">
@@ -235,7 +256,6 @@
                             </li>
                         </ul>
                     </div>
-                </nav>
             </div>
             <div data-bind="template:currentTemplate"></div>
         </div>

@@ -15,6 +15,79 @@ use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
 {
+    // START STEFAN CODE
+    /**
+     * Display all organizations
+     * @return [type] [description]
+     */
+    public function getOrganizations()
+    {
+      $organizations = Organization::all();
+      return $organizations;
+    }
+
+    /**
+     * Display all devices from organization
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function getDevicesOrganization(Request $request)
+    {
+      if ($request->id) {
+        $orgDevices = Device::where('organization_id', $request->id)->get();
+        dd($orgDevices);
+      }
+      // return $orgDevices;
+    }
+
+    /**
+     * Display all devices with no organization
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function getNewDevices()
+    {
+      $cleanDevices = Device::where('organization_id', NULL)->get();
+      return $cleanDevices;
+    }
+
+    /**
+     * Display for adding organization devices
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function addDeviceOrg(Request $request)
+    {
+      $status = 0;
+      foreach ($request->device_id as $id) {
+        Device::where('id', $id)->update(['organization_id' => $request->organization_id]);
+        $status = 1;
+      }
+      return $status;
+    }
+
+    /**
+     * Display for deleting organization devices
+     *
+     * [deviceView description]
+     * @return [type] [description]
+     */
+    public function deleteDevicesOrganization(Request $request)
+    {
+      $status = 0;
+      foreach ($request->device_id as $id) {
+        Device::where('id', $id)->update(['organization_id' => NULL]);
+        //softdelete concept
+        //Device::where('id', $id)->delete();
+        $status = 1;
+      }
+      return $status;
+    }
+    // END STEFAN CODE
+
     /**
      * [Method for changing/updating password]
      * @param  Request $request [description]
@@ -55,28 +128,6 @@ class ApiController extends Controller
         return redirect('/');
     }
 
-    public function adminAddBlueprint()
-    {
-        $records = Record::all();
-        $devices = Device::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-        $recordray = array();
-        $users = User::all();
-
-        if ($userInfo->role_id == $role->admin) {
-            $blueprint = new Blueprint;
-            $blueprint->name;
-            $blueprint->organization_id = $userInfo->organization_id;
-            $blueprint->path;
-            $blueprint->save();
-        }
-    }
-
-
-
     /**
      * Display record details
      * 
@@ -92,97 +143,27 @@ class ApiController extends Controller
         // return response()->json($record);
         return $record;
     }
-
+    
     /**
      * Display all devices
      *
      * [deviceView description]
      * @return [type] [description]
      */
-    // START STEFAN CODE
-    public function getOrganizations()
-    {
-      $organizations = Organization::all();
-      return $organizations;
-    }
-    /**
-     * Display all devices from organization
-     *
-     * [deviceView description]
-     * @return [type] [description]
-     */
-    public function getDevicesOrganization(Request $request)
-    {
-      if ($request->id) {
-        $orgDevices = Device::where('organization_id', $request->id)->get();
-      }
-        return $orgDevices;
-    }
-    /**
-     * Display all devices with no organization
-     *
-     * [deviceView description]
-     * @return [type] [description]
-     */
-    public function getNewDevices()
-    {
-      $cleanDevices = Device::where('organization_id', NULL)->get();
-      return $cleanDevices;
-    }
-    /**
-     * Display
-     *
-     * [deviceView description]
-     * @return [type] [description]
-     */
-    public function addDeviceOrg(Request $request)
-    {
-      $status = 0;
-      foreach ($request->device_id as $id) {
-        Device::where('id', $id)->update(['organization_id' => $request->organization_id]);
-        $status = 1;
-      }
-      return $status;
-    }
-    /**
-     * Display
-     *
-     * [deviceView description]
-     * @return [type] [description]
-     */
-    public function deleteDevicesOrganization(Request $request)
-    {
-      $status = 0;
-      foreach ($request->device_id as $id) {
-        Device::where('id', $id)->update(['organization_id' => NULL]);
-        //softdelete concept
-        //Device::where('id', $id)->delete();
-        $status = 1;
-      }
-      return $status;
-    }
-    // END STEFAN CODE
-    /**
-     * Display all devices
-     *
-     * [deviceView description]
-     * @return [type] [description]
-     */
-    /*
-    public function deviceView()
-    {
-        $devices = Device::all();
-
-        foreach ($devices as $device) {
-          if ($device->organization_id == true) {
-            $device->organization;
-          }else {
-            $device->organization_name = 'none';
-          }
-        }
-        return $devices;
-    }
-    */
+    // public function deviceView()
+    // {
+    //     $devices = Device::all();
+    //     dd($devices);
+    //     foreach ($devices as $device) {
+    //       if ($device->organization_id == true) {
+    //         $device->organization;
+    //       }else {
+    //         $device->organization_name = 'none';
+    //       }
+    //     }
+    //     return $devices;
+    // }
+   
     /**
      * Display all records that belongs to logged in user.
      *
@@ -197,22 +178,8 @@ class ApiController extends Controller
         $userInfo = json_decode($content, true);
         $recordray = array();
         $users = User::all();
-        // $user = User::with('organization_id')->get();
-
-        // $categories = Category::with(['posts' => function ($query) {
-        //     $query->orderBy('created_at', 'desc')->take(5);
-        // }])->get();
-
-        // $devices = Device::where($user == 'organization_id')->get();
-
-        // $records = Meter::where($devices == 'device_id')->get();
-
-        // $recordray[] = $records;
-
-        // return $recordray;
 
         foreach ($organizations as $organization) {
-            //$userInfo['name']
             foreach ($users as $user) {
                 if ($userInfo['name'] == $organization->name) {
                     foreach ($devices as $device) {
@@ -222,8 +189,6 @@ class ApiController extends Controller
                                 // $record->device->serial_number;
                                 if ($record->device_name == $device->name) {
                                     $recordray[] = $record;
-                                    // $record;
-                                    // $data = json_encode($recordray);
                                 }
                             }
                         }
@@ -244,28 +209,22 @@ class ApiController extends Controller
         $devices = Device::all();
         $records = Record::all();
         $organizations = Organization::all();
-        $user = AuthController::me();
+        $user = auth()->user();
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
         $userDevice = array();
 
-        // $user = User::with('organization_id')->get();
-        // $devices = Device::where($user->organization_id == 'organization_id')->get();
-        // $userDevice[] = $devices;
-        // return $userDevice;
-        
         foreach ($organizations as $organization) {
             if ($userInfo['name'] == $organization->name) {
                 foreach ($devices as $device) {
-                    $device->records;
-                    if ($organization->name == $device->organization->name) {
+                    // $device->records;
+                    if ($device->organization->name == $organization->name) {
                         $userDevice[] = $device;
                     }
                 }
             }
         }
         return $userDevice;
-        // dd($device);
     }
 
     /**

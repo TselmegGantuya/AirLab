@@ -3,6 +3,7 @@ $.ajaxSetup({
     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
   }
 })
+
 var localStorage = window.localStorage
 var base_url = window.location.origin
 /**

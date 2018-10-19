@@ -25,10 +25,11 @@ var loginModel = function (){
   self.currentPage = ko.observable()
   self.currentPageData = ko.observableArray()
   self.currentTemplate = ko.observable('loginPage')
-     /**
-     * [loginToken description]
-     * @return {[type]} [description]
-     */
+
+ /**
+ * [loginToken description]
+ * @return {[type]} [description]
+ */
   self.loginToken = function() {
   	
     $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data)
@@ -57,6 +58,7 @@ var loginModel = function (){
       }
       
     }).fail(function(xhr, status, error){
+
     	 console.log("Login expired")
     })
     	
@@ -94,6 +96,12 @@ var loginModel = function (){
 			    'Authorization': 'Bearer '+ self.token()
 			  }
 			})
+
+  /**
+   * [description]
+   * @param  {[type]} data)                 {            if ( data['role'] [description]
+   * @return {[type]}       [description]
+   */
     $.post(base_url + '/api/me').done(function(data)
     {
     	
