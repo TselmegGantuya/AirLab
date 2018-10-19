@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddBlueprintIdToDevices extends Migration
+class DropCoordinationFromDevicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddBlueprintIdToDevices extends Migration
      */
     public function up()
     {
-         Schema::table('devices', function($table) {
-            $table->integer('blueprint_id')->after('id')->nullable();
-            $table->integer('coordination')->after('blueprint_id');
+        Schema::table('devices', function($table) {
+            $table->dropColumn('coordination');
         });
     }
 
@@ -27,8 +26,7 @@ class AddBlueprintIdToDevices extends Migration
     public function down()
     {
         Schema::table('devices', function($table) {
-            $table->dropColumn('blueprint_id');
-            $table->dropColumn('coordination');
+           
         });
     }
 }

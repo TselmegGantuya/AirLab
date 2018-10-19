@@ -15,7 +15,9 @@ use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
 {
+    // START STEFAN CODE
     /**
+
      * [Method for changing/updating password]
      * @param  Request $request [description]
      * @return [type]           [description]
@@ -98,12 +100,12 @@ class ApiController extends Controller
      * [deviceView description]
      * @return [type] [description]
      */
-    // START STEFAN CODE
     public function getOrganizations()
     {
       $organizations = Organization::all();
       return $organizations;
     }
+
     /**
      * Display all devices from organization
      *
@@ -114,9 +116,11 @@ class ApiController extends Controller
     {
       if ($request->id) {
         $orgDevices = Device::where('organization_id', $request->id)->get();
+        dd($orgDevices);
       }
-        return $orgDevices;
+      // return $orgDevices;
     }
+
     /**
      * Display all devices with no organization
      *
@@ -128,8 +132,9 @@ class ApiController extends Controller
       $cleanDevices = Device::where('organization_id', NULL)->get();
       return $cleanDevices;
     }
+
     /**
-     * Display
+     * Display for adding organization devices
      *
      * [deviceView description]
      * @return [type] [description]
@@ -143,8 +148,9 @@ class ApiController extends Controller
       }
       return $status;
     }
+
     /**
-     * Display
+     * Display for deleting organization devices
      *
      * [deviceView description]
      * @return [type] [description]
@@ -161,27 +167,83 @@ class ApiController extends Controller
       return $status;
     }
     // END STEFAN CODE
+
+    /**
+     * [Method for changing/updating password]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function changePassword(Request $request){
+        $user = Auth::user();
+
+        if (Hash::check($request->get('current_password'), Auth::user()->password)) {
+            //Change the password
+            $user->fill([
+                'password' => Hash::make($request->get('new_password'))
+            ])->save();
+            
+            // $request->session()->flash('success', 'Your password has been changed.');
+        }
+
+        // if (!(Hash::check($request->get('current_password'), Auth::user()->password))) {
+        //     // The passwords matches
+        //     return redirect()->back()->with("error","Your current password does not matche with the password you provided. Please try again.");
+        // }
+
+        // if(strcmp($request->get('current_password'), $request->get('new_password')) == 0){
+        //     //Current password and new password are same
+        //     return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
+        // }
+
+        // $validatedData = $request->validate([
+        //     'current_password' => 'required',
+        //     'new_password' => 'required|string|min:6|confirmed',
+        //     'confirm_password' => 'required|string|min:6|confirmed'
+        // ]);
+
+        // //Change Password
+        // $user = Auth::user();
+        // $user->password = bcrypt($request->get('new_password'));
+        // $user->save();
+        return redirect('/');
+    }
+
+    /**
+     * Display record details
+     * 
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function recordDetail()
+    {
+        $id = request('id');
+        $device = Device::findOrFail($id);
+        //->orderBy('id', 'desc')->first()
+        $record = Record::where('device_id', '=', $device->id)->first();
+        // return response()->json($record);
+        return $record;
+    }
+    
     /**
      * Display all devices
      *
      * [deviceView description]
      * @return [type] [description]
      */
-    /*
-    public function deviceView()
-    {
-        $devices = Device::all();
-
-        foreach ($devices as $device) {
-          if ($device->organization_id == true) {
-            $device->organization;
-          }else {
-            $device->organization_name = 'none';
-          }
-        }
-        return $devices;
-    }
-    */
+    // public function deviceView()
+    // {
+    //     $devices = Device::all();
+    //     dd($devices);
+    //     foreach ($devices as $device) {
+    //       if ($device->organization_id == true) {
+    //         $device->organization;
+    //       }else {
+    //         $device->organization_name = 'none';
+    //       }
+    //     }
+    //     return $devices;
+    // }
+   
     /**
      * Display all records that belongs to logged in user.
      *
@@ -196,22 +258,8 @@ class ApiController extends Controller
         $userInfo = json_decode($content, true);
         $recordray = array();
         $users = User::all();
-        // $user = User::with('organization_id')->get();
-
-        // $categories = Category::with(['posts' => function ($query) {
-        //     $query->orderBy('created_at', 'desc')->take(5);
-        // }])->get();
-
-        // $devices = Device::where($user == 'organization_id')->get();
-
-        // $records = Meter::where($devices == 'device_id')->get();
-
-        // $recordray[] = $records;
-
-        // return $recordray;
 
         foreach ($organizations as $organization) {
-            //$userInfo['name']
             foreach ($users as $user) {
                 if ($userInfo['name'] == $organization->name) {
                     foreach ($devices as $device) {
@@ -221,8 +269,6 @@ class ApiController extends Controller
                                 // $record->device->serial_number;
                                 if ($record->device_name == $device->name) {
                                     $recordray[] = $record;
-                                    // $record;
-                                    // $data = json_encode($recordray);
                                 }
                             }
                         }
@@ -293,28 +339,29 @@ class ApiController extends Controller
         $devices = Device::all();
         $records = Record::all();
         $organizations = Organization::all();
-        $user = AuthController::me();
+        $user = auth()->user();
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
         $userDevice = array();
+
 
         // $user = User::with('organization_id')->get();
         // $devices = Device::where($user->organization_id == 'organization_id')->get();
         // $userDevice[] = $devices;
         // return $userDevice;
 
+
         foreach ($organizations as $organization) {
             if ($userInfo['name'] == $organization->name) {
                 foreach ($devices as $device) {
-                    $device->records;
-                    if ($organization->name == $device->organization->name) {
+                    // $device->records;
+                    if ($device->organization->name == $organization->name) {
                         $userDevice[] = $device;
                     }
                 }
             }
         }
         return $userDevice;
-        // dd($device);
     }
 
     /**

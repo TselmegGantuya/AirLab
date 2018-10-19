@@ -27,7 +27,6 @@ Route::group([
 	// Route for reset password and email
 	Route::post('uhoo/password/reset', 'ApiController@changePassword');
 
-
 	// Routes for basic Log in
     Route::post('refresh', 'AuthController@refresh');
 	  Route::post('me', 'AuthController@me');
@@ -37,6 +36,8 @@ Route::group([
     Route::post('blueprint/upload', 'BlueprintController@uploadBP');
     Route::get('blueprint/get', 'BlueprintController@getBP');
     Route::post('blueprint/changeName', 'BlueprintController@changeName');
+    Route::post('blueprint/coordinations/get', 'BlueprintController@getCoordination');
+    Route::post('blueprint/devices/get', 'BlueprintController@getUserDevices');
 
 
     // Routes for Uhoo API
@@ -48,10 +49,9 @@ Route::group([
 	Route::post('uhoo/devices', 'ApiController@deviceView');
 	Route::post('uhoo/records', 'ApiController@recordView');
 	Route::post('uhoo/record', 'ApiController@recordDetail');
-	Route::post('uhoo/user/device', 'ApiController@userDevice');
-
+	// Route::post('uhoo/user/device', 'ApiController@userDevice');
 	Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
-  // Getting all organizations
+
 
   //START STEFAN
   Route::post('uhoo/organizations', 'ApiController@getOrganizations');

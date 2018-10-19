@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
+	/**
+	 * Logic to send email to user
+	 * @return [type] [description]
+	 */
     public function send()
     {
         $objDemo = new \stdClass();

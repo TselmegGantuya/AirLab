@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Blueprint;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Blueprint;
+use App\Record;
+use App\Device;
+use App\Organization;
+use App\User;
+use Carbon\Carbon;
+use App\Http\Controllers\AuthController;
 
 class BlueprintController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Upload and display blueprint
      *
      * @return \Illuminate\Http\Response
      */
@@ -24,6 +32,7 @@ class BlueprintController extends Controller
         $blueprint->save();
         return 'success';
     }
+
     public function changeName(Request $request)
     {
         $user = auth()->user();
@@ -35,10 +44,66 @@ class BlueprintController extends Controller
         }
 
     }
+
+
+    /**
+     * Get organization blueprint
+     * @return [type] [description]
+     */
+
     public function getBP()
     {
         $user = auth()->user();
         $bps = Blueprint::where('organization_id', $user->organization_id)->get();
         return response()->json($bps);
+    }
+
+
+    /**
+     * get coordinates from devices on blueprint and save to DB
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function getCoordination(Request $request)
+    {
+        $devices = Device::all();
+        $data =  $request->blueprintData;
+
+        foreach ($data as $bpData) {
+            $left = (int)$bpData['left'];
+            $top = (int)$bpData['top'];
+
+            foreach ($devices as $device) {
+                if ($device->id == $bpData['device_id']) {
+                    $device->blueprint_id = $bpData['id'];
+                    $device->left_pixel = $left;
+                    $device->top_pixel = $top;
+                    $device->save();
+                }
+            }
+        }
+    }
+
+    public function getUserDevices()
+    {
+        $blueprints = Blueprint::all();
+        $devices = Device::all();
+        $records = Record::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+        $userDevice = array();
+
+        foreach ($organizations as $organization) {
+            if ($userInfo['name'] == $organization->name) {
+                foreach ($devices as $device) {
+                    if ($device->organization_id == $organization->id) {
+                        $userDevice[] = $device;
+                    }
+                }
+            }
+        }
+        return $userDevice;
     }
 }
