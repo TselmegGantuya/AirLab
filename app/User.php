@@ -14,7 +14,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function organizations()
     {
-        return $this->hasMany(Organization::class);
+        return $this->belongsTo('App\Organization');
     }
 
     // Rest omitted for brevity

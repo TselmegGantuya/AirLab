@@ -84,26 +84,19 @@ class BlueprintController extends Controller
         }
     }
 
+    public function blueprintDelete(Request $request){
+        $id =  $request->input('id');
+        $bp = Blueprint::find($id);
+        $bp->delete(); 
+    }
+
     public function getUserDevices()
     {
-        $blueprints = Blueprint::all();
-        $devices = Device::all();
-        $records = Record::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-        $userDevice = array();
 
-        foreach ($organizations as $organization) {
-            if ($userInfo['name'] == $organization->name) {
-                foreach ($devices as $device) {
-                    if ($device->organization_id == $organization->id) {
-                        $userDevice[] = $device;
-                    }
-                }
-            }
-        }
-        return $userDevice;
+        $user = auth()->user();
+        $org = Organization::FindOrFail($user->organization_id);
+        $dev = $org->devices;
+        
+        return response()->json($dev);
     }
 }

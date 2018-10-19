@@ -38,6 +38,7 @@ Route::group([
     Route::post('blueprint/changeName', 'BlueprintController@changeName');
     Route::post('blueprint/coordinations/get', 'BlueprintController@getCoordination');
     Route::post('blueprint/devices/get', 'BlueprintController@getUserDevices');
+    Route::post('blueprint/delete', 'BlueprintController@blueprintDelete');
 
 
     // Routes for Uhoo API

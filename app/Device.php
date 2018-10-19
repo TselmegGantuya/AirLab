@@ -25,7 +25,7 @@ class Device extends Model
      */
     public function organization()
     {
-    	return $this->belongsTo(Organization::class);
+    	return $this->belongsTo('App\Organization');
     }
 
     /**
@@ -34,7 +34,7 @@ class Device extends Model
      */
     public function records()
     {
-    	return $this->hasMany(Record::class);
+    	return $this->hasMany('App\Record');
     }
 
     /**
