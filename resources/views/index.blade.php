@@ -115,13 +115,7 @@
             </script>
 
             <script type="text/html" id="deviceTemplate">
-<<<<<<< HEAD
                     <p>Devices</p>
-=======
-
-                <div data-bind="visible: showDev">
-                    <p data-bind="text: currentTab"></p>
->>>>>>> ffcac5cead3faf6da52fc1b5a85f335be0d9192d
                     <!--Admin device to organization-->
                     <div class="container">
                         <div class="row">
