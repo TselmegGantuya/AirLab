@@ -71,20 +71,57 @@ class BlueprintController extends Controller
 
     public function getUserDevices()
     {
-        $blueprints = Blueprint::all();
         $devices = Device::all();
-        $records = Record::all();
         $organizations = Organization::all();
         $user = AuthController::me();
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
         $userDevice = array();
 
+        $organization = Organization::where('name', '=', $userInfo['name'])->first();
+        $devices = Device::where('organization_id', '=', $organization->id)->get();
+        $userDevice[] = $devices;
+        return $userDevice;
+        // dd($organization, $userDevice);
+
+        // foreach ($organizations as $organization) {
+        //     if ($userInfo['name'] == $organization->name) {
+        //         foreach ($devices as $device) {
+        //             if ($device->organization_id == $organization->id) {
+        //                 if ($device->left_pixel && $device->top_pixel != NULL) {
+        //                     // $userDevice[] = $device;
+        //                 }else{
+        //                     $userDevice[] = $device;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // return $userDevice;
+    }
+
+    public function getUserDBDevices()
+    {
+        $devices = Device::all();
+        $organizations = Organization::all();
+        $user = AuthController::me();
+        $content = $user->getContent();
+        $userInfo = json_decode($content, true);
+        $userDevice = array();
+
+        // $organization = Organization::where('name', '=', $userInfo['name'])->first();
+        // $devices = Device::where('organization_id', '=', $organization->id)->get();
+        // $userDevice[] = $devices;
+        // return $userDevice;
+        // dd($organization, $userDevice);
+
         foreach ($organizations as $organization) {
             if ($userInfo['name'] == $organization->name) {
                 foreach ($devices as $device) {
                     if ($device->organization_id == $organization->id) {
-                        $userDevice[] = $device;
+                        if ($device->left_pixel && $device->top_pixel != NULL) {
+                            $userDevice[] = $device;
+                        }
                     }
                 }
             }

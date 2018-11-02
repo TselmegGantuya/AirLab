@@ -174,22 +174,25 @@
 </script>
 
 <script type="text/html" id="blueprintPage">
-    <div data-bind="event: {mouseover: blueprintdash}">
-        <div id="bp">
-            <canvas style="background:green" id="currentBP" width="1000" height="500"  class="droppable" onmouseover="console.log('green!')"></canvas>    
-        </div>
-
-        <ul class="nav flex-column">
-            <div data-bind="foreach: $root.blueprintData" class="nav-item">
-                    <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger"></li>
-            </div>
-        </ul>
-        
-        <form enctype="multipart/form-data" id = "uploadForm">
-            <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
-        </form>
-        <canvas id="background" width="1000" height="1000" ></canvas>
+    <div id="bp">
+        <canvas style="background:green" id="currentBP" width="1000" height="500"  class="droppable" onmouseover="console.log('green!')"></canvas>    
     </div>
+
+    <ul class="nav flex-column">
+        <div data-bind="foreach: $root.blueprintData" class="nav-item">
+                <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger"></li>
+        </div>
+    </ul>
+    
+<div class="bs-example">
+   <button type="button" class="btn btn-primary" data-toggle="popover">Hover 1</button>
+</div>
+
+    <form enctype="multipart/form-data" id = "uploadForm">
+        <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+    </form>
+    <canvas id="background" width="1000" height="1000" ></canvas>
+    
 </script>
 
 <script type="text/html" id="loginPage">
