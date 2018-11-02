@@ -20,6 +20,11 @@ var profileModel = function (){
 
   self.loadModel = function(data) {
     switch(data) {
+      case 'dash':
+        ko.cleanNode($("#main")[0])
+        var newModel = new dashModel()
+        ko.applyBindings(newModel)
+        break
       case 'pro':
         ko.cleanNode($("#main")[0])
         var newModel = new profileModel()
@@ -51,7 +56,6 @@ var profileModel = function (){
   }
 
   self.openBtn = function(){
-    console.log('hi')
       $('#myModal').modal({show:true})
   }
 

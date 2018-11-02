@@ -16,45 +16,6 @@ use App\Http\Controllers\AuthController;
 class ApiController extends Controller
 {
     // START STEFAN CODE
-    /**
-
-     * [Method for changing/updating password]
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
-    public function changePassword(Request $request){
-        $user = Auth::user();
-
-        if (Hash::check($request->get('current_password'), Auth::user()->password)) {
-            //Change the password
-            $user->fill([
-                'password' => Hash::make($request->get('new_password'))
-            ])->save();
-            // $request->session()->flash('success', 'Your password has been changed.');
-        }
-
-        // if (!(Hash::check($request->get('current_password'), Auth::user()->password))) {
-        //     // The passwords matches
-        //     return redirect()->back()->with("error","Your current password does not matche with the password you provided. Please try again.");
-        // }
-
-        // if(strcmp($request->get('current_password'), $request->get('new_password')) == 0){
-        //     //Current password and new password are same
-        //     return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
-        // }
-
-        // $validatedData = $request->validate([
-        //     'current_password' => 'required',
-        //     'new_password' => 'required|string|min:6|confirmed',
-        //     'confirm_password' => 'required|string|min:6|confirmed'
-        // ]);
-
-        // //Change Password
-        // $user = Auth::user();
-        // $user->password = bcrypt($request->get('new_password'));
-        // $user->save();
-        return redirect('/');
-    }
 
     public function adminAddBlueprint()
     {
@@ -75,25 +36,6 @@ class ApiController extends Controller
             $blueprint->save();
         }
     }
-
-
-
-    /**
-     * Display record details
-     *
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function recordDetail()
-    {
-        $id = request('id');
-        $device = Device::findOrFail($id);
-        //->orderBy('id', 'desc')->first()
-        $record = Record::where('device_id', '=', $device->id)->first();
-        // return response()->json($record);
-        return $record;
-    }
-
     /**
      * Display all devices
      *

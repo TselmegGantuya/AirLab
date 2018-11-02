@@ -9,13 +9,18 @@ var dashModel = function (){
   self.token = ko.observable()
   self.blueprintData = ko.observableArray() 
   self.devices = ko.observableArray()
-  self.currentBlueprint = ko.observable({ id:'1', name:'file', path:'/AjZx9PYst2lIXcg7ASdBwYTBBm2ZIH17yz9UE7el.jpeg'})
+  self.currentBlueprint = ko.observable({ id:'1', name:'example', path:'/AjZx9PYst2lIXcg7ASdBwYTBBm2ZIH17yz9UE7el.jpeg'})
   if (localStorage.getItem('token'))
   {
     self.token(localStorage.getItem('token'))
   }
   self.loadModel = function(data) {
     switch(data) {
+      case 'dash':
+        ko.cleanNode($("#main")[0])
+        var newModel = new dashModel()
+        ko.applyBindings(newModel)
+        break
       case 'pro':
         ko.cleanNode($("#main")[0])
         var newModel = new profileModel()
@@ -134,6 +139,7 @@ var dashModel = function (){
     $.get(base_url + '/api/blueprint/get').done(function(data){
       for (var i = 0, d; d = data[i]; i++) {
         self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+        console.log(self.blueprintData())
       }
       document.addEventListener('mousedown', function(event) {
           event.preventDefault();

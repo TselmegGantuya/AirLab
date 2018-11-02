@@ -12,7 +12,7 @@ $( document ).ajaxError(function( event, jqXHR, settings, thrownError) {
   } else if (jqXHR.status == 500) {
     msg = 'Internal Server Error [500].'
   } else if (jqXHR.status == 401) {
-    msg = 'Login expired.'
+    msg = 'Unauthorized.'
     localStorage.removeItem('token')
     ko.cleanNode($("#main")[0])
     var newModel = new loginModel()
@@ -53,6 +53,8 @@ var loginModel = function (){
 
   self.loadModel = function(data) {
     switch(data) {
+    	case 'dash':
+    		break
       case 'pro':
         break
       case 'dev':
