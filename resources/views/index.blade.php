@@ -183,20 +183,29 @@
                         value: currentBlueprint,
                         event:{ change:$root.selectFunc}">
     </select>
+
     <form>
         <input type = "text" id = "changeName">
         <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
     </form>
+
     <a href="#" data-bind="click:deleteBP">delete</a>
+
     <div id="bp">
-        <canvas id="currentBP" width="1000" height="500"  class="droppable"></canvas>    
+        <canvas style="background:green" id="currentBP" width="1000" height="500"  class="droppable" onmouseover="console.log('green!')"></canvas>    
     </div>
+
     <ul class="nav flex-column">
-        <div data-bind="foreach: $root.devices" class="nav-item">
-            <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger"></li>
+        <div data-bind="foreach: $root.blueprintDev" class="nav-item">
+                <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger"></li>
         </div>
     </ul>
-       
+    <br>
+    
+<!--     <div class="bs-example">
+       <button type="button" class="btn btn-primary" data-toggle="popover">Hover 1</button>
+    </div> -->
+
     <form enctype="multipart/form-data" id = "uploadForm">
         <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
     </form>
