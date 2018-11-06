@@ -33,6 +33,11 @@ class BlueprintController extends Controller
         return 'success';
     }
 
+    /**
+     * [changeName description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function changeName(Request $request)
     {
         $user = auth()->user();
@@ -45,19 +50,16 @@ class BlueprintController extends Controller
 
     }
 
-
     /**
      * Get organization blueprint
      * @return [type] [description]
      */
-
     public function getBP()
     {
         $user = auth()->user();
         $bps = Blueprint::where('organization_id', $user->organization_id)->get();
         return response()->json($bps);
     }
-
 
     /**
      * get coordinates from devices on blueprint and save to DB
@@ -84,12 +86,21 @@ class BlueprintController extends Controller
         }
     }
 
+    /**
+     * [blueprintDelete description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function blueprintDelete(Request $request){
         $id =  $request->input('id');
         $bp = Blueprint::find($id);
         $bp->delete(); 
     }
 
+    /**
+     * Method to get devices where left_pixel is equal to NULL
+     * @return [type] [description]
+     */
     public function getUserDevices()
     {
         $devices = Device::all();
@@ -108,6 +119,10 @@ class BlueprintController extends Controller
         return $devices;
     }
 
+    /**
+     * Method to get devices where left_pixel is not equal to NULL
+     * @return [type] [description]
+     */
     public function getUserDBDevices()
     {
         $devices = Device::all();
@@ -115,25 +130,14 @@ class BlueprintController extends Controller
         $user = AuthController::me();
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
-        $userDevice = array();
 
-        // $organization = Organization::where('name', '=', $userInfo['name'])->first();
-        // $devices = Device::where('organization_id', '=', $organization->id)->get();
-        // $userDevice[] = $devices;
-        // return $userDevice;
-        // dd($organization, $userDevice);
-
-        foreach ($organizations as $organization) {
-            if ($userInfo['name'] == $organization->name) {
-                foreach ($devices as $device) {
-                    if ($device->organization_id == $organization->id) {
-                        if ($device->left_pixel && $device->top_pixel != NULL) {
-                            $userDevice[] = $device;
-                        }
-                    }
-                }
-            }
-        }
-        return $userDevice;
+        $organization = Organization::where('name', '=', $userInfo['name'])->first();
+        $devices = Device::where([
+            ['organization_id', '=', $organization->id],
+        ])->whereNotNull(
+            'left_pixel'
+        )->get();
+        
+        return $devices;
     }
 }

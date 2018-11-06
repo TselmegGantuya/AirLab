@@ -255,20 +255,6 @@
                                     <button class="btn btn-info col" type="button"> Devices</button>
                                 </a>
                             </li>
-<!--                             <div  class="nav-link">
-                                <button class="btn btn-info col">
-                                    <span>Drag & Drop: Apparaten</span>
-                                    <span style="display:none">Close</span>
-                                </button>
-                                    <ol id="list" class="nav flex-column">
-                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
-                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
-                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
-                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
-                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
-                                        <li class="nav-item"><img src="https://en.js.cx/clipart/ball.svg" class="draggable"></li>
-                                    </ol>
-                            </div> -->
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'out')">
                                     <button class="btn btn-danger col" type="button"> Logout</button>
