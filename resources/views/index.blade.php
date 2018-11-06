@@ -178,7 +178,7 @@
     </div>
 </script>
 <script type="text/html" id="blueprintPage">
-    <select data-bind= "options: blueprintData,
+    <select data-bind= "options: $data.blueprintData,
                         optionsText: 'name',
                         value: currentBlueprint,
                         event:{ change:$root.selectFunc}">
