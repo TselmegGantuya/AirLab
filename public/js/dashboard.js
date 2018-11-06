@@ -10,7 +10,7 @@ var dashModel = function (){
   self.blueprintDev = ko.observableArray() 
   self.devices = ko.observableArray()
   self.dev_id = ko.observable() 
-  self.currentBlueprint = ko.observable({ id:'1', name:'example', path:'/AjZx9PYst2lIXcg7ASdBwYTBBm2ZIH17yz9UE7el.jpeg'})
+  self.currentBlueprint = ko.observable()
 
   if (localStorage.getItem('token'))
   {
@@ -134,6 +134,10 @@ var dashModel = function (){
 	 */
 	self.enterPage = function () {
 			$.get(base_url + '/api/blueprint/get').done(function(data){
+        for (var i = 0, d; d = data[i]; i++) {
+          self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+          console.log(self.blueprintData())
+        }
 					var cv = document.getElementById("currentBP");
 					var ctx = cv.getContext("2d");
 					var dataPath = data[0].path;

@@ -103,15 +103,9 @@ class BlueprintController extends Controller
      */
     public function getUserDevices()
     {
-        $devices = Device::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-
-        $organization = Organization::where('name', '=', $userInfo['name'])->first();
+        $user = auth()->user();
         $devices = Device::where([
-            ['organization_id', '=', $organization->id],
+            ['organization_id', '=', $user['organization_id']],
         ])->whereNull(
             'left_pixel'
         )->get();
@@ -125,15 +119,9 @@ class BlueprintController extends Controller
      */
     public function getUserDBDevices()
     {
-        $devices = Device::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-
-        $organization = Organization::where('name', '=', $userInfo['name'])->first();
+        $user = auth()->user();
         $devices = Device::where([
-            ['organization_id', '=', $organization->id],
+            ['organization_id', '=', $user['organization_id']],
         ])->whereNotNull(
             'left_pixel'
         )->get();
