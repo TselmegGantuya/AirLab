@@ -14,7 +14,7 @@ class AddRolesToUsers extends Migration
     public function up()
     {
         Schema::table('users', function($table) {
-            $table->integer('role')->after('id');
+            $table->integer('role')->after('id')->default('1');
 
         });
     }
