@@ -178,29 +178,51 @@
     </div>
 </script>
 <script type="text/html" id="blueprintPage">
-    <select data-bind= "options: blueprintData,
-                        optionsText: 'name',
-                        value: currentBlueprint,
-                        event:{ change:$root.selectFunc}">
-    </select>
-    <form>
-        <input type = "text" id = "changeName">
-        <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
-    </form>
-    <a href="#" data-bind="click:deleteBP">delete</a>
-    <div id="bp">
-        <canvas id="currentBP" width="1000" height="500"  class="droppable"></canvas>    
-    </div>
-    <ul class="nav flex-column">
-        <div data-bind="foreach: $root.devices" class="nav-item">
-            <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger"></li>
+    <div class="row">
+        <div class="col align-self-end">
+        <div class="btn-group float-right mt-2" role="group">
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
         </div>
-    </ul>
-       
-    <form enctype="multipart/form-data" id = "uploadForm">
-        <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
-    </form>
-    <canvas id="background" width="1000" height="1000" ></canvas>
+        </div>
+    </div>
+    <div data-bind="if: setBlueprint">
+        <select data-bind= "options: blueprintData,
+                            optionsText: 'name',
+                            value: currentBlueprint,
+                            event:{ change:$root.selectFunc}">
+        </select>
+        <form>
+            <input type = "text" id = "changeName">
+            <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
+        </form>
+        <a href="#" data-bind="click:deleteBP">delete</a>
+        <div id="bp">
+            <canvas id="currentBP" width="1000" height="500"  class="droppable"></canvas>    
+        </div>
+        <ul class="nav flex-column">
+            <div data-bind="foreach: $root.devices" class="nav-item">
+                <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger"></li>
+            </div>
+        </ul>
+           
+        <form enctype="multipart/form-data" id = "uploadForm">
+            <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+        </form>
+        <canvas id="background" width="1000" height="1000" ></canvas>
+    </div>
+    <!-- ALL devices [LARS] -->
+    <div data-bind="if: setColorDevices" style="max-width:1000px;" class="mt-4">
+        <div data-bind="foreach: allColorDevices" class="card-columns">
+            <div class="card text-white  mb-3" data-bind="css: $data.color " style="max-width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title d-inline" data-bind="text: $data.name"></h5>
+                    <!-- <a data-toggle="modal" data-target="#editNameModal" data-id="bla"><i class="fas fa-edit d-inline float-right"></i></a>-->
+                    <p class="card-text" data-bind="text: $data.message"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 </script>
 
 <script type="text/html" id="loginPage">

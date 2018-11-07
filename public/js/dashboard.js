@@ -6,9 +6,14 @@ var dashModel = function (){
   var self = this
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
+  self.setColorDevices = ko.observable(false)
+  self.setBlueprint = ko.observable(true)
   self.token = ko.observable()
   self.blueprintData = ko.observableArray() 
   self.devices = ko.observableArray()
+  self.user = ko.observableArray()
+  self.allColorDevices = ko.observableArray()
+  self.lastRecord = ko.observableArray()
   self.currentBlueprint = ko.observable({ id:'1', name:'example', path:'/AjZx9PYst2lIXcg7ASdBwYTBBm2ZIH17yz9UE7el.jpeg'})
   if (localStorage.getItem('token'))
   {
@@ -57,7 +62,30 @@ var dashModel = function (){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
   }
 
+  /* START CODE LARS */
+  self.getColorDevices = function(){
+    self.setColorDevices(true);
+    self.setBlueprint(false);
+  }
 
+  self.getBlueprint = function(){
+    self.setBlueprint(true);
+    self.setColorDevices(false);
+  }
+
+  self.colorDevices = function(){
+    $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.user(data)
+        //get devices with organization
+        $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
+              .done(function(data){
+              self.allColorDevices(data)
+              console.log(data);
+          })
+      })
+  }
+  self.colorDevices()
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
     let oldie = self.currentBlueprint()
@@ -131,10 +159,10 @@ var dashModel = function (){
  * @return {[type]} [description]
  */
   self.enterPage = function () {
+    
     $.post(base_url + '/api/blueprint/devices/get').done(function(data) {
         self.devices(data)
         console.log(data)
-        
     })
     $.get(base_url + '/api/blueprint/get').done(function(data){
       for (var i = 0, d; d = data[i]; i++) {
@@ -248,6 +276,7 @@ var dashModel = function (){
         })
     }
     self.enterPage()
+
 
 
 
