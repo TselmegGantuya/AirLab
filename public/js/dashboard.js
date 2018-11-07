@@ -60,6 +60,8 @@ var dashModel = function (){
   }
 
 
+
+
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
     let oldie = self.currentBlueprint()
@@ -138,21 +140,7 @@ var dashModel = function (){
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
           console.log(self.blueprintData())
         }
-					var cv = document.getElementById("currentBP");
-					var ctx = cv.getContext("2d");
-					var dataPath = data[0].path;
-					var path = dataPath.replace('public/', '');
-
-					let img = new Image();
-					img.src = base_url + '/storage/' + path
-					img.addEventListener("load", function() {
-							ctx.drawImage(img, 
-								cv.width / 2 - img.width / 2,
-								cv.height / 2 - img.height / 2
-							);
-					});
-
-					document.addEventListener('mousedown', function(event) {
+					$('.btn-circle').addEventListener('mousedown', function(event) {
 						event.preventDefault()
 						let dragElement = event.target.closest('.draggable');
 						// dragElement.onmouseover = function(){ alert('hovered over me')};

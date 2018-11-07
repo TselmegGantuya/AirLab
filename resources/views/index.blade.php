@@ -184,7 +184,7 @@
                         event:{ change:$root.selectFunc}">
     </select>
 
-    <form>
+    <form id="changeNameID">
         <input type = "text" id = "changeName">
         <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
     </form>
