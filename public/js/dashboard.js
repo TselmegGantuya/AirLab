@@ -140,7 +140,7 @@ var dashModel = function (){
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
           console.log(self.blueprintData())
         }
-					$('.btn-circle').addEventListener('mousedown', function(event) {
+					document.addEventListener('mousedown', function(event) {
 						event.preventDefault()
 						let dragElement = event.target.closest('.draggable');
 						// dragElement.onmouseover = function(){ alert('hovered over me')};
