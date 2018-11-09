@@ -191,9 +191,16 @@
 
     <a href="#" data-bind="click:deleteBP">delete</a>
 
-    <div id="bp">
-        <canvas style="background:green" id="currentBP" width="1000" height="500"  class="droppable" onmouseover="console.log('green!')"></canvas>    
+    <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
+        <button class="btn btn-info col" type="button">Start Drag n Drop</button>
+    </a>
+
+    <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)"
+    >
+        <canvas style="background:green" id="currentBP" width="1000" height="500"></canvas>  
     </div>
+
+    <div id="drip" ondrop="drop(event)" ondragover="allowDrop(event)" onmouseover="console.log('green!')"></div>
 
     <ul class="nav flex-column">
         <div data-bind="foreach: $root.blueprintDev" class="nav-item">

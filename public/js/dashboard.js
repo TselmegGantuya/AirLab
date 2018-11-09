@@ -10,12 +10,22 @@ var dashModel = function (){
   self.blueprintDev = ko.observableArray() 
   self.devices = ko.observableArray()
   self.dev_id = ko.observable() 
-  self.currentBlueprint = ko.observable({ id:'1', name:'example', path:'/AjZx9PYst2lIXcg7ASdBwYTBBm2ZIH17yz9UE7el.jpeg'})
+  self.button = ko.observable() 
+  self.currentBlueprint = ko.observable()
 
+  /**
+   * Token
+   */
   if (localStorage.getItem('token'))
   {
     self.token(localStorage.getItem('token'))
   }
+
+  /**
+   * Switching between models
+   * @param  {[type]} data [description]
+   * @return {[type]}      [description]
+   */
   self.loadModel = function(data) {
     switch(data) {
       case 'dash':
@@ -39,7 +49,12 @@ var dashModel = function (){
         ko.applyBindings(newModel)
         break
     }
-  }  
+  }
+
+  /**
+   * [selectFunc description]
+   * @return {[type]} [description]
+   */
   self.selectFunc = function(){
     let canvas = document.getElementById("currentBP")
     let context = canvas.getContext("2d")
@@ -55,11 +70,19 @@ var dashModel = function (){
       )
     })
   }
+
+  /**
+   * Delete blueprint
+   * @return {[type]} [description]
+   */
   self.deleteBP = function(){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
   }
 
-
+  /**
+   * Change blueprint name
+   * @return {[type]} [description]
+   */
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
     let oldie = self.currentBlueprint()
@@ -81,7 +104,6 @@ var dashModel = function (){
     var canvas = document.getElementById('background')
   	var context = canvas.getContext('2d')
     for (var i = 0, f; f = files[i]; i++) {
-
       // Only process image files.
       if (!f.type.match('image.*')) {
         continue
@@ -129,6 +151,47 @@ var dashModel = function (){
 	self.getDevices()
 
 	/**
+	 * First get devices from DB then create element of devices with pixels and append to HTML
+	 * @return {[type]} [description]
+	 */
+	self.blueprintdash = function () {
+		// request to get devices where top_pixel and left_pixel are not equal to null
+		$.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
+			self.devices(data)
+			data.forEach(function(element) {
+				var btn = document.createElement("BUTTON");
+				// var t = document.createTextNode(element.name);
+				let toppixel = element.top_pixel - 79
+
+				btn.setAttribute("data-toggle", "popover");
+				btn.style.position = 'absolute';
+				btn.className = "btn btn-info draggable btn-circle drag-drop";
+				btn.id = element.id;
+				self.dev_id(btn.id)
+				btn.style.left = element.left_pixel +'px';
+				btn.style.top = toppixel +'px';
+				// btn.appendChild(t);
+				document.getElementById("bp").appendChild(btn);
+				// jquery popover method. Return device name when hovered over 
+				$('[data-toggle="popover"]').popover({
+				  placement: 'top',
+				  animation: true,
+					trigger: 'focus',
+					title: "Device",
+					content: function() {
+						if (element.id == btn.id) {
+							// dev = []
+							// dev.push(element.name, element.id)
+							return element.name
+						}
+					},
+				})
+			})
+		})
+	}
+// self.blueprintdash()
+
+	/**
 	 * Display blueprint and drag n drop devices onto blueprint
 	 * @return {[type]} [description]
 	 */
@@ -137,18 +200,21 @@ var dashModel = function (){
 		$.get(base_url + '/api/blueprint/get').done(function(data){
 	    for (var i = 0, d; d = data[i]; i++) {
 	      self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
-	      console.log(self.blueprintData())
+	      // console.log(self.blueprintData())
 	    }
+	    self.blueprintdash()
+	    console.log('jiji')
+		})
+	}
+	self.enterPage()
 
-	    // var dragdrop = document.getElementsByClassName('.drag-drop')
-	    // console.log(dragdrop)
-			document.addEventListener('mousedown', function(event) {
-				event.preventDefault()
+	self.dragNDropLogic = function () {
+			$('.draggable').mousedown(function(event) {
 				let dragElement = event.target.closest('.draggable');
 				if (!dragElement) return;
 				let coords, shiftX, shiftY;
 				startDrag(event.clientX, event.clientY);
-				document.addEventListener('mousemove', onMouseMove);
+				dragElement.addEventListener('mousemove', onMouseMove);
 
 				// on drag start:
 				//   remember the initial shift
@@ -156,6 +222,7 @@ var dashModel = function (){
 				function startDrag(clientX, clientY) {
 					shiftX = clientX - dragElement.getBoundingClientRect().left;
 					shiftY = clientY - dragElement.getBoundingClientRect().top;
+					
 					// dragElement.className = "btn btn-info draggable btn-dev";
 					dragElement.style.position = 'fixed';
 					document.body.append(dragElement);
@@ -168,20 +235,19 @@ var dashModel = function (){
 					dragElement.style.left = parseInt(dragElement.style.left) + pageXOffset + 'px';
 					dragElement.style.position = 'absolute';
 					dragElement.className = "btn btn-info draggable btn-circle drag-drop";
-					document.removeEventListener('mousemove', onMouseMove);
+					dragElement.removeEventListener('mousemove', onMouseMove);
 					dragElement.onmouseup = null;
-					$.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: data[0].id, device_id: dragElement.id}]}).done(function(data) {})
+					$.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]}).done(function(data) {})
 				}
 
 				// method to what happens when device is not clicked
 				dragElement.onmouseup = function(event) {
-					event.preventDefault();
+					event.preventDefault()
 					finishDrag();
 				}
 
 				// When mouse is moving 
 				function onMouseMove(event) {
-					event.preventDefault();
 					moveAt(event.clientX, event.clientY);
 				}
 				
@@ -229,48 +295,5 @@ var dashModel = function (){
 					dragElement.style.top = newY + 'px';
 				}
 			})
-		})
 	}
-	self.enterPage()
-
-	/**
-	 * First get devices from DB then create element of devices with pixels and append to HTML
-	 * @return {[type]} [description]
-	 */
-	self.blueprintdash = function () {
-		// request to get devices where top_pixel and left_pixel are not equal to null
-		$.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
-			data.forEach(function(element) {
-				var btn = document.createElement("BUTTON");
-				// var t = document.createTextNode(element.name);
-				let toppixel = element.top_pixel - 79
-
-				btn.setAttribute("data-toggle", "popover");
-				btn.style.position = 'absolute';
-				btn.className = "btn btn-info draggable btn-circle drag-drop";
-				btn.id = element.id;
-				self.dev_id(btn.id)
-				btn.style.left = element.left_pixel +'px';
-				btn.style.top = toppixel +'px';
-				// btn.appendChild(t);
-				document.getElementById("bp").appendChild(btn);
-
-				// jquery popover method. Return device name when hovered over 
-				$('[data-toggle="popover"]').popover({
-				  placement: 'top',
-				  animation: true,
-					trigger: 'hover',
-					title: "Device",
-					content: function() {
-						if (element.id == btn.id) {
-							// dev = []
-							// dev.push(element.name, element.id)
-							return element.name
-						}
-					},
-				})
-			})
-		})
-	}
-	self.blueprintdash()
 }
