@@ -7,9 +7,9 @@ var dashModel = function (){
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
   self.token = ko.observable()
-  self.blueprintData = ko.observableArray() 
+  self.blueprintData = ko.observableArray()
   self.devices = ko.observableArray()
-  self.currentBlueprint = ko.observable({ id:'1', name:'example', path:'/AjZx9PYst2lIXcg7ASdBwYTBBm2ZIH17yz9UE7el.jpeg'})
+  self.currentBlueprint = ko.observable(false)
   if (localStorage.getItem('token'))
   {
     self.token(localStorage.getItem('token'))
@@ -37,7 +37,7 @@ var dashModel = function (){
         ko.applyBindings(newModel)
         break
     }
-  }  
+  }
   self.selectFunc = function(){
     let canvas = document.getElementById("currentBP")
     let context = canvas.getContext("2d")
@@ -47,7 +47,7 @@ var dashModel = function (){
     let img = new Image()
     img.src = base_url + '/storage/' + path
     img.addEventListener("load", function() {
-      context.drawImage(img, 
+      context.drawImage(img,
       canvas.width / 2 - img.width / 2,
       canvas.height / 2 - img.height / 2
       )
@@ -67,7 +67,7 @@ var dashModel = function (){
       console.log(self.blueprintData())
     })
   }
-  
+
   /**
   *
   *   Upload image
@@ -134,7 +134,7 @@ var dashModel = function (){
     $.post(base_url + '/api/blueprint/devices/get').done(function(data) {
         self.devices(data)
         console.log(data)
-        
+
     })
     $.get(base_url + '/api/blueprint/get').done(function(data){
       for (var i = 0, d; d = data[i]; i++) {
