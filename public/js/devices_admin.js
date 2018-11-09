@@ -119,7 +119,7 @@ var adminDevicesModel = function (){
    if (selectedItems != 0) {
      $.post(base_url + '/api/uhoo/addDeviceOrg' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
        if (data == 1) {
-         console.log('privjet')
+
          $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
            console.log(data)
            if(data != '' ){
