@@ -58,9 +58,8 @@ class ApiController extends Controller
     {
       if ($request->id) {
         $orgDevices = Device::where('organization_id', $request->id)->get();
-        dd($orgDevices);
       }
-      // return $orgDevices;
+        return $orgDevices;
     }
 
     /**
@@ -123,7 +122,7 @@ class ApiController extends Controller
             $user->fill([
                 'password' => Hash::make($request->get('new_password'))
             ])->save();
-            
+
             // $request->session()->flash('success', 'Your password has been changed.');
         }
 
@@ -152,7 +151,7 @@ class ApiController extends Controller
 
     /**
      * Display record details
-     * 
+     *
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
@@ -165,7 +164,7 @@ class ApiController extends Controller
         // return response()->json($record);
         return $record;
     }
-    
+
     /**
      * Display all devices
      *
@@ -185,7 +184,7 @@ class ApiController extends Controller
     //     }
     //     return $devices;
     // }
-   
+
     /**
      * Display all records that belongs to logged in user.
      *
@@ -237,7 +236,7 @@ class ApiController extends Controller
             $orgDevices = Device::where('organization_id', $request->id)->get();
             $orgDeviceData = array();
             foreach ($orgDevices as $device) {
-            
+
                 $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
                 if(isset($deviceData)){
                     $color = "bg-success";

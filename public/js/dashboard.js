@@ -5,6 +5,8 @@ var dashModel = function (){
   var self = this
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
+  self.setColorDevices = ko.observable(false)
+  self.setBlueprint = ko.observable(true)
   self.token = ko.observable()
   self.blueprintData = ko.observableArray() 
   self.blueprintDev = ko.observableArray() 
@@ -12,7 +14,9 @@ var dashModel = function (){
   self.dev_id = ko.observable() 
   self.button = ko.observable() 
   self.currentBlueprint = ko.observable()
-
+  self.user = ko.observableArray()
+  self.allColorDevices = ko.observableArray()
+  self.lastRecord = ko.observableArray()
   /**
    * Token
    */
@@ -64,7 +68,7 @@ var dashModel = function (){
     let img = new Image()
     img.src = base_url + '/storage/' + path
     img.addEventListener("load", function() {
-      context.drawImage(img, 
+      context.drawImage(img,
       canvas.width / 2 - img.width / 2,
       canvas.height / 2 - img.height / 2
       )
@@ -79,6 +83,32 @@ var dashModel = function (){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
   }
 
+
+
+  /* START CODE LARS */
+  self.getColorDevices = function(){
+    self.setColorDevices(true);
+    self.setBlueprint(false);
+  }
+
+  self.getBlueprint = function(){
+    self.setBlueprint(true);
+    self.setColorDevices(false);
+  }
+
+  self.colorDevices = function(){
+    $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.user(data)
+        //get devices with organization
+        $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
+              .done(function(data){
+              self.allColorDevices(data)
+              console.log(data);
+          })
+      })
+  }
+  self.colorDevices()
   /**
    * Change blueprint name
    * @return {[type]} [description]
@@ -93,7 +123,7 @@ var dashModel = function (){
       console.log(self.blueprintData())
     })
   }
-  
+
   /**
   *
   *   Upload image
@@ -162,7 +192,6 @@ var dashModel = function (){
 				var btn = document.createElement("BUTTON");
 				// var t = document.createTextNode(element.name);
 				let toppixel = element.top_pixel - 79
-
 				btn.setAttribute("data-toggle", "popover");
 				btn.style.position = 'absolute';
 				btn.className = "btn btn-info draggable btn-circle drag-drop";
@@ -189,25 +218,6 @@ var dashModel = function (){
 			})
 		})
 	}
-// self.blueprintdash()
-
-	/**
-	 * Display blueprint and drag n drop devices onto blueprint
-	 * @return {[type]} [description]
-	 */
-	self.enterPage = function () {
-		// request to get user's blueprint from DB
-		$.get(base_url + '/api/blueprint/get').done(function(data){
-	    for (var i = 0, d; d = data[i]; i++) {
-	      self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
-	      // console.log(self.blueprintData())
-	    }
-	    self.blueprintdash()
-	    console.log('jiji')
-		})
-	}
-	self.enterPage()
-
 	self.dragNDropLogic = function () {
 			$('.draggable').mousedown(function(event) {
 				let dragElement = event.target.closest('.draggable');
@@ -296,4 +306,21 @@ var dashModel = function (){
 				}
 			})
 	}
+  
+    /**
+   * Display blueprint and drag n drop devices onto blueprint
+   * @return {[type]} [description]
+   */
+  self.enterPage = function () {
+    // request to get user's blueprint from DB
+    $.get(base_url + '/api/blueprint/get').done(function(data){
+      for (var i = 0, d; d = data[i]; i++) {
+        self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+        // console.log(self.blueprintData())
+      }
+      self.blueprintdash()
+      console.log('jiji')
+    })
+  }
+  self.enterPage()
 }

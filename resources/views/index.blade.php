@@ -26,12 +26,12 @@
                 <a href="#" data-bind="click: openBtn">
                     <button type="button" class="btn btn-outline-dark">Change Password</button>
                 </a>
-                <!--                         
+                <!--
                 <a href="">
-                    <button type="button" class="btn btn-outline-dark">Change Email</button>                            
+                    <button type="button" class="btn btn-outline-dark">Change Email</button>
                 </a> -->
             </div>
-        </div>  
+        </div>
         <div class="modal-body">
             <div class="modal-body form-horizontal">
                 <form data-bind="submit: saveToPhp" id="pass_form">
@@ -68,9 +68,9 @@
 <script type="text/html" id="deviceTemplate">
     <p>Devices</p>
     <!--Admin device to organization-->
-    <div class="container">
+    <div class="container" style="min-width:800px;">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-4">
                 <div class="card" style="margin:50px 0">
                     <!-- Default panel contents -->
                     <div class="card-header">Organizations</div>
@@ -87,48 +87,49 @@
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
-    <div data-bind='visible: showOrgDevices' class="col-md-12">
-        <div class="card" style="margin:50px 0">
-            <!-- Default panel contents -->
-            <div class="card-header">Devices from organization</div>
-            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
-              <div data-bind="foreach: devicesOrganization">
-                <li class="list-group-item">
-                    <span data-bind="text: $data.name"></span>
-                    <label class="checkbox">
-                        <input type="checkbox" data-bind="value: id" name="devicesOrganization" />
-                        <span class="success"></span>
-                    </label>
-                </li>
-              </div>
-            </ul>
-            <div class="card-footer">
-              <button class="btn btn-danger" data-bind="click: devicesOwner" type="button" name="button">Delete</button>
+
+            <div data-bind='visible: showOrgDevices' class="col-md-4">
+                <div class="card" style="margin:50px 0">
+                    <!-- Default panel contents -->
+                    <div class="card-header">Devices from organization</div>
+                    <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                      <div data-bind="foreach: devicesOrganization">
+                        <li class="list-group-item">
+                            <span data-bind="text: $data.name"></span>
+                            <label class="checkbox">
+                                <input type="checkbox" data-bind="value: id" name="devicesOrganization" />
+                                <span class="success"></span>
+                            </label>
+                        </li>
+                      </div>
+                    </ul>
+                    <div class="card-footer">
+                      <button class="btn btn-danger" data-bind="click: devicesOwner" type="button" name="button">Delete</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div data-bind='visible: showNewDevices' class="col-md-12">
-        <div class="card" style="margin:50px 0">
-            <!-- Default panel contents -->
-            <div class="card-header">New devices</div>
-            <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
-              <div data-bind="foreach: newDevices">
-                <li class="list-group-item">
-                    <span data-bind="text: $data.name"></span>
-                    <label class="checkbox">
-                        <input type="checkbox" data-bind="value: id" name="newDevices" />
-                        <span class="success"></span>
-                    </label>
-                </li>
-              </div>
-            </ul>
-            <div class="card-footer">
-              <button class="btn btn-primary" data-bind="click: newDevice" type="button" name="button">Save</button>
+            <div data-bind='visible: showNewDevices' class="col-md-4">
+                <div class="card" style="margin:50px 0">
+                    <!-- Default panel contents -->
+                    <div class="card-header">New devices</div>
+                    <ul class="list-group list-group-flush" style="overflow: auto; height: 15em;">
+                      <div data-bind="foreach: newDevices">
+                        <li class="list-group-item">
+                            <span data-bind="text: $data.name"></span>
+                            <label class="checkbox">
+                                <input type="checkbox" data-bind="value: id" name="newDevices" />
+                                <span class="success"></span>
+                            </label>
+                        </li>
+                      </div>
+                    </ul>
+                    <div class="card-footer">
+                      <button class="btn btn-primary" data-bind="click: newDevice" type="button" name="button">Save</button>
+                    </div>
+                </div>
             </div>
+          </div>
         </div>
-    </div>
 
 </script>
 <script type="text/html" id ="recordsTemplate">
@@ -178,41 +179,64 @@
     </div>
 </script>
 <script type="text/html" id="blueprintPage">
-    <select data-bind= "options: $data.blueprintData,
-                        optionsText: 'name',
-                        value: currentBlueprint,
-                        event:{ change:$root.selectFunc}">
-    </select>
 
-    <form>
-        <input type = "text" id = "changeName">
-        <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
-    </form>
+    <div class="row">
+        <div class="col align-self-end">
+        <div class="btn-group float-right mt-2" role="group">
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
+        </div>
+        </div>
+    </div>
+    <div data-bind="if: setBlueprint">
+        <select data-bind= "options: $data.blueprintData,
+                            optionsText: 'name',
+                            value: currentBlueprint,
+                            event:{ change:$root.selectFunc}">
+        </select>
 
-    <a href="#" data-bind="click:deleteBP">delete</a>
+        <form>
+            <input type = "text" id = "changeName">
+            <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
+        </form>
 
-    <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
-        <button class="btn btn-info col" type="button">Start Drag n Drop</button>
-    </a>
+        <a href="#" data-bind="click:deleteBP">delete</a>
 
-    <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)"
-    >
-        <canvas style="background:green" id="currentBP" width="1000" height="500"></canvas>  
+        <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
+            <button class="btn btn-info col" type="button">Start Drag n Drop</button>
+        </a>
+
+        <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)"
+        >
+            <canvas style="background:green" id="currentBP" width="1000" height="500"></canvas>  
+        </div>
+
+        <div id="drip" ondrop="drop(event)" ondragover="allowDrop(event)" onmouseover="console.log('green!')"></div>
+
+        <ul class="nav flex-column">
+            <div data-bind="foreach: $root.blueprintDev" class="nav-item">
+                    <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger drag-drop"></li>
+            </div>
+        </ul>
+        <br>
+        
+        <form enctype="multipart/form-data" id = "uploadForm">
+            <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+        </form>
+        <canvas id="background" width="1000" height="1000" ></canvas>
     </div>
 
-    <div id="drip" ondrop="drop(event)" ondragover="allowDrop(event)" onmouseover="console.log('green!')"></div>
-
-    <ul class="nav flex-column">
-        <div data-bind="foreach: $root.blueprintDev" class="nav-item">
-                <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger drag-drop"></li>
+    <div data-bind="if: setColorDevices" style="max-width:1000px;" class="mt-4">
+        <div data-bind="foreach: allColorDevices" class="card-columns">
+            <div class="card text-white  mb-3" data-bind="css: $data.color " style="max-width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title d-inline" data-bind="text: $data.name"></h5>
+                    <!-- <a data-toggle="modal" data-target="#editNameModal" data-id="bla"><i class="fas fa-edit d-inline float-right"></i></a>-->
+                    <p class="card-text" data-bind="text: $data.message"></p>
+                </div>
+            </div>
         </div>
-    </ul>
-    <br>
-    
-    <form enctype="multipart/form-data" id = "uploadForm">
-        <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
-    </form>
-    <canvas id="background" width="1000" height="1000" ></canvas>
+    </div>
 </script>
 
 <script type="text/html" id="loginPage">

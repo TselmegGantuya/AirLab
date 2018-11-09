@@ -46,16 +46,16 @@ var adminDevicesModel = function (){
   * @return {[type]} [description]
   */
  self.organizationRadiobox = function(data,event) {
-
    self.showOrgDevices(false)
    self.showNewDevices(false)
    if (event.target.checked) {
      //id organization
+     console.log(event.target.value)
      self.orgId = event.target.value;
      //get all devices with no organization
      $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
 
-         if (data[0]['organization_id'] != null ){
+         if (data != '' && data[0]['organization_id'] != null ){
            self.devicesOrganization(data)
            self.showOrgDevices(!self.showOrgDevices());
          }
@@ -83,13 +83,14 @@ var adminDevicesModel = function (){
          $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
              if (data[0]['organization_id'] == null ){
                self.newDevices(data)
-               self.showNewDevices();
+               self.showNewDevices(true);
              }
              else {
                console.log('Geen nieuwe devices');
              }
          })
          $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
+           if(data != ''){
              if (data[0]['organization_id'] != null ){
                self.devicesOrganization(data)
                self.showOrgDevices(self.showOrgDevices());
@@ -97,6 +98,9 @@ var adminDevicesModel = function (){
              else {
                console.log('Geen nieuwe devices');
              }
+           }else {
+             self.showOrgDevices(false)
+           }
          })
        }else {
          console.log('Deleten niet gelukt')
@@ -115,19 +119,23 @@ var adminDevicesModel = function (){
    if (selectedItems != 0) {
      $.post(base_url + '/api/uhoo/addDeviceOrg' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
        if (data == 1) {
+         console.log('privjet')
          $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
+           console.log(data)
+           if(data != '' ){
+             console.log('test')
              if (data[0]['organization_id'] == null ){
                self.newDevices(data)
                self.showNewDevices();
              }
-             else {
-               console.log('Geen nieuwe devices');
-             }
+           }else {
+              self.showNewDevices(false);
+           }
          })
          $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
              if (data[0]['organization_id'] != null ){
                self.devicesOrganization(data)
-               self.showOrgDevices(self.showOrgDevices());
+               self.showOrgDevices(true);
              }
              else {
                console.log('Geen devices van organization');
