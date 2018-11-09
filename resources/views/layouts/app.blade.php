@@ -65,7 +65,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ url('js/knockout.js') }}" ></script>
     <script src="{{ url('js/require.js') }}" ></script>
-    <script src="{{ url('js/main.js') }}" ></script>
+
     <script src="{{ url('js/login.js') }}" ></script>
     <script src="{{ url('js/dashboard.js') }}" ></script>
     <script src="{{ url('js/profile.js') }}" ></script>
