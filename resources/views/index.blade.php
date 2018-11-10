@@ -180,14 +180,13 @@
 </script>
 <script type="text/html" id="blueprintPage">
 
-    <div class="row">
         <div class="col align-self-end">
-        <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
+            <div class="btn-group float-right mt-2" role="group">
+                <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
+                <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
+            </div>
         </div>
-        </div>
-    </div>
+
     <div data-bind="if: setBlueprint">
         <select data-bind= "options: $data.blueprintData,
                             optionsText: 'name',
@@ -200,18 +199,17 @@
             <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
         </form>
 
-        <a href="#" data-bind="click:deleteBP">delete</a>
+        <a href="#" data-bind="click:deleteBP">delete</a><br>
 
-        <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
-            <button class="btn btn-info col" type="button">Start Drag n Drop</button>
+        <a href="#" data-bind="click: dragNDropLogic">
+            <button class="btn btn-info col-md-2" type="button">Start Drag n Drop</button>
         </a>
 
-        <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)"
-        >
-            <canvas style="background:green" id="currentBP" width="1000" height="500"></canvas>  
+        <div id="canvas_margin" class="droppable" style="background:green">
+            <div id="bp">
+                <canvas class="droppable" id="currentBP" width="1000" height="500"></canvas>  
+            </div>
         </div>
-
-        <div id="drip" ondrop="drop(event)" ondragover="allowDrop(event)" onmouseover="console.log('green!')"></div>
 
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDev" class="nav-item">

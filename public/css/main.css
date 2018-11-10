@@ -34,12 +34,10 @@
 }
 
 .btn-circle {
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
     text-align: center;
-    color: black;
-    font-size: 10px;
 }
 
 .btn-dev {
@@ -47,13 +45,12 @@
     height: 30px;
     border-radius: 15px;
     text-align: center;
-    font-size: 5px;
     background-color: black;
 }
-  #drip {
-    width: 200px;
-    height: 100px;
-    background: blueviolet;
+  #canvas_margin {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 25px;
   }
