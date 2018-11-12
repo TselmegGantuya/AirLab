@@ -32,6 +32,11 @@ var adminDevicesModel = function (){
         var newModel = new logoutModel()
         ko.applyBindings(newModel)
         break;
+      case 'statData':
+        ko.cleanNode($("#main")[0])
+        var newModel = new staticDataModel()
+        ko.applyBindings(newModel)
+        break;
     }
   }
  self.getOrganizations = function(){

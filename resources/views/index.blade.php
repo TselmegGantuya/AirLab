@@ -183,12 +183,12 @@
     <div class="row">
         <div class="col align-self-end">
         <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
             <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
         </div>
         </div>
     </div>
-    <div data-bind="if: setBlueprint">
+    <div>
         <select data-bind= "options: $data.blueprintData,
                             optionsText: 'name',
                             value: currentBlueprint,
@@ -226,7 +226,18 @@
         <canvas id="background" width="1000" height="1000" ></canvas>
     </div>
 
-    <div data-bind="if: setColorDevices" style="max-width:1000px;" class="mt-4">
+    
+</script>
+<script type="text/html" id="staticDataPage">
+    <div class="row">
+        <div class="col align-self-end">
+        <div class="btn-group float-right mt-2" role="group">
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
+        </div>
+        </div>
+    </div>
+    <div style="max-width:1000px;" class="mt-4">
         <div data-bind="foreach: allColorDevices" class="card-columns">
             <div class="card text-white  mb-3" data-bind="css: $data.color " style="max-width: 18rem;">
                 <div class="card-body">
@@ -238,7 +249,6 @@
         </div>
     </div>
 </script>
-
 <script type="text/html" id="loginPage">
     <div class="text-center" id ="loginCont">
         <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
