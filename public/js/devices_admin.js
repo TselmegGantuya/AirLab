@@ -7,6 +7,10 @@ var adminDevicesModel = function (){
   self.newDevices = ko.observableArray()
   self.showOrgDevices = ko.observable(false)
   self.showNewDevices = ko.observable(false)
+  self.showAdminPart = ko.observable(false)
+  self.token = ko.observable()
+  self.user = ko.observableArray()
+  self.allUserDevices = ko.observableArray()
   self.orgId = ko.observable()
   /*START STEFAN CODE*/
 
@@ -39,10 +43,18 @@ var adminDevicesModel = function (){
         break;
     }
   }
+  
+  /**
+   * Token
+   */
+  if (localStorage.getItem('token'))
+  {
+    self.token(localStorage.getItem('token'))
+  }
+
  self.getOrganizations = function(){
      $.post(base_url + '/api/uhoo/organizations').done(function(data){
          self.organization(data)
-         console.log(self.organization())
      })
  }
  self.getOrganizations()
@@ -153,4 +165,24 @@ var adminDevicesModel = function (){
    }
  }
  /*END STEFAN CODE*/
+
+ /*START CODE LARS */
+ self.getUserDevices = function(){
+    $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.user(data)
+        if(self.user().role == 1){
+          self.showAdminPart(false)
+          $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.user().organization_id}).done(function(data){
+           self.allUserDevices(data)
+           console.log(data)
+         })
+        }else if(self.user().role == 2){
+          self.showAdminPart(true)
+        }
+
+      })
+  }
+  self.getUserDevices()
+ /*END CODE LARS*/
 }

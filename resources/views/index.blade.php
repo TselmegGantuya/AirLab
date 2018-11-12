@@ -68,7 +68,7 @@
 <script type="text/html" id="deviceTemplate">
     <p>Devices</p>
     <!--Admin device to organization-->
-    <div class="container" style="min-width:800px;">
+    <div class="container" style="min-width:800px;" data-bind="if: showAdminPart">
         <div class="row">
             <div class="col-md-4">
                 <div class="card" style="margin:50px 0">
@@ -130,7 +130,22 @@
             </div>
           </div>
         </div>
-
+        <div class="container" style="min-width:800px;" data-bind="if: !showAdminPart()">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Serial number</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: allUserDevices" >
+                    <tr>
+                        <td data-bind="text:name"></td>
+                        <td data-bind="text:serial_number"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 </script>
 <script type="text/html" id ="recordsTemplate">
     <p>Records</p>
