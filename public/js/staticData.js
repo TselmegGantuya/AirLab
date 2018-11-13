@@ -8,7 +8,9 @@ var staticDataModel = function (){
   self.showOrgDevices = ko.observable(false)
   self.showNewDevices = ko.observable(false)
   self.orgId = ko.observable()
-  
+  self.user = ko.observableArray()
+  self.allColorDevices = ko.observableArray()
+  self.token = ko.observable()
 
   self.loadModel = function(data) {
     switch(data) {
@@ -39,5 +41,26 @@ var staticDataModel = function (){
         break;
     }
   }
-  
+  /* START CODE LARS */
+  /**
+   * Token
+   */
+  if (localStorage.getItem('token'))
+  {
+    self.token(localStorage.getItem('token'))
+  }
+
+  self.colorDevices = function(){
+    $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.user(data)
+        //get devices with organization
+        $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
+              .done(function(data){
+              self.allColorDevices(data)
+              console.log(data);
+          })
+      })
+  }
+  self.colorDevices()
 }

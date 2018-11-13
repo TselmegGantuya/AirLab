@@ -199,7 +199,7 @@
         <div class="col align-self-end">
         <div class="btn-group float-right mt-2" role="group">
             <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
         </div>
         </div>
     </div>
@@ -247,8 +247,8 @@
     <div class="row">
         <div class="col align-self-end">
         <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
+            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
         </div>
         </div>
     </div>
