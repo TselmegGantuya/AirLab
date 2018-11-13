@@ -189,6 +189,10 @@ var adminDevicesModel = function (){
     $.post(base_url + '/api/uhoo/editDevice' ,{token: self.token(),id:data.id, name: data.name})
       .done(function(data){
         console.log(data);
+        if(data ){
+          swal("Success!", "Name has been changed!", "success");
+        }
+       
       })
   }
  /*END CODE LARS*/

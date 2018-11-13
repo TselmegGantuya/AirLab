@@ -198,37 +198,40 @@
 <script type="text/html" id="blueprintPage">
 
     <div class="row">
-        <div class="col align-self-end">
-        <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
+        <div class="col-md-4">
+            <form class="form-inline">
+                <input class="form-control mr-1" type = "text" id = "changeName">
+                <button type="button" class="btn btn-primary" data-bind="click:changeNameBTN">Change name</button>
+            </form>
         </div>
+        <div class="col-md-3" >
+            <div class="form-group">
+                <select class="form-control"data-bind= "options: $data.blueprintData,
+                        optionsText: 'name',
+                        value: currentBlueprint,
+                        event:{ change:$root.selectFunc}">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+                <button type="button"class="btn btn-danger" data-bind="click:deleteBP">Delete</button>
+        </div>
+        <div class="col-md-4">
+            <div class="btn-group float-right" role="group">
+                <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
+                <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
+            </div>
         </div>
     </div>
     <div>
-        <select data-bind= "options: $data.blueprintData,
-                            optionsText: 'name',
-                            value: currentBlueprint,
-                            event:{ change:$root.selectFunc}">
-        </select>
-
-        <form>
-            <input type = "text" id = "changeName">
-            <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
-        </form>
-
-        <a href="#" data-bind="click:deleteBP">delete</a>
-
         <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
-            <button class="btn btn-info col" type="button">Start Drag n Drop</button>
+            <button class="btn btn-primary col" type="button">Start Drag n Drop</button>
         </a>
 
         <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)"
         >
-            <canvas style="background:green" id="currentBP" width="1000" height="500"></canvas>  
+            <canvas style="background:white; border: solid 2px" id="currentBP" width="1000" height="500"></canvas>  
         </div>
-
-        <div id="drip" ondrop="drop(event)" ondragover="allowDrop(event)" onmouseover="console.log('green!')"></div>
 
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDev" class="nav-item">
@@ -237,8 +240,8 @@
         </ul>
         <br>
         
-        <form enctype="multipart/form-data" id = "uploadForm">
-            <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+        <form enctype="multipart/form-data" id = "uploadForm" class="form">
+            <input class="form-control" type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
         </form>
         <canvas id="background" width="1000" height="1000" ></canvas>
     </div>
@@ -248,9 +251,9 @@
 <script type="text/html" id="staticDataPage">
     <div class="row">
         <div class="col align-self-end">
-        <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
+        <div class="btn-group float-right " role="group">
+            <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
+            <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
         </div>
         </div>
     </div>
@@ -266,25 +269,23 @@
         </div>
     </div>
 </script>
-<script type="text/html" id="loginPage">
-    <div class="text-center" id ="loginCont">
-        <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
-
-        <div class="col-md-12 offset-md-4">
-
-                <form class="form-signin" >
-                    <div data-bind="foreach: currentPageData">
-                        <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name}">
-                    </div>
-                    <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken, text:loginButton"></button>
-                </form>
-                      <div class="form-row" data-bind="foreach: pages">
+<script type="text/html" id="loginPage" >
+    <div class="row justify-content-center" style="width: 1450px;">
+        <div class="col-md-3 col-of" id ="loginCont">
+            <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
+            <form class="form-signin" >
+                <div data-bind="foreach: currentPageData">
+                    <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name}">
+                </div>
+                <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken, text:loginButton"></button>
+            </form>
+            <div class="form-row" data-bind="foreach: pages">
                 <div class="col-md-12 mt-2">
                     <a href="#" class="form-control btn btn-info" data-bind="click: $root.choosePage.bind($data, name), text: name"></a>
                 </div>
             </div>
             <p class="mt-5 mb-3 text-muted">&copy; 2018 Air Lab</p>
-        <!-- </div> -->
+        </div>
     </div>
 </script>
 
@@ -317,7 +318,7 @@
                         </ul>
                     </div>
             </div>
-            <div data-bind="template:currentTemplate"></div>
+            <div data-bind="template:currentTemplate" ></div>
         </div>
     </div>
 </main>

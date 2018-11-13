@@ -279,7 +279,7 @@ class ApiController extends Controller
                 ->where('id', $id)
                 ->update(['name' => $name]);
         }
-        return 'Succes update!';
+        return 'Succes update! ';
     }
     /**
      * Method to get all devices tha belongs to logged in user

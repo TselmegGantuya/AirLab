@@ -86,6 +86,7 @@ var dashModel = function (){
    */
   self.deleteBP = function(){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
+    self.loadModel('dash')
   }
 
 
@@ -101,6 +102,7 @@ var dashModel = function (){
     $.post(base_url + "/api/blueprint/changeName",{name:$('#changeName').val(),id:id}).done(function(){
       self.blueprintData.replace(oldie,self.currentBlueprint())
       console.log(self.blueprintData())
+      self.loadModel('dash')
     })
   }
 
@@ -145,6 +147,7 @@ var dashModel = function (){
       // Read in the image file as a data URL.
       reader.readAsDataURL(f)
     }
+    self.loadModel('dash')
   }
 
 	/**
