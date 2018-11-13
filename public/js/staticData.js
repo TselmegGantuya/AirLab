@@ -11,6 +11,8 @@ var staticDataModel = function (){
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
   self.token = ko.observable()
+  self.userEmail = ko.observable()
+  self.userOrganization = ko.observable()
 
   self.loadModel = function(data) {
     switch(data) {
@@ -54,6 +56,7 @@ var staticDataModel = function (){
     $.post(base_url + '/api/me', {token: self.token()})
       .done(function(data){
         self.user(data)
+        console.log(data);
         //get devices with organization
         $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
               .done(function(data){
@@ -63,4 +66,9 @@ var staticDataModel = function (){
       })
   }
   self.colorDevices()
+  $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.userEmail(data.email)
+        self.userOrganization(data.name)
+      })
 }

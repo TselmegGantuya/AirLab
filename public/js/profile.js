@@ -16,6 +16,9 @@ var profileModel = function (){
   self.current_password = ko.observable()
   self.new_password = ko.observable()
   self.confirm_password = ko.observable()
+  self.userEmail = ko.observable()
+  self.userOrganization = ko.observable()
+  self.token = ko.observable()
 
 
   self.loadModel = function(data) {
@@ -51,6 +54,10 @@ var profileModel = function (){
    * [toggleVisibilityProfile description]
    * @return {[type]} [description]
    */
+   if (localStorage.getItem('token'))
+  {
+    self.token(localStorage.getItem('token'))
+  }
   self.enterPage = function() {
       $.post(base_url + '/api/me').done(function(data){
         console.log(data)
@@ -71,4 +78,9 @@ self.enterPage()
           console.log('Check PHP')
       })
   }
+  $.post(base_url + '/api/me', {token: self.token()})
+    .done(function(data){
+      self.userEmail(data.email)
+      self.userOrganization(data.name)
+    })
 }

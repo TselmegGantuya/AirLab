@@ -12,6 +12,8 @@ var adminDevicesModel = function (){
   self.user = ko.observableArray()
   self.allUserDevices = ko.observableArray()
   self.orgId = ko.observable()
+  self.userEmail = ko.observable()
+  self.userOrganization = ko.observable()
   /*START STEFAN CODE*/
 
   self.loadModel = function(data) {
@@ -195,5 +197,10 @@ var adminDevicesModel = function (){
        
       })
   }
+  $.post(base_url + '/api/me', {token: self.token()})
+    .done(function(data){
+      self.userEmail(data.email)
+      self.userOrganization(data.name)
+    })
  /*END CODE LARS*/
 }

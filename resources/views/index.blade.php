@@ -296,6 +296,12 @@
                     <div class="sidebar-sticky">
                         <ul class="nav flex-column">
                             <li class="nav-item">
+                                <blockquote class="blockquote text-center">
+                                    <p class="mb-0" data-bind="text: $root.userOrganization"></p>
+                                    <footer class="blockquote-footer" data-bind="text: $root.userEmail"></footer>
+                                </blockquote>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dash')">
                                     <button class="btn btn-info col" type="button"> Dashboard</button>
                                 </a>

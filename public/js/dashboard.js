@@ -12,7 +12,9 @@ var dashModel = function (){
   self.blueprintDev = ko.observableArray() 
   self.devices = ko.observableArray()
   self.dev_id = ko.observable() 
-  self.button = ko.observable() 
+  self.button = ko.observable()
+  self.userEmail = ko.observable()
+  self.userOrganization = ko.observable()
   self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
@@ -302,8 +304,12 @@ var dashModel = function (){
         // console.log(self.blueprintData())
       }
       self.blueprintdash()
-      console.log('jiji')
     })
+    $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.userEmail(data.email)
+        self.userOrganization(data.name)
+      })
   }
   self.enterPage()
 }
