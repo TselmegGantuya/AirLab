@@ -213,16 +213,22 @@ var dashModel = function (){
 
 				// jquery popover method. Return device name when hovered over 
 				$('[data-toggle="popover"]').popover({
-				  placement: 'top',
-				  animation: true,
-					trigger: 'focus',
-					title: "Device",
-					content: function() {
-						if (element.id == btn.id) {
-							return element.name
-						}
-					},
+          placement: 'top',
+          animation: true,
+          trigger: 'focus',
+          title: "Device",
+          content: function() {
+            if (element.id == btn.id) {
+              return element.name
+            }
+          },
 				})
+
+				// Open modal to remove device from blueprint
+			  $(btn).on('click', function() {
+			    $('#removeDevice').modal('show')
+			  })
+
 			})
 		})
 	}
@@ -269,6 +275,26 @@ var dashModel = function (){
 				finishDrag();
 			}
 
+			// function onMouseMove(event) {
+			// 	moveAt(event.clientX, event.clientY);
+		 //    // left/right constraint
+   //      if (event.clientX - dragElement.offsetHeight < 0) {
+   //          newX = 0;
+   //      } else if (event.clientX - dragElement.offsetHeight + 102 > document.querySelector("div canvas").clientWidth) {
+   //          newX = document.querySelector("div canvas").clientWidth - 102;
+   //      } else {
+   //          newX = event.clientX - dragElement.offsetHeight;
+   //      }
+
+   //      if (event.clientY - dragElement.offsetHeight < 0) {
+   //          newY = 0;
+   //      } else if (event.clientY - dragElement.offsetHeight + 102 > document.querySelector("div canvas").clientWidth) {
+   //          newY = document.querySelector("div canvas").clientWidth - 102;
+   //      } else {
+   //          newY = event.clientY - dragElement.offsetHeight;
+   //      }        
+			// }
+
 			// When mouse is moving 
 			let currentDroppable = null;
 			function onMouseMove(event) {
@@ -306,14 +332,19 @@ var dashModel = function (){
 			}
 			
 	    function enterDroppable(elem) {
-	    	console.log('STAY INSIDE THE YELLOW')
 	      elem.style.background = 'yellow';
 	    }
 
 	    function leaveDroppable(elem) {
-	    	dragElement = false
-	    	console.log('YOU ARE NOT ON THE BLUEPRINT. PLEASE GO BACK!')
-	      elem.style.background = 'green';
+        swal({
+          title: "ERROR!",
+          text: "Please stay inside the blueprint.",
+          icon: "error"
+        })
+				setTimeout(function(){
+					location.reload();
+				}, 10)
+	      elem.style.background = '';
 	    }
 
 			// get coordinates when mouse is moving
@@ -362,6 +393,14 @@ var dashModel = function (){
 		})
 	}
   
+  /**
+   * 
+   * @return {[type]} [description]
+   */
+  self.stopDragNDropLogic = function () {
+  	$('.draggable').off("mousedown")
+  }
+
   /**
   * Display blueprint and drag n drop devices onto blueprint
   * @return {[type]} [description]

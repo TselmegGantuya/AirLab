@@ -178,6 +178,7 @@
         </div>
     </div>
 </script>
+
 <script type="text/html" id="blueprintPage">
 
         <div class="col align-self-end">
@@ -202,10 +203,32 @@
         <a href="#" data-bind="click:deleteBP">delete</a><br>
 
         <a href="#" data-bind="click: dragNDropLogic">
-            <button class="btn btn-info col-md-2" type="button">Start Drag n Drop</button>
+            <button class="btn btn-dark col-md-2" type="button">Start Drag n Drop</button>
         </a>
 
-        <div id="canvas_margin" class="droppable" style="background:green">
+        <a href="#" data-bind="click: stopDragNDropLogic">
+            <button class="btn btn-dark col-md-2" type="button">Stop Drag n Drop</button>
+        </a>
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Remove device from blueprint</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="canvas_margin" style="background:green">
             <div id="bp">
                 <canvas class="droppable" id="currentBP" width="1000" height="500"></canvas>  
             </div>
