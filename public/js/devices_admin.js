@@ -184,5 +184,12 @@ var adminDevicesModel = function (){
       })
   }
   self.getUserDevices()
+
+  self.editDevice = function(data){
+    $.post(base_url + '/api/uhoo/editDevice' ,{token: self.token(),id:data.id, name: data.name})
+      .done(function(data){
+        console.log(data);
+      })
+  }
  /*END CODE LARS*/
 }

@@ -136,12 +136,14 @@
                     <tr>
                         <th>Name</th>
                         <th>Serial number</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: allUserDevices" >
                     <tr>
-                        <td data-bind="text:name"></td>
+                        <td ><input type="" data-bind="value :name"></input></td>
                         <td data-bind="text:serial_number"></td>
+                        <td ><button type="button" class="btn btn-success" data-bind="click: $root.editDevice.bind($data)">Save</button></td>
                     </tr>
                 </tbody>
             </table>
