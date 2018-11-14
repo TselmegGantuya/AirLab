@@ -9,9 +9,11 @@ var dashModel = function (){
   self.setBlueprint = ko.observable(true)
   self.token = ko.observable()
   self.blueprintData = ko.observableArray() 
-  self.blueprintDev = ko.observableArray() 
+  self.blueprintDev = ko.observableArray()
+  self.blueprintDevices = ko.observableArray()
+  self.removeBpDevices = ko.observableArray() 
   self.devices = ko.observableArray()
-  self.dev_id = ko.observable() 
+  self.dev_ = ko.observableArray() 
   self.button = ko.observable() 
   self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
@@ -197,7 +199,6 @@ var dashModel = function (){
 	self.blueprintdash = function () {
 		// request to get devices where top_pixel and left_pixel are not equal to null
 		$.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
-			self.devices(data)
 			data.forEach(function(element) {
 				var btn = document.createElement("BUTTON");
 				let toppixel = element.top_pixel - 79
@@ -205,7 +206,7 @@ var dashModel = function (){
 				btn.style.position = 'absolute';
 				btn.className = "btn btn-info draggable btn-circle drag-drop";
 				btn.id = element.id;
-				self.dev_id(btn.id)
+				self.dev_(btn.id)
 				btn.style.left = element.left_pixel +'px';
 				btn.style.top = toppixel +'px';
 				// btn.appendChild(t);
@@ -227,8 +228,16 @@ var dashModel = function (){
 				// Open modal to remove device from blueprint
 			  $(btn).on('click', function() {
 			    $('#removeDevice').modal('show')
-			  })
+			    self.dev_(element)
 
+			    self.removeDevice = function(){
+				    $.post(base_url + '/api/blueprint/device/remove', {id: self.dev_().id}).done(function(data) {
+							setTimeout(function(){
+								location.reload();
+							}, 10)
+				    })
+			    }
+			  })
 			})
 		})
 	}
@@ -251,8 +260,7 @@ var dashModel = function (){
 			function startDrag(clientX, clientY) {
 				shiftX = clientX - dragElement.getBoundingClientRect().left;
 				shiftY = clientY - dragElement.getBoundingClientRect().top;
-				
-				// dragElement.className = "btn btn-info draggable btn-dev";
+				dragElement.className = "btn btn-info draggable btn-dev";
 				dragElement.style.position = 'fixed';
 				document.body.append(dragElement);
 				moveAt(clientX, clientY);
@@ -267,6 +275,9 @@ var dashModel = function (){
 				dragElement.removeEventListener('mousemove', onMouseMove);
 				dragElement.onmouseup = null;
 				$.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]}).done(function(data) {})
+				setTimeout(function(){
+					location.reload();
+				}, 10)
 			}
 
 			// method to what happens when device is not clicked
@@ -341,6 +352,8 @@ var dashModel = function (){
           text: "Please stay inside the blueprint.",
           icon: "error"
         })
+        // self.blueprintDevices.removeAll()
+        // self.blueprintdash()
 				setTimeout(function(){
 					location.reload();
 				}, 10)

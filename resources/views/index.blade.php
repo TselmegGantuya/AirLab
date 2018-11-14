@@ -218,7 +218,12 @@
                     </div>
 
                     <div class="modal-body">
-
+                        <div data-bind="foreach: $root.dev_">
+                            <p data-bind="text: name"></p>
+                        </div>
+                        <a href="#" data-bind="click: removeDevice">
+                            <button class="btn btn-warning col-md-2" type="button">Remove</button>
+                        </a>
                     </div>
 
                     <div class="modal-footer">
@@ -236,7 +241,7 @@
 
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDev" class="nav-item">
-                    <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger drag-drop"></li>
+                    <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }"  class="draggable btn btn-danger drag-drop"></li>
             </div>
         </ul>
         <br>
