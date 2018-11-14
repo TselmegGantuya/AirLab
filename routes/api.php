@@ -34,6 +34,7 @@ Route::group([
 
     // Routes for Blueprint
     Route::post('blueprint/upload', 'BlueprintController@uploadBP');
+    Route::post('blueprint/update', 'BlueprintController@updateBP');
     Route::get('blueprint/get', 'BlueprintController@getBP');
     Route::post('blueprint/changeName', 'BlueprintController@changeName');
     Route::post('blueprint/coordinations/get', 'BlueprintController@getCoordination');

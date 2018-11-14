@@ -221,9 +221,9 @@
         <br>
         
         <form enctype="multipart/form-data" id = "uploadForm">
-            <input type="file" id="files" name="" data-bind="event:{change: $root.fileSelect}">
+            <input type="file" id="files" name="" placeholder="New BP" data-bind="event:{change: $root.fileSelect}">
+            <input type="file" id="files" name="" placeholder="Switch BP" data-bind="event:{change: $root.fileSwitch}">
         </form>
-        <canvas id="background" width="1000" height="1000" ></canvas>
     </div>
 
     <div data-bind="if: setColorDevices" style="max-width:1000px;" class="mt-4">

@@ -63,6 +63,7 @@ var dashModel = function (){
     let canvas = document.getElementById("currentBP")
     let context = canvas.getContext("2d")
     context.clearRect(0, 0, canvas.width, canvas.height)
+    if(self.currentBlueprint()){
     let path = self.currentBlueprint()['path']
     // console.log(self.currentBlueprint())
     let img = new Image()
@@ -73,6 +74,7 @@ var dashModel = function (){
       canvas.height / 2 - img.height / 2
       )
     })
+    }
   }
 
   /**
@@ -81,6 +83,10 @@ var dashModel = function (){
    */
   self.deleteBP = function(){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
+    console.log(self.blueprintData())
+    self.blueprintData.remove(self.currentBlueprint())
+    console.log(self.blueprintData())
+
   }
 
 
@@ -115,12 +121,14 @@ var dashModel = function (){
    */
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
-    let oldie = self.currentBlueprint()
-    self.currentBlueprint().name = $('#changeName').val()
 
     $.post(base_url + "/api/blueprint/changeName",{name:$('#changeName').val(),id:id}).done(function(){
-      self.blueprintData.replace(oldie,self.currentBlueprint())
-      console.log(self.blueprintData())
+      self.blueprintData.removeAll()
+      $.get(base_url + '/api/blueprint/get').done(function(data){
+        for (var i = 0, d; d = data[i]; i++) {
+          self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+        }
+      })
     })
   }
 
@@ -130,55 +138,47 @@ var dashModel = function (){
   */
   self.fileSelect = function (element,event) {
     var files =  event.target.files// FileList object
-    // Loop through the FileList and render image files as thumbnails.
-    var canvas = document.getElementById('background')
-  	var context = canvas.getContext('2d')
-    for (var i = 0, f; f = files[i]; i++) {
-      // Only process image files.
-      if (!f.type.match('image.*')) {
-        continue
-      }
-      var reader = new FileReader()
-
-      // Closure to capture the file information.
-      reader.onload = (function() {
-        return function(event){
-          var img = new Image()
-          img.addEventListener("load", function() {
-            context.drawImage(img,
-              canvas.width / 2 - img.width / 2,
-              canvas.height / 2 - img.height / 2
-              )
-          })
-          img.src = event.target.result
-        }
-      })(f)
       var formData = new FormData()
 
       // HTML file input, chosen by user
-      formData.append("blueprint", f)
+      formData.append("blueprint", files[0])
       formData.append("token", self.token())
 
       var request = new XMLHttpRequest()
       request.open("POST", base_url + '/api/blueprint/upload')
       request.send(formData)
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(f)
-    }
+        self.blueprintData.removeAll()
+        $.get(base_url + '/api/blueprint/get').done(function(data){
+        for (var i = 0, d; d = data[i]; i++) {
+          self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+        }
+      })
+    
   }
+    /**
+  *
+  *   Switch image
+  */
+  self.fileSwitch = function (element,event) {
+    var files =  event.target.files// FileList object
+      var formData = new FormData()
 
-	/**
-	 * Get devices from DB that has no blueprint data
-	 * @param  {[type]} data) {                   self.blueprintData(data)        console.log(self.blueprintData())    } [description]
-	 * @return {[type]}       [description]
-	 */
-	self.getDevices = function () {
-		$.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-			self.blueprintDev(data)
-			// console.log(self.blueprintDev())
-		});
-	}
-	self.getDevices()
+      // HTML file input, chosen by user
+      formData.append("id", self.currentBlueprint()['id'])
+      formData.append("blueprint", files[0])
+      formData.append("token", self.token())
+
+      var request = new XMLHttpRequest()
+      request.open("POST", base_url + '/api/blueprint/update')
+      request.send(formData)
+      
+        self.blueprintData.removeAll()
+        $.get(base_url + '/api/blueprint/get').done(function(data){
+        for (var i = 0, d; d = data[i]; i++) {
+          self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+        }
+      })
+  }
 
 	/**
 	 * First get devices from DB then create element of devices with pixels and append to HTML
@@ -316,10 +316,11 @@ var dashModel = function (){
     $.get(base_url + '/api/blueprint/get').done(function(data){
       for (var i = 0, d; d = data[i]; i++) {
         self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
-        // console.log(self.blueprintData())
       }
+    $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
+      self.blueprintDev(data)
+    })
       self.blueprintdash()
-      console.log('jiji')
     })
   }
   self.enterPage()
