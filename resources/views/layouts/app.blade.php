@@ -11,11 +11,7 @@
     <title>Air Lab</title>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.0/css/fixedColumns.dataTables.min.css">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/1.0.6/css/dataTables.responsive.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
@@ -61,7 +57,6 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ url('js/knockout.js') }}" ></script>
     <script src="{{ url('js/require.js') }}" ></script>
-
     <script src="{{ url('js/login.js') }}" ></script>
     <script src="{{ url('js/dashboard.js') }}" ></script>
     <script src="{{ url('js/profile.js') }}" ></script>

@@ -195,8 +195,8 @@
         </div>
     </div>
 </script>
-<script type="text/html" id="blueprintPage">
 
+<script type="text/html" id="blueprintPage">
     <div class="row">
         <div class="col-md-4">
             <form class="form-inline">
@@ -228,14 +228,39 @@
             <button class="btn btn-primary col" type="button">Start Drag n Drop</button>
         </a>
 
-        <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)"
-        >
+        <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
+            <button class="btn btn-primary col" type="button">Stop Drag n Drop</button>
+        </a>
+
+        <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)">
             <canvas style="background:white; border: solid 2px" id="currentBP" width="1000" height="500"></canvas>  
         </div>
 
+        <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Remove device from blueprint</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div data-bind="foreach: $root.dev_">
+                            <p data-bind="text: name"></p>
+                        </div>
+                        <a href="#" data-bind="click: removeDevice">
+                            <button class="btn btn-warning col-md-2" type="button">Remove</button>
+                        </a>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDev" class="nav-item">
-                    <li data-bind="text: name, attr: { id: id }"  class="draggable btn btn-danger drag-drop"></li>
+                    <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }"  class="draggable btn btn-danger drag-drop"></li>
             </div>
         </ul>
         <br>

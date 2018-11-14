@@ -142,4 +142,13 @@ class BlueprintController extends Controller
         
         return $devices;
     }
+
+    public function removeDeviceFromBlueprint(Request $request)
+    {
+        $id =  $request->input('id');
+        $device = Device::find($id);
+        $device->left_pixel = NULL;
+        $device->top_pixel = NULL;
+        $device->save(); 
+    }
 }
