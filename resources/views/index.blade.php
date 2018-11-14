@@ -68,7 +68,7 @@
 <script type="text/html" id="deviceTemplate">
     <p>Devices</p>
     <!--Admin device to organization-->
-    <div class="container" style="min-width:800px;">
+    <div class="container" style="min-width:800px;" data-bind="if: showAdminPart">
         <div class="row">
             <div class="col-md-4">
                 <div class="card" style="margin:50px 0">
@@ -130,7 +130,24 @@
             </div>
           </div>
         </div>
-
+        <div class="container" style="min-width:800px;" data-bind="if: !showAdminPart()">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Serial number</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: allUserDevices" >
+                    <tr>
+                        <td ><input type="" data-bind="value :name"></input></td>
+                        <td data-bind="text:serial_number"></td>
+                        <td ><button type="button" class="btn btn-success" data-bind="click: $root.editDevice.bind($data)">Save</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 </script>
 <script type="text/html" id ="recordsTemplate">
     <p>Records</p>
@@ -181,37 +198,40 @@
 <script type="text/html" id="blueprintPage">
 
     <div class="row">
-        <div class="col align-self-end">
-        <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getColorDevices">Show static data</button>
-            <button class="btn btn-primary btn-md" type = 'button' data-bind="click: getBlueprint">Show blueprint</button>
+        <div class="col-md-4">
+            <form class="form-inline">
+                <input class="form-control mr-1" type = "text" id = "changeName">
+                <button type="button" class="btn btn-primary" data-bind="click:changeNameBTN">Change name</button>
+            </form>
         </div>
+        <div class="col-md-3" >
+            <div class="form-group">
+                <select class="form-control"data-bind= "options: $data.blueprintData,
+                        optionsText: 'name',
+                        value: currentBlueprint,
+                        event:{ change:$root.selectFunc}">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+                <button type="button"class="btn btn-danger" data-bind="click:deleteBP">Delete</button>
+        </div>
+        <div class="col-md-4">
+            <div class="btn-group float-right" role="group">
+                <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
+                <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
+            </div>
         </div>
     </div>
-    <div data-bind="if: setBlueprint">
-        <select data-bind= "options: $data.blueprintData,
-                            optionsText: 'name',
-                            value: currentBlueprint,
-                            event:{ change:$root.selectFunc}">
-        </select>
-
-        <form>
-            <input type = "text" id = "changeName">
-            <button type = 'button' data-bind="click:changeNameBTN">Change name</button>
-        </form>
-
-        <a href="#" data-bind="click:deleteBP">delete</a>
-
+    <div>
         <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
-            <button class="btn btn-info col" type="button">Start Drag n Drop</button>
+            <button class="btn btn-primary col" type="button">Start Drag n Drop</button>
         </a>
 
         <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)"
         >
-            <canvas style="background:green" id="currentBP" width="1000" height="500"></canvas>  
+            <canvas style="background:white; border: solid 2px" id="currentBP" width="1000" height="500"></canvas>  
         </div>
-
-        <div id="drip" ondrop="drop(event)" ondragover="allowDrop(event)" onmouseover="console.log('green!')"></div>
 
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDev" class="nav-item">
@@ -220,13 +240,26 @@
         </ul>
         <br>
         
-        <form enctype="multipart/form-data" id = "uploadForm">
+        <form enctype="multipart/form-data" id = "uploadForm" class="form">
+            <label>Upload:</label>
             <input type="file" id="files" name="" placeholder="New BP" data-bind="event:{change: $root.fileSelect}">
+            <label>Change:</label>
             <input type="file" id="files" name="" placeholder="Switch BP" data-bind="event:{change: $root.fileSwitch}">
         </form>
     </div>
 
-    <div data-bind="if: setColorDevices" style="max-width:1000px;" class="mt-4">
+    
+</script>
+<script type="text/html" id="staticDataPage">
+    <div class="row">
+        <div class="col align-self-end">
+        <div class="btn-group float-right " role="group">
+            <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
+            <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
+        </div>
+        </div>
+    </div>
+    <div style="max-width:1000px;" class="mt-4">
         <div data-bind="foreach: allColorDevices" class="card-columns">
             <div class="card text-white  mb-3" data-bind="css: $data.color " style="max-width: 18rem;">
                 <div class="card-body">
@@ -238,26 +271,23 @@
         </div>
     </div>
 </script>
-
-<script type="text/html" id="loginPage">
-    <div class="text-center" id ="loginCont">
-        <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
-
-        <div class="col-md-12 offset-md-4">
-
-                <form class="form-signin" >
-                    <div data-bind="foreach: currentPageData">
-                        <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name}">
-                    </div>
-                    <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken, text:loginButton"></button>
-                </form>
-                      <div class="form-row" data-bind="foreach: pages">
+<script type="text/html" id="loginPage" >
+    <div class="row justify-content-center" style="width: 1450px;">
+        <div class="col-md-3 col-of" id ="loginCont">
+            <h1 class="h3 mb-3 font-weight-normal" data-bind="text: currentPage"></h1>
+            <form class="form-signin" >
+                <div data-bind="foreach: currentPageData">
+                    <input class="form-control" required="" data-bind="attr: {type: name, id: name, placeholder: name}">
+                </div>
+                <button class="btn btn-lg btn-primary btn-block"data-bind="click:loginToken, text:loginButton"></button>
+            </form>
+            <div class="form-row" data-bind="foreach: pages">
                 <div class="col-md-12 mt-2">
                     <a href="#" class="form-control btn btn-info" data-bind="click: $root.choosePage.bind($data, name), text: name"></a>
                 </div>
             </div>
             <p class="mt-5 mb-3 text-muted">&copy; 2018 Air Lab</p>
-        <!-- </div> -->
+        </div>
     </div>
 </script>
 
@@ -267,6 +297,12 @@
             <div class="col-md-2 bg-light sidebar" data-bind="visible:nav">
                     <div class="sidebar-sticky">
                         <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <blockquote class="blockquote text-center">
+                                    <p class="mb-0" data-bind="text: $root.userOrganization"></p>
+                                    <footer class="blockquote-footer" data-bind="text: $root.userEmail"></footer>
+                                </blockquote>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dash')">
                                     <button class="btn btn-info col" type="button"> Dashboard</button>
@@ -290,7 +326,7 @@
                         </ul>
                     </div>
             </div>
-            <div data-bind="template:currentTemplate"></div>
+            <div data-bind="template:currentTemplate" ></div>
         </div>
     </div>
 </main>

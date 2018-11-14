@@ -40,7 +40,7 @@
         </nav> -->
 
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
-            <a class="navbar-brand text-uppercase" href="#">Air Lab</a>
+            <a class="navbar-brand text-uppercase" href="#">Air Lab </a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -56,6 +56,7 @@
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ url('js/knockout.js') }}" ></script>
@@ -66,6 +67,7 @@
     <script src="{{ url('js/profile.js') }}" ></script>
     <script src="{{ url('js/logout.js') }}" ></script>
     <script src="{{ url('js/devices_admin.js') }}" ></script>
+    <script src="{{ url('js/staticData.js') }}" ></script>
 
 </body>
 </html>

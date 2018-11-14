@@ -270,6 +270,17 @@ class ApiController extends Controller
       }
       return $orgDeviceData;
     }
+
+    public function editDevice(Request $request){
+        $id = $request->id;
+        $name = $request->name;
+        if(isset($id) && isset($name)){
+            DB::table('devices')
+                ->where('id', $id)
+                ->update(['name' => $name]);
+        }
+        return 'Succes update! ';
+    }
     /**
      * Method to get all devices tha belongs to logged in user
      * [userDevice description]

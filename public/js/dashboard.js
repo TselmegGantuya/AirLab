@@ -12,7 +12,9 @@ var dashModel = function (){
   self.blueprintDev = ko.observableArray() 
   self.devices = ko.observableArray()
   self.dev_id = ko.observable() 
-  self.button = ko.observable() 
+  self.button = ko.observable()
+  self.userEmail = ko.observable()
+  self.userOrganization = ko.observable()
   self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
@@ -52,6 +54,11 @@ var dashModel = function (){
         var newModel = new logoutModel()
         ko.applyBindings(newModel)
         break
+      case 'statData':
+        ko.cleanNode($("#main")[0])
+        var newModel = new staticDataModel()
+        ko.applyBindings(newModel)
+        break;
     }
   }
 
@@ -69,10 +76,20 @@ var dashModel = function (){
     let img = new Image()
     img.src = base_url + '/storage/' + path
     img.addEventListener("load", function() {
-      context.drawImage(img,
-      canvas.width / 2 - img.width / 2,
-      canvas.height / 2 - img.height / 2
-      )
+      if(img.width / canvas.width < img.height / canvas.height){
+        let mult = img.height / canvas.height
+        let w = Math.floor(img.width / mult)
+        let h = Math.floor(img.height / mult)
+        context.drawImage(img,canvas.width / 2 - w / 2,0,w,h)
+      }
+      else
+      {
+        let mult = img.width / canvas.width
+        let w = Math.floor(img.width / mult)
+        let h = Math.floor(img.height / mult)
+        context.drawImage(img,0,canvas.height / 2 - h / 2,w,h)
+      }
+      
     })
     }
   }
@@ -83,38 +100,11 @@ var dashModel = function (){
    */
   self.deleteBP = function(){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
-    console.log(self.blueprintData())
+
     self.blueprintData.remove(self.currentBlueprint())
-    console.log(self.blueprintData())
-
   }
 
 
-
-  /* START CODE LARS */
-  self.getColorDevices = function(){
-    self.setColorDevices(true);
-    self.setBlueprint(false);
-  }
-
-  self.getBlueprint = function(){
-    self.setBlueprint(true);
-    self.setColorDevices(false);
-  }
-
-  self.colorDevices = function(){
-    $.post(base_url + '/api/me', {token: self.token()})
-      .done(function(data){
-        self.user(data)
-        //get devices with organization
-        $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
-              .done(function(data){
-              self.allColorDevices(data)
-              console.log(data);
-          })
-      })
-  }
-  self.colorDevices()
   /**
    * Change blueprint name
    * @return {[type]} [description]
@@ -153,7 +143,6 @@ var dashModel = function (){
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
         }
       })
-    
   }
     /**
   *
@@ -322,6 +311,11 @@ var dashModel = function (){
     })
       self.blueprintdash()
     })
+    $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.userEmail(data.email)
+        self.userOrganization(data.name)
+      })
   }
   self.enterPage()
 }
