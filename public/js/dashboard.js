@@ -183,7 +183,7 @@ var dashModel = function (){
 				let toppixel = element.top_pixel - 79
 				btn.setAttribute("data-toggle", "popover");
 				btn.style.position = 'absolute';
-				btn.className = "btn btn-info draggable btn-circle drag-drop";
+				btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
 				btn.id = element.id;
 				self.dev_(btn.id)
 				btn.style.left = element.left_pixel +'px';

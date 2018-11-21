@@ -124,6 +124,8 @@ class BlueprintController extends Controller
             'left_pixel'
         )->get();
         
+        
+
         return $devices;
     }
 
@@ -139,7 +141,31 @@ class BlueprintController extends Controller
         ])->whereNotNull(
             'left_pixel'
         )->get();
-        
+        $warningValues = array();
+        foreach ($devices as $key => $device) {
+           $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
+           if(isset($deviceData)){
+                    $color = "shadow-success";
+                    //Check warning for temperature
+                    if($deviceData['temperature'] <= 20 || $deviceData['temperature'] >= 27){
+                        $color = "shadow-warning";
+                    }
+                    //Check danger for temprature
+                    if($deviceData['temperature'] <= 10 || $deviceData['temperature'] >= 40){
+                        $color = "shadow-danger";
+                        $value = "Temprature is " . $deviceData['temperature'];
+                            $devices[$key]['danger'] = $value;
+                    }
+                    //Check warning for relative humidity
+                    if($deviceData['relative_humidity'] <= 30 || $deviceData['relative_humidity'] >= 50){
+                        $color = "shadow-warning";
+                    }
+                }else{
+                    $color = "shadow-secondary";
+                }
+            $devices[$key]['colorClass'] = $color;
+        }
+
         return $devices;
     }
 
