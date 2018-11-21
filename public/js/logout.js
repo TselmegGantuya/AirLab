@@ -18,6 +18,7 @@ var logoutModel = function (){
       $.post(base_url + '/api/logout', {token:self.token()}).done(function(data){
         console.log('User has been logged out')
           localStorage.removeItem('myCat')
+          localStorage.removeItem('token')
           ko.cleanNode($("#main")[0])
           var newModel = new loginModel()
           ko.applyBindings(newModel)

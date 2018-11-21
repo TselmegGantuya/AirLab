@@ -26,13 +26,27 @@ class BlueprintController extends Controller
         $user = auth()->user();
         $path = $request->file('blueprint')->store('public');
         $blueprint = new Blueprint;
-        $blueprint->name = 'file';
+        $blueprint->name = 'New map';
         $blueprint->organization_id = $user->organization_id;
         $blueprint->path = $path;
         $blueprint->save();
         return 'success';
     }
+/**
+     * Upload and display blueprint
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateBP(Request $request)
+    {
+        $user = auth()->user();
+        $path = $request->file('blueprint')->store('public');
+        $blueprint = Blueprint::FindOrFail($request->input('id'));
+        $blueprint->path = $path;
+        $blueprint->update();
+        return 'success';
 
+    }
     /**
      * [changeName description]
      * @param  Request $request [description]
@@ -127,5 +141,14 @@ class BlueprintController extends Controller
         )->get();
         
         return $devices;
+    }
+
+    public function removeDeviceFromBlueprint(Request $request)
+    {
+        $id =  $request->input('id');
+        $device = Device::find($id);
+        $device->left_pixel = NULL;
+        $device->top_pixel = NULL;
+        $device->save(); 
     }
 }

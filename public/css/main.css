@@ -34,26 +34,18 @@
 }
 
 .btn-circle {
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
-    text-align: center;
-    color: black;
-    font-size: 10px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  text-align: center;
 }
 
 .btn-dev {
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 5px;
-    background-color: black;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  color: purple;
 }
-  #drip {
-    width: 200px;
-    height: 100px;
-    background: blueviolet;
-    margin-bottom: 10px;
-    padding: 10px;
-  }
+  .blockquote-footer:before {
+    content: "";
+}

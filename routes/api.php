@@ -34,12 +34,14 @@ Route::group([
 
     // Routes for Blueprint
     Route::post('blueprint/upload', 'BlueprintController@uploadBP');
+    Route::post('blueprint/update', 'BlueprintController@updateBP');
     Route::get('blueprint/get', 'BlueprintController@getBP');
     Route::post('blueprint/changeName', 'BlueprintController@changeName');
     Route::post('blueprint/coordinations/get', 'BlueprintController@getCoordination');
     Route::post('blueprint/delete', 'BlueprintController@blueprintDelete');
     Route::get('blueprint/devices/get', 'BlueprintController@getUserDevices');
     Route::get('blueprint/db/devices/get', 'BlueprintController@getUserDBDevices');
+    Route::post('blueprint/device/remove', 'BlueprintController@removeDeviceFromBlueprint');
 
     // Routes for Uhoo API
     Route::post('uhoo/');
@@ -62,7 +64,10 @@ Route::group([
     Route::post('uhoo/addDeviceOrg', 'ApiController@addDeviceOrg');
     //Delete device from organization
     Route::post('uhoo/deleteDevicesOrganization', 'ApiController@deleteDevicesOrganization');
+    //edit device
+    Route::post('uhoo/editDevice', 'ApiController@editDevice');
 
     // Routes for Dashboard
     Route::post('uhoo/getDevicesWithData', 'ApiController@getDevicesWithData');
+
 });

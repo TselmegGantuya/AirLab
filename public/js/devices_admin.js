@@ -7,7 +7,13 @@ var adminDevicesModel = function (){
   self.newDevices = ko.observableArray()
   self.showOrgDevices = ko.observable(false)
   self.showNewDevices = ko.observable(false)
+  self.showAdminPart = ko.observable(false)
+  self.token = ko.observable()
+  self.user = ko.observableArray()
+  self.allUserDevices = ko.observableArray()
   self.orgId = ko.observable()
+  self.userEmail = ko.observable()
+  self.userOrganization = ko.observable()
   /*START STEFAN CODE*/
 
   self.loadModel = function(data) {
@@ -32,12 +38,25 @@ var adminDevicesModel = function (){
         var newModel = new logoutModel()
         ko.applyBindings(newModel)
         break;
+      case 'statData':
+        ko.cleanNode($("#main")[0])
+        var newModel = new staticDataModel()
+        ko.applyBindings(newModel)
+        break;
     }
   }
+  
+  /**
+   * Token
+   */
+  if (localStorage.getItem('token'))
+  {
+    self.token(localStorage.getItem('token'))
+  }
+
  self.getOrganizations = function(){
      $.post(base_url + '/api/uhoo/organizations').done(function(data){
          self.organization(data)
-         console.log(self.organization())
      })
  }
  self.getOrganizations()
@@ -148,4 +167,40 @@ var adminDevicesModel = function (){
    }
  }
  /*END STEFAN CODE*/
+
+ /*START CODE LARS */
+ self.getUserDevices = function(){
+    $.post(base_url + '/api/me', {token: self.token()})
+      .done(function(data){
+        self.user(data)
+        if(self.user().role == 1){
+          self.showAdminPart(false)
+          $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.user().organization_id}).done(function(data){
+           self.allUserDevices(data)
+           console.log(data)
+         })
+        }else if(self.user().role == 2){
+          self.showAdminPart(true)
+        }
+
+      })
+  }
+  self.getUserDevices()
+
+  self.editDevice = function(data){
+    $.post(base_url + '/api/uhoo/editDevice' ,{token: self.token(),id:data.id, name: data.name})
+      .done(function(data){
+        console.log(data);
+        if(data ){
+          swal("Success!", "Name has been changed!", "success");
+        }
+       
+      })
+  }
+  $.post(base_url + '/api/me', {token: self.token()})
+    .done(function(data){
+      self.userEmail(data.email)
+      self.userOrganization(data.name)
+    })
+ /*END CODE LARS*/
 }
