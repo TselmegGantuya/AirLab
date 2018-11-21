@@ -1,10 +1,5 @@
 @extends('layouts.app')
-
 @section('content')
-
-
-
-
 <script type="text/html" id='profileTemplate'>
     <div class="container-fluid" id="container">
         <div class="row">
@@ -87,7 +82,6 @@
                     </ul>
                 </div>
             </div>
-
             <div data-bind='visible: showOrgDevices' class="col-md-4">
                 <div class="card" style="margin:50px 0">
                     <!-- Default panel contents -->
@@ -149,6 +143,7 @@
             </table>
         </div>
 </script>
+
 <script type="text/html" id ="recordsTemplate">
     <p>Records</p>
     <table class="table table-striped table-bordered">
@@ -172,7 +167,6 @@
             </tr>
         </tbody>
     </table>
-
     <div data-bind='visible: showNewDevices' class="col-md-4">
         <div class="card" style="margin:50px 0">
             <!-- Default panel contents -->
@@ -206,7 +200,7 @@
         </div>
         <div class="col-md-3" >
             <div class="form-group">
-                <select class="form-control"data-bind= "options: $data.blueprintData,
+                <select class="form-control" data-bind= "options: $data.blueprintData,
                         optionsText: 'name',
                         value: currentBlueprint,
                         event:{ change:$root.selectFunc}">
@@ -227,15 +221,12 @@
         <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
             <button class="btn btn-primary col" type="button">Start Drag n Drop</button>
         </a>
-
         <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
             <button class="btn btn-primary col" type="button">Stop Drag n Drop</button>
         </a>
-
         <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <canvas style="background:white; border: solid 2px" id="currentBP" width="1000" height="500"></canvas>  
+            <canvas style="background:white; border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
-
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -244,7 +235,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <div data-bind="foreach: $root.dev_">
+                        <div data-bind="foreach: $root.devices">
                             <p data-bind="text: name"></p>
                         </div>
                         <a href="#" data-bind="click: removeDevice">
@@ -259,12 +250,11 @@
             </div>
         </div>
         <ul class="nav flex-column">
-            <div data-bind="foreach: $root.blueprintDev" class="nav-item">
-                    <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }"  class="draggable btn btn-danger drag-drop"></li>
+            <div data-bind="foreach: $root.blueprintDevices" class="nav-item">
+                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }"  class="draggable btn btn-danger drag-drop"></li>
             </div>
         </ul>
         <br>
-        
         <form enctype="multipart/form-data" id = "uploadForm" class="form">
             <label>Upload:</label>
             <input type="file" id="files" name="" placeholder="New BP" data-bind="event:{change: $root.fileSelect}">
@@ -272,9 +262,8 @@
             <input type="file" id="files" name="" placeholder="Switch BP" data-bind="event:{change: $root.fileSwitch}">
         </form>
     </div>
-
-    
 </script>
+
 <script type="text/html" id="staticDataPage">
     <div class="row">
         <div class="col align-self-end">
@@ -296,6 +285,7 @@
         </div>
     </div>
 </script>
+
 <script type="text/html" id="loginPage" >
     <div class="row justify-content-center" style="width: 1450px;">
         <div class="col-md-3 col-of" id ="loginCont">
@@ -320,40 +310,39 @@
     <div class= 'container-fluid'>
         <div class='row'>
             <div class="col-md-2 bg-light sidebar" data-bind="visible:nav">
-                    <div class="sidebar-sticky">
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <blockquote class="blockquote text-center">
-                                    <p class="mb-0" data-bind="text: $root.userOrganization"></p>
-                                    <footer class="blockquote-footer" data-bind="text: $root.userEmail"></footer>
-                                </blockquote>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dash')">
-                                    <button class="btn btn-info col" type="button"> Dashboard</button>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'pro')">
-                                    <button class="btn btn-info col" type="button"> Profile</button>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dev')">
-                                    <button class="btn btn-info col" type="button"> Devices</button>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'out')">
-                                    <button class="btn btn-danger col" type="button"> Logout</button>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <blockquote class="blockquote text-center">
+                                <p class="mb-0" data-bind="text: $root.userOrganization"></p>
+                                <footer class="blockquote-footer" data-bind="text: $root.userEmail"></footer>
+                            </blockquote>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dash')">
+                                <button class="btn btn-info col" type="button"> Dashboard</button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'pro')">
+                                <button class="btn btn-info col" type="button"> Profile</button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dev')">
+                                <button class="btn btn-info col" type="button"> Devices</button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'out')">
+                                <button class="btn btn-danger col" type="button"> Logout</button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div data-bind="template:currentTemplate" ></div>
         </div>
     </div>
 </main>
-
 @endsection

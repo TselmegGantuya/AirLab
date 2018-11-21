@@ -20,19 +20,6 @@
 .checkbox input:checked + .warning:after{border-color:#FFC107}
 .checkbox input:checked + .danger:after{border-color:#f44336}
 
-#gate {
-  cursor: pointer;
-/*  margin-bottom: 100px;
-*//*  width: 83px;
-  height: 46px;*/
-}
-
-#ball {
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-}
-
 .btn-circle {
   width: 15px;
   height: 15px;
@@ -46,6 +33,7 @@
   border-radius: 15px;
   color: purple;
 }
-  .blockquote-footer:before {
-    content: "";
+
+.blockquote-footer:before {
+  content: "";
 }
