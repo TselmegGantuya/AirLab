@@ -32,7 +32,8 @@ class BlueprintController extends Controller
         $blueprint->save();
         return 'success';
     }
-/**
+
+    /**
      * Upload and display blueprint
      *
      * @return \Illuminate\Http\Response
@@ -47,6 +48,7 @@ class BlueprintController extends Controller
         return 'success';
 
     }
+    
     /**
      * [changeName description]
      * @param  Request $request [description]
@@ -123,9 +125,6 @@ class BlueprintController extends Controller
         ])->whereNull(
             'left_pixel'
         )->get();
-        
-        
-
         return $devices;
     }
 
@@ -165,10 +164,14 @@ class BlueprintController extends Controller
                 }
             $devices[$key]['colorClass'] = $color;
         }
-
         return $devices;
     }
 
+    /**
+     * Method to remove device from blueprint by setting top and left pixels to NULL
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function removeDeviceFromBlueprint(Request $request)
     {
         $id =  $request->input('id');

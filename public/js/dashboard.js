@@ -9,19 +9,14 @@ var dashModel = function (){
   self.setBlueprint = ko.observable(true)
   self.token = ko.observable()
   self.blueprintData = ko.observableArray() 
-  self.blueprintDev = ko.observableArray()
   self.blueprintDevices = ko.observableArray()
   self.removeBpDevices = ko.observableArray() 
-  self.devices = ko.observableArray()
-  self.dev_id = ko.observable() 
-  self.button = ko.observable()
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
-  self.dev_ = ko.observableArray() 
+  self.devices = ko.observableArray() 
   self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
-  self.lastRecord = ko.observableArray()
 
   /**
    * Token
@@ -116,7 +111,7 @@ var dashModel = function (){
 
     $.post(base_url + "/api/blueprint/changeName",{name:$('#changeName').val(),id:id}).done(function(){
       self.blueprintData.removeAll()
-      $.get(base_url + '/api/blueprint/get').done(function(data){
+    $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
         }
@@ -140,7 +135,7 @@ var dashModel = function (){
       request.open("POST", base_url + '/api/blueprint/upload')
       request.send(formData)
         self.blueprintData.removeAll()
-        $.get(base_url + '/api/blueprint/get').done(function(data){
+      $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
         }
@@ -163,8 +158,8 @@ var dashModel = function (){
       request.open("POST", base_url + '/api/blueprint/update')
       request.send(formData)
       
-        self.blueprintData.removeAll()
-        $.get(base_url + '/api/blueprint/get').done(function(data){
+      self.blueprintData.removeAll()
+      $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
         }
@@ -185,7 +180,7 @@ var dashModel = function (){
 				btn.style.position = 'absolute';
 				btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
 				btn.id = element.id;
-				self.dev_(btn.id)
+				self.devices(btn.id)
 				btn.style.left = element.left_pixel +'px';
 				btn.style.top = toppixel +'px';
 				// btn.appendChild(t);
@@ -195,7 +190,7 @@ var dashModel = function (){
 				$('[data-toggle="popover"]').popover({
           placement: 'top',
           animation: true,
-          trigger: 'focus',
+          trigger: 'hover',
           title: "Device",
           content: function() {
             if (element.id == btn.id) {
@@ -207,10 +202,10 @@ var dashModel = function (){
 				// Open modal to remove device from blueprint
 			  $(btn).on('click', function() {
 			    $('#removeDevice').modal('show')
-			    self.dev_(element)
+			    self.devices(element)
 
 			    self.removeDevice = function(){
-				    $.post(base_url + '/api/blueprint/device/remove', {id: self.dev_().id}).done(function(data) {
+				    $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
 							setTimeout(function(){
 								location.reload();
 							}, 10)
@@ -227,7 +222,10 @@ var dashModel = function (){
 	 */
 	self.dragNDropLogic = function () {
 		$('.draggable').mousedown(function(event) {
+			$('[data-toggle="popover"]').popover('hide')
+			event.preventDefault()
 			let dragElement = event.target.closest('.draggable');
+			console.log(dragElement)
 			if (!dragElement) return;
 			let coords, shiftX, shiftY;
 			startDrag(event.clientX, event.clientY);
@@ -240,6 +238,7 @@ var dashModel = function (){
 				shiftX = clientX - dragElement.getBoundingClientRect().left;
 				shiftY = clientY - dragElement.getBoundingClientRect().top;
 				dragElement.className = "btn btn-info draggable btn-dev";
+				dragElement.removeAttribute("data-bind")
 				dragElement.style.position = 'fixed';
 				document.body.append(dragElement);
 				moveAt(clientX, clientY);
@@ -251,18 +250,19 @@ var dashModel = function (){
 				dragElement.style.left = parseInt(dragElement.style.left) + pageXOffset + 'px';
 				dragElement.style.position = 'absolute';
 				dragElement.className = "btn btn-info draggable btn-circle drag-drop";
+				// dragElement.removeTextNode("");
 				dragElement.removeEventListener('mousemove', onMouseMove);
 				dragElement.onmouseup = null;
 				$.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]}).done(function(data) {})
-				setTimeout(function(){
-					location.reload();
-				}, 10)
 			}
 
 			// method to what happens when device is not clicked
 			dragElement.onmouseup = function(event) {
 				event.preventDefault()
 				finishDrag();
+				setTimeout(function(){
+					location.reload();
+				}, 10)
 			}
 
 			// function onMouseMove(event) {
@@ -289,7 +289,6 @@ var dashModel = function (){
 			let currentDroppable = null;
 			function onMouseMove(event) {
 				moveAt(event.clientX, event.clientY);
-
 				dragElement.hidden = true;
 				let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
 				dragElement.hidden = false;
@@ -297,23 +296,19 @@ var dashModel = function (){
 				// mousemove events may trigger out of the window (when the ball is dragged off-screen)
 				// if clientX/clientY are out of the window, then elementfromPoint returns null
 				if (!elemBelow) return;
-
 				// potential droppables are labeled with the class "droppable" (can be other logic)
 				let droppable = elemBelow.closest('.droppable');
-
 				if (currentDroppable != droppable) { // if there are any changes
 					// we're flying in or out...
 					// note: both values can be null
 					//   currentDroppable=null if we were not over a droppable (e.g over an empty space)
 					//   droppableBelow=null if we're not over a droppable now, during this event
-
 					if (currentDroppable) {
 						// the logic to process "flying out" of the droppable (remove highlight)
 						leaveDroppable(currentDroppable);
 					}
 
 					currentDroppable = droppable;
-
 					if (currentDroppable) {
 						// the logic to process "flying in" of the droppable
 						enterDroppable(currentDroppable);
@@ -321,10 +316,12 @@ var dashModel = function (){
 				}
 			}
 			
+			// When device enters blueprint or is in blueprint
 	    function enterDroppable(elem) {
-	      elem.style.background = 'yellow';
+	      elem.style.background = 'black';
 	    }
 
+	    // When device leaves blueprint
 	    function leaveDroppable(elem) {
         swal({
           title: "ERROR!",
@@ -386,7 +383,7 @@ var dashModel = function (){
 	}
   
   /**
-   * 
+   * Button to stop drag and drop from working
    * @return {[type]} [description]
    */
   self.stopDragNDropLogic = function () {
@@ -403,16 +400,18 @@ var dashModel = function (){
       for (var i = 0, d; d = data[i]; i++) {
         self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
       }
-    $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-      self.blueprintDev(data)
-    })
+    	// request to get devices on blueprint
+	    $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
+	      self.blueprintDevices(data)
+	    })
       self.blueprintdash()
     })
-    $.post(base_url + '/api/me', {token: self.token()})
-      .done(function(data){
+
+    // request to get user info to backend
+    $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
         self.userEmail(data.email)
         self.userOrganization(data.name)
-      })
+    })
   }
   self.enterPage()
 }
