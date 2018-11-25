@@ -224,9 +224,10 @@
         <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
             <button class="btn btn-primary col" type="button">Stop Drag n Drop</button>
         </a>
-        <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="bp">
             <canvas style="background:white; border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
+        <div id="log"></div>
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
             <div class="modal-dialog">
                 <div class="modal-content">
