@@ -200,7 +200,7 @@ var dashModel = function (){
 				})
 
 				// Open modal to remove device from blueprint
-			  $(btn).on('click', function() {
+			  $(btn).on('click', function(e) {
 			    $('#removeDevice').modal('show')
 			    self.devices(element)
           
@@ -222,120 +222,144 @@ var dashModel = function (){
 	 * @return {[type]} [description]
 	 */
 	self.dragNDropLogic = function () {
-    // let currentDroppable = null;
-    // $('.draggable').mousedown(function(event) {
-    //   $('[data-toggle="popover"]').popover('hide')
-    //   var dragElement = event.target.closest('.draggable');
-    //   if (!dragElement) return;
-    //   event.preventDefault()
-    //   let shiftX = event.clientX - dragElement.getBoundingClientRect().left;
-    //   let shiftY = event.clientY - dragElement.getBoundingClientRect().top;
-      
-    //   // dragElement.className = "btn btn-info draggable btn-dev";
-    //   dragElement.style.position = 'absolute';
-    //   dragElement.style.zIndex = 1000;
-    //   document.body.append(dragElement);
-    //   moveAt(event.pageX, event.pageY);
-
-    //   function moveAt(pageX, pageY) {
-    //     dragElement.style.left = pageX - shiftX + 'px';
-    //     dragElement.style.top = pageY - shiftY + 'px';
-    //     console.log(dragElement)
-    //   }
-
-    //   function onMouseMove(event) {
-    //     moveAt(event.pageX, event.pageY);
-
-    //     // dragElement.hidden = true;
-    //     // let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
-    //     // dragElement.hidden = false;
-    //     // if (!elemBelow) return;
-
-    //     // let droppableBelow = elemBelow.closest('.droppable');
-    //     // if (currentDroppable != droppableBelow) {
-    //     //   if (currentDroppable) { // null when we were not over a droppable before this event
-    //     //     console.log('stop')
-    //     //   }
-    //     //   currentDroppable = droppableBelow;
-    //     //   if (currentDroppable) { // null if we're not coming over a droppable now
-    //     //     // (maybe just left the droppable)
-    //     //     console.log('continue')
-    //     //   }
-    //     // }
-    //   }
-
-    //   dragElement.addEventListener('mousemove', onMouseMove);
-
-    //   dragElement.onmouseup = function() {
-    //     // dragElement.style.top = parseInt(dragElement.style.top) + pageYOffset + 'px';
-    //     // dragElement.style.left = parseInt(dragElement.style.left) + pageXOffset + 'px';
-    //     dragElement.style.position = 'absolute';
-    //     dragElement.className = "btn btn-info draggable btn-circle drag-drop";
-    //     dragElement.removeEventListener('mousemove', onMouseMove);
-    //     dragElement.onmouseup = null;
-    //     return false
-    //     // $.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]})
-    //   };
-    // })
-
-
-    var box = $('.draggable')
-    var drag = {
-      elem: $('.draggable'),
-      x: 0,
-      y: 0,
-      state: false
-    }
-    var delta = {
-      x: 0,
-      y: 0
-    }
-
-    box.mousedown(function(e) {
+    $('.draggable').mousedown(function(event) {
       $('[data-toggle="popover"]').popover('hide')
-      if (!drag.state) {
-        drag.elem = this;
-        drag.x = e.pageX;
-        drag.y = e.pageY;
-        drag.state = true;
+      event.preventDefault()
+      let dragElement = event.target.closest('.draggable');
+      let currentDroppable = null;
+      if (!dragElement) return;
+      let coords, shiftX, shiftY;
+      startDrag(event.clientX, event.clientY);
+      document.addEventListener('mousemove', onMouseMove);
+
+      // on drag start:
+      //   remember the initial shift
+      //   move the element position:fixed and a direct child of body
+      function startDrag(clientX, clientY) {
+        shiftX = clientX - dragElement.getBoundingClientRect().left;
+        shiftY = clientY - dragElement.getBoundingClientRect().top;
+        dragElement.className = "btn btn-info draggable btn-dev";
+        dragElement.removeAttribute("data-bind")
+        dragElement.style.position = 'fixed';
+        document.body.append(dragElement);
+        moveAt(clientX, clientY);
       }
-      return false;
-    })
 
-    $(document).mousemove(function(e) {
-      if (drag.state) {
-        console.log(drag.elem.style)
-        delta.x = e.pageX - drag.x;
-        delta.y = e.pageY - drag.y;
+      // switch to absolute coordinates at the end, to fix the element in the document
+      function finishDrag() {
+        dragElement.style.top = parseInt(dragElement.style.top) + pageYOffset + 'px';
+        dragElement.style.left = parseInt(dragElement.style.left) + pageXOffset + 'px';
+        dragElement.style.position = 'absolute';
+        dragElement.className = "btn btn-info draggable btn-circle drag-drop";
+        document.removeEventListener('mousemove', onMouseMove);
+        dragElement.onmouseup = null;
+        $.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]}).done(function(data) {})
+      }
 
-        console.log(e.pageX + ' ' + e.pageY)
-        var cur_offset = $(drag.elem).offset()
+      // method to what happens when device is not clicked
+      dragElement.onmouseup = function(event) {
+        event.preventDefault()
+        finishDrag()
+        // setTimeout(function(){
+        //   location.reload();
+        // }, 10)
+      }
 
-        $(drag.elem).offset({
-            left: (cur_offset.left + delta.x),
-            top: (cur_offset.top + delta.y)
-        });
+      // When mouse is moving 
+      function onMouseMove(event) {
+        moveAt(event.clientX, event.clientY);
+        dragElement.hidden = true;
+        let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+        dragElement.hidden = false;
 
-        drag.x = e.pageX;
-        drag.y = e.pageY;
+        // mousemove events may trigger out of the window (when the ball is dragged off-screen)
+        // if clientX/clientY are out of the window, then elementfromPoint returns null
+        if (!elemBelow) return;
+        // potential droppables are labeled with the class "droppable" (can be other logic)
+        let droppable = elemBelow.closest('.droppable');
+        if (currentDroppable != droppable) { // if there are any changes
+          // we're flying in or out...
+          // note: both values can be null
+          //   currentDroppable=null if we were not over a droppable (e.g over an empty space)
+          //   droppableBelow=null if we're not over a droppable now, during this event
+          if (currentDroppable) {
+            // the logic to process "flying out" of the droppable (remove highlight)
+            leaveDroppable(currentDroppable);
+          }
+
+          currentDroppable = droppable;
+          if (currentDroppable) {
+            // the logic to process "flying in" of the droppable
+            enterDroppable(currentDroppable);
+          }
+        }
+      }
+      
+      // When device enters blueprint or is in blueprint
+      function enterDroppable(elem) {
+        elem.style.background = 'black';
+      }
+
+      // When device leaves blueprint
+      function leaveDroppable(elem) {
+        swal({
+          title: "ERROR!",
+          text: "Please stay inside the blueprint.",
+          icon: "error"
+        })
+        // self.blueprintDevices.removeAll()
+        // self.blueprintdash()
+        setTimeout(function(){
+          location.reload();
+        }, 10)
+        elem.style.background = '';
+      }
+
+      // get coordinates when mouse is moving
+      function moveAt(clientX, clientY) {
+        // new window-relative coordinates
+        let newX = clientX - shiftX;
+        let newY = clientY - shiftY;
+        // check if the new coordinates are below the bottom window edge
+        let newBottom = newY + dragElement.offsetHeight; // new bottom
+        // // below the window? let's scroll the page
+        // if (newBottom > document.documentElement.clientHeight) {
+        //   // window-relative coordinate of document end
+        //   let docBottom = document.documentElement.getBoundingClientRect().bottom;
+        //   // scroll the document down by 10px has a problem
+        //   // it can scroll beyond the end of the document
+        //   // Math.min(how much left to the end, 10)
+        //   let scrollY = Math.min(docBottom - newBottom, 10);
+        //   // calculations are imprecise, there may be rounding errors that lead to scrolling up
+        //   // that should be impossible, fix that here
+        //   if (scrollY < 0) scrollY = 0;
+        //   window.scrollBy(0, scrollY);
+        //   // a swift mouse move make put the cursor beyond the document end
+        //   // if that happens -
+        //   // limit the new Y by the maximally possible (right at the bottom of the document)
+        //   newY = Math.min(newY, document.documentElement.clientHeight - dragElement.offsetHeight);
+        // }
+        // check if the new coordinates are above the top window edge (similar logic)
+        // if (newY < 0) {
+        //   // scroll up
+        //   let scrollY = Math.min(-newY, 10);
+        //   if (scrollY < 0) scrollY = 0; // check precision errors
+        //   window.scrollBy(0, -scrollY);
+        //   // a swift mouse move can put the cursor beyond the document start
+        //   newY = Math.max(newY, 0); // newY may not be below 0
+        // }
+        
+        // limit the new X within the window boundaries
+        // there's no scroll here so it's simple
+        if (newX < 0) newX = 0;
+        if (newX > document.documentElement.clientWidth - dragElement.offsetWidth) {
+          newX = document.documentElement.clientWidth - dragElement.offsetWidth;
+        }
+
+        dragElement.style.left = newX + 'px';
+        dragElement.style.top = newY + 'px';
       }
     })
-
-    $(document).mouseup(function() {
-      if (drag.state) {
-
-        // drag.elem.style.top = parseInt(drag.y) + 'px';
-        // drag.elem.style.left = parseInt(drag.x) + 'px';
-        // drag.elem.style.position = 'absolute';
-        // dragElement.className = "btn btn-info draggable btn-circle drag-drop";
-        // dragElement.removeEventListener('mousemove', onMouseMove);
-        // dragElement.onmouseup = null;
-        // return false
-        // $.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]})
-        drag.state = false;
-      }
-    })
-
   }
 
 
