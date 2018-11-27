@@ -222,6 +222,7 @@ var dashModel = function (){
 	 * @return {[type]} [description]
 	 */
 	self.dragNDropLogic = function () {
+    var droppedIn = false;
     $('.draggable').mousedown(function(event) {
       $('[data-toggle="popover"]').popover('hide')
       event.preventDefault()
@@ -265,54 +266,21 @@ var dashModel = function (){
         // }, 10)
       }
 
+      function drag_drop(event) {
+          event.preventDefault(); /* Prevent undesirable default behavior while dropping */
+          droppedIn = true;
+      }
+      function drag_end(event) {
+          if(droppedIn == false){
+              alert('go back')
+          }
+        droppedIn = false;
+      }
+
       // When mouse is moving 
       function onMouseMove(event) {
+        event.preventDefault()
         moveAt(event.clientX, event.clientY);
-        dragElement.hidden = true;
-        let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
-        dragElement.hidden = false;
-
-        // mousemove events may trigger out of the window (when the ball is dragged off-screen)
-        // if clientX/clientY are out of the window, then elementfromPoint returns null
-        if (!elemBelow) return;
-        // potential droppables are labeled with the class "droppable" (can be other logic)
-        let droppable = elemBelow.closest('.droppable');
-        if (currentDroppable != droppable) { // if there are any changes
-          // we're flying in or out...
-          // note: both values can be null
-          //   currentDroppable=null if we were not over a droppable (e.g over an empty space)
-          //   droppableBelow=null if we're not over a droppable now, during this event
-          if (currentDroppable) {
-            // the logic to process "flying out" of the droppable (remove highlight)
-            leaveDroppable(currentDroppable);
-          }
-
-          currentDroppable = droppable;
-          if (currentDroppable) {
-            // the logic to process "flying in" of the droppable
-            enterDroppable(currentDroppable);
-          }
-        }
-      }
-      
-      // When device enters blueprint or is in blueprint
-      function enterDroppable(elem) {
-        elem.style.background = 'black';
-      }
-
-      // When device leaves blueprint
-      function leaveDroppable(elem) {
-        swal({
-          title: "ERROR!",
-          text: "Please stay inside the blueprint.",
-          icon: "error"
-        })
-        // self.blueprintDevices.removeAll()
-        // self.blueprintdash()
-        setTimeout(function(){
-          location.reload();
-        }, 10)
-        elem.style.background = '';
       }
 
       // get coordinates when mouse is moving
@@ -362,8 +330,6 @@ var dashModel = function (){
     })
   }
 
-
-  
   /**
    * Button to stop drag and drop from working
    * @return {[type]} [description]

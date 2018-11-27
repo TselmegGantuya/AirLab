@@ -225,8 +225,9 @@
             <button class="btn btn-primary col" type="button">Stop Drag n Drop</button>
         </a>
         <div id="bp">
-            <canvas style="background:white; border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
+            <canvas border: solid 2px" ondrop="drag_drop(event)" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
+
         <div id="log"></div>
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
             <div class="modal-dialog">
@@ -252,7 +253,7 @@
         </div>
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDevices" class="nav-item">
-                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }"  class="draggable btn btn-danger drag-drop"></li>
+                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }" ondragend="drag_end(event)" class="draggable btn btn-danger drag-drop"></li>
             </div>
         </ul>
         <br>
