@@ -158,6 +158,10 @@ var loginModel = function (){
       else if ( data['role'] == 2 ) {
   	    self.userRole('admin')
   	    console.log('set to admin')
+  	    ko.cleanNode($("#main")[0])
+        self.currentTemplate = ko.observable('blueprintPage')
+        var newModel = new dashModel()
+        ko.applyBindings(newModel)
       }
 
     })

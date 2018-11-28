@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::post('login', 'AuthController@login');
 Route::post('validate', 'RegisterController@validate');
-Route::post('create', 'RegisterController@create');
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -24,6 +24,7 @@ Route::group([
     'middleware' => 'api'
 
 ], function ($router) {
+    Route::post('user/register', 'RegisterController@create');
     // Route for reset password and email
     Route::post('uhoo/password/reset', 'ApiController@changePassword');
 

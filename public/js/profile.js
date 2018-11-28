@@ -18,7 +18,15 @@ var profileModel = function (){
   self.confirm_password = ko.observable()
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
+  self.organizations = ko.observableArray()
   self.token = ko.observable()
+  self.role = ko.observable()
+  self.inputs = ko.observableArray([
+        {name:"Name", input:"text"},
+        {name:"Password", input:"password"},
+        {name:'Email', input:'text'}
+      ])
+  self.selectedOrg = ko.observable()
 
 
   self.loadModel = function(data) {
@@ -50,6 +58,12 @@ var profileModel = function (){
         break;
     }
   }
+  /* 
+  *   Register New users a admin
+  */
+  self.register = function() {
+    $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()})
+  }
   /**
    * [toggleVisibilityProfile description]
    * @return {[type]} [description]
@@ -59,28 +73,19 @@ var profileModel = function (){
     self.token(localStorage.getItem('token'))
   }
   self.enterPage = function() {
-      $.post(base_url + '/api/me').done(function(data){
-        console.log(data)
-        self.user(data['name'])
-          self.currentTabHead(self.profiles())
-          self.currentTabData(data)
-      })
-  }
-
-  self.openBtn = function(){
-      $('#myModal').modal({show:true})
-  }
-
-self.enterPage()
-  self.saveToPhp = function() {
-      var formData = $('#pass_form').serialize();
-      $.post(base_url + '/api/uhoo/password/reset',{formData}).done(function(data){
-          console.log('Check PHP')
-      })
-  }
-  $.post(base_url + '/api/me', {token: self.token()})
-    .done(function(data){
+    $.post(base_url + '/api/uhoo/organizations').done(function(data){
+      self.organizations(data)
+    })
+    $.post(base_url + '/api/me').done(function(data){
+      console.log(data)
+      self.user(data.name)
+      self.currentTabHead(self.profiles())
+      self.currentTabData(data)
       self.userEmail(data.email)
       self.userOrganization(data.name)
+      self.role(data.role)
+      console.log(self.role())
     })
+  }
+self.enterPage()
 }
