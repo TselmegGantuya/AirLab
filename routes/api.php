@@ -70,4 +70,8 @@ Route::group([
     // Routes for Dashboard
     Route::post('uhoo/getDevicesWithData', 'ApiController@getDevicesWithData');
 
+    //routes for records by
+    Route::post('uhoo/recordsById', 'ApiController@recordsById');
+
+
 });
