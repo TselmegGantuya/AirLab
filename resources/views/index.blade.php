@@ -27,11 +27,7 @@
                 <a href="#" data-bind="click: openBtn">
                     <button type="button" class="btn btn-outline-dark">Register</button>
                 </a>
-                <!-- /ko -->
-                <!--
-                <a href="">
-                    <button type="button" class="btn btn-outline-dark">Change Email</button>
-                </a> -->
+                
             </div>
             <form>
                 <div data-bind="foreach:inputs">
@@ -42,6 +38,8 @@
                         optionsValue: 'id'"></select>
                         <button data-bind = "click:register, text:'Register'"></button>
             </form>
+            <!-- /ko -->
+
         </div>
     </div>
 </script>
