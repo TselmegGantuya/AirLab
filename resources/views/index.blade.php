@@ -231,20 +231,31 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Remove device from blueprint</h4>
-                    </div>
-
-                    <div class="modal-body">
                         <div data-bind="foreach: $root.devices">
-                            <p data-bind="text: name"></p>
+                            <h4 class="modal-title" data-bind="text: name"></h4>
+                        
                         </div>
-                        <a href="#" data-bind="click: removeDevice">
-                            <button class="btn btn-warning col-md-2" type="button">Remove</button>
-                        </a>
+                    </div>
+                    <div class="modal-body"> 
+                        <table class="table table-hover">
+                            <thead>
+                                <td>Name</td>
+                                <td>Value</td>
+                            </thead>
+                            <tbody data-bind="foreach: $root.records">
+                                <tr data-bind="css: bgColor">
+                                    <th data-bind="text: name">Temperature: </th>
+                                    <td data-bind="text: value " ></td>
+                                </tr>                
+                            </tbody>
+                        </table> 
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a href="#" data-bind="click: removeDevice">
+                            <button class="btn btn-danger" type="button">Remove device</button>
+                        </a>
                     </div>
                 </div>
             </div>

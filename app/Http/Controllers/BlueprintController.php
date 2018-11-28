@@ -125,6 +125,7 @@ class BlueprintController extends Controller
         ])->whereNull(
             'left_pixel'
         )->get();
+
         return $devices;
     }
 
@@ -142,29 +143,106 @@ class BlueprintController extends Controller
         )->get();
         $warningValues = array();
         foreach ($devices as $key => $device) {
-           $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
-           if(isset($deviceData)){
+            $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
+            if(isset($deviceData)){
                     $color = "shadow-success";
+                    $textColor = "black";
+                    $value = "All values are great!";
                     //Check warning for temperature
                     if($deviceData['temperature'] <= 20 || $deviceData['temperature'] >= 27){
                         $color = "shadow-warning";
+                        $value = "Temprature is " . round($deviceData['temperature']) . "℃";
                     }
                     //Check danger for temprature
                     if($deviceData['temperature'] <= 10 || $deviceData['temperature'] >= 40){
                         $color = "shadow-danger";
-                        $value = "Temprature is " . $deviceData['temperature'];
-                            $devices[$key]['danger'] = $value;
+                        $value = "Temprature is " . round($deviceData['temperature']) . "℃";
+                        $textColor = "bg-danger";
                     }
                     //Check warning for relative humidity
                     if($deviceData['relative_humidity'] <= 30 || $deviceData['relative_humidity'] >= 50){
                         $color = "shadow-warning";
+                        $value = "Relative humidity is " . round($deviceData['relative_humidity']) . "%";
+                        $textColor = "bg-warning";
                     }
-                }else{
-                    $color = "shadow-secondary";
-                }
+            }else{
+                $color = "shadow-secondary";
+                $value = "Device is offline.";
+            }
+           
+            $devices[$key]['danger'] = $value;
             $devices[$key]['colorClass'] = $color;
+            $devices[$key]['records'] = $deviceData;
+            $devices[$key]['textColor'] = $textColor;
         }
         return $devices;
+    }
+
+    public function getRecordsForDevice(Request $request){
+        $deviceRecords = array();
+        $i = 0;
+        $records = Record::where('device_id', $request->id)->first()->toArray();
+        $skip = array('id', 'device_id', 'created_at', 'updated_at');
+        foreach ($records as $name => $value) {
+            if(in_array($name, $skip)){
+                continue;
+            }
+            $deviceRecords[$i] = array(
+                'name' => $name,
+                'value' => $value,
+                'bgColor' => ''
+            );
+            if($name == "temperature" && $value <= 20 || $name == "temperature" && $value >= 27){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "temperature" && $value <= 10 || $name == "temperature" && $value >= 40){
+                $deviceRecords[$i]['bgColor'] = 'bg-danger text-white';
+            }
+            
+            if($name == "relative_humidity" && $value <= 30 || $name == "relative_humidity" && $value >= 50){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "pm2_5" && $value >= 35 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "pm2_5" && $value >= 70 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-danger text-white';
+            }
+            if($name == "tvoc" && $value >= 400 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "co2" && $value >= 800 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "co2" && $value >= 1500 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-danger text-white';
+            }
+            if($name == "co" && $value >= 100 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "co" && $value >= 250 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-danger text-white';
+            }
+            if($name == "air_pressure" && $value <= 970 || $name = "air_pressure" && $value >= 1030){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "ozone" && $value >= 30 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "ozone" && $value >= 70 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-danger text-white';
+            }
+            if($name == "no2" && $value >= 35 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-warning text-white';
+            }
+            if($name == "no2" && $value >= 70 ){
+                $deviceRecords[$i]['bgColor'] = 'bg-danger text-white';
+            }/*
+            */
+            //set index('i') plus one
+            $i++;
+        }
+        return $deviceRecords;
     }
 
     /**

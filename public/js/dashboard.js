@@ -1,4 +1,4 @@
-/**
+/**['records']
 *   Knockoutjs
 */
 var dashModel = function (){
@@ -17,7 +17,7 @@ var dashModel = function (){
   self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
-
+  self.records = ko.observableArray()
   /**
    * Token
    */
@@ -191,10 +191,14 @@ var dashModel = function (){
           placement: 'top',
           animation: true,
           trigger: 'hover',
-          title: "Device",
-          content: function() {
+          title: function() {
             if (element.id == btn.id) {
               return element.name
+            }
+          },
+          content: function() {
+            if (element.id == btn.id) {
+              return element.danger
             }
           },
 				})
@@ -203,7 +207,14 @@ var dashModel = function (){
 			  $(btn).on('click', function() {
 			    $('#removeDevice').modal('show')
 			    self.devices(element)
-
+          console.log(element)
+            $.post(base_url + '/api/blueprint/records/getForDevice', {id: element.id}).done(function(data) {
+              setTimeout(function(){
+                self.records(data)
+                console.log(data);
+              }, 10)
+            })
+          
 			    self.removeDevice = function(){
 				    $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
 							setTimeout(function(){

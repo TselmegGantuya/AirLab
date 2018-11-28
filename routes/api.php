@@ -42,6 +42,7 @@ Route::group([
     Route::get('blueprint/devices/get', 'BlueprintController@getUserDevices');
     Route::get('blueprint/db/devices/get', 'BlueprintController@getUserDBDevices');
     Route::post('blueprint/device/remove', 'BlueprintController@removeDeviceFromBlueprint');
+    Route::post('blueprint/records/getForDevice', 'BlueprintController@getRecordsForDevice');
 
     // Routes for Uhoo API
     Route::post('uhoo/');
