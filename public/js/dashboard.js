@@ -22,6 +22,7 @@ var dashModel = function (){
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
   self.lastRecord = ko.observableArray()
+  self.currentBlueprintSize = ko.observable()
 
   /**
    * Token
@@ -93,6 +94,7 @@ var dashModel = function (){
         let h = Math.floor(img.height / mult)
         context.drawImage(img,0,canvas.height / 2 - h / 2,w,h)
       }
+      self.currentBlueprintSize(img.width/img.height)
       
     })
     }
@@ -146,29 +148,58 @@ var dashModel = function (){
         }
       })
   }
+  /**
+  *
+  *   promise function
+  *
+  */
+  function resolvePost(file) {
+    return new Promise(resolve => {
+      var formData = new FormData()
+ 
+      // HTML file input, chosen by user
+      formData.append("id", self.currentBlueprint()['id'])
+      formData.append("blueprint", file)
+      formData.append("token", self.token())
+
+      var request = new XMLHttpRequest()
+      request.open("POST", base_url + '/api/blueprint/update')
+      request.onreadystatechange = function () {
+        if(request.readyState === 4 && request.status === 200) {
+          console.log(request.responseText)
+          resolve()
+        }
+      };
+      request.send(formData)
+      
+    })
+  }
     /**
   *
   *   Switch image
   */
   self.fileSwitch = function (element,event) {
     var files =  event.target.files// FileList object
-      var formData = new FormData()
+      let img = new Image()
+      img.src = window.URL.createObjectURL( files[0] )
+      img.onload = async function()
+      {
+        var size = img.width / img.height
+      if(self.currentBlueprintSize() != size){
+        alert('not the right size')
+        return;
+      }
+      let result = await resolvePost(files[0])
 
-      // HTML file input, chosen by user
-      formData.append("id", self.currentBlueprint()['id'])
-      formData.append("blueprint", files[0])
-      formData.append("token", self.token())
-
-      var request = new XMLHttpRequest()
-      request.open("POST", base_url + '/api/blueprint/update')
-      request.send(formData)
-      
         self.blueprintData.removeAll()
+
         $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
         }
       })
+      }
+      
   }
 
 	/**
@@ -253,8 +284,8 @@ var dashModel = function (){
 				dragElement.className = "btn btn-info draggable btn-circle drag-drop";
 				dragElement.removeEventListener('mousemove', onMouseMove);
 				dragElement.onmouseup = null;
-				$.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]}).done(function(data) {})
-				setTimeout(function(){
+				$.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]})
+        setTimeout(function(){
 					location.reload();
 				}, 10)
 			}

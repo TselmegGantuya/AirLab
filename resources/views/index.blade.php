@@ -15,7 +15,7 @@
                         <th data-bind="text: name"></th>
                     </tr>
                 </thead>
-                <tbody data-bind="foreach: $root.currentTabData" >
+                <tbody data-bind="foreach: $root.currentTabData">
                     <tr>
                         <td data-bind="text:name"></td>
                         <td data-bind="text:email"></td>
@@ -23,44 +23,25 @@
                 </tbody>
             </table>
             <div>
+                <!-- ko if: $root.role() == 2 -->
                 <a href="#" data-bind="click: openBtn">
-                    <button type="button" class="btn btn-outline-dark">Change Password</button>
+                    <button type="button" class="btn btn-outline-dark">Register</button>
                 </a>
+                <!-- /ko -->
                 <!--
                 <a href="">
                     <button type="button" class="btn btn-outline-dark">Change Email</button>
                 </a> -->
             </div>
-        </div>
-        <div class="modal-body">
-            <div class="modal-body form-horizontal">
-                <form data-bind="submit: saveToPhp" id="pass_form">
-                    <div class="form-group">
-                        <div class="control-group">
-                            <label for="current_password" class="control-label">Current Password</label>
-                            <div class="controls">
-                                <input type="password" data-bind="value: current_password" class="form-control"  name="current_password">
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="new_password" class="control-label">New Password</label>
-                            <div class="controls">
-                                <input type="password" data-bind="value: new_password" class="form-control"  name="new_password">
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="confirm_password" class="control-label">Confirm Password</label>
-                            <div class="controls">
-                                <input type="password" data-bind="value: confirm_password" class="form-control"  name="confirm_password">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button href="#" class="btn" data-dismiss="modal" aria-hidden="true" id="password_modal_save">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+            <form>
+                <div data-bind="foreach:inputs">
+                    <input data-bind="attr:{id:name, type:input, placeholder: name}">
+                </div>
+                <select id = "orgSelect" data-bind= "options: $data.organizations,
+                        optionsText: 'name',
+                        optionsValue: 'id'"></select>
+                        <button data-bind = "click:register, text:'Register'"></button>
+            </form>
         </div>
     </div>
 </script>
@@ -267,9 +248,9 @@
         
         <form enctype="multipart/form-data" id = "uploadForm" class="form">
             <label>Upload:</label>
-            <input type="file" id="files" name="" placeholder="New BP" data-bind="event:{change: $root.fileSelect}">
+            <input type="file" id="files" name="" placeholder="New BP" accept="image/*" data-bind="event:{change: $root.fileSelect}">
             <label>Change:</label>
-            <input type="file" id="files" name="" placeholder="Switch BP" data-bind="event:{change: $root.fileSwitch}">
+            <input type="file" id="files" name="" placeholder="Switch BP" accept="image/*" data-bind="event:{change: $root.fileSwitch}">
         </form>
     </div>
 
