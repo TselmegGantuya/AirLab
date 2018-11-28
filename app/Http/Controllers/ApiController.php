@@ -17,6 +17,14 @@ class ApiController extends Controller
 {
     // START STEFAN CODE
 
+    public function recordsById(Request $request)
+    {
+      if ($request->id) {
+        $records = Record::where('device_id', $request->id)->get();
+      }
+        return $records;
+    }
+
     public function adminAddBlueprint()
     {
         $records = Record::all();

@@ -63,6 +63,8 @@
     <script src="{{ url('js/logout.js') }}" ></script>
     <script src="{{ url('js/devices_admin.js') }}" ></script>
     <script src="{{ url('js/staticData.js') }}" ></script>
+    <script src="{{ url('js/oldData.js') }}" ></script>
+
 
 </body>
 </html>

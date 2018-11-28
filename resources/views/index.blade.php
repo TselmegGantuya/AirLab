@@ -1,5 +1,56 @@
 @extends('layouts.app')
 @section('content')
+
+<script type="text/html" id ="oldData">
+    <div class="row">  
+        <div class="col-10">
+                <h1 data-bind="text: deviceName"></h1>
+            
+            <div data-bind="if: noData">
+                <h4>No data for this device</h4>
+            </div>
+        </div>
+        <div class="col-2">
+            <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dev')">
+                <button class="btn btn-danger" type="button">Back</button>
+            </a>  
+        </div>
+    </div>
+    <div data-bind="if: history">
+      <table class="table table-striped table-bordered">
+          <thead>
+              <tr>
+                  <th>temperature</th>
+                  <th>relative_humidity</th>
+                  <th>pm2_5</th>
+                  <th>tvoc</th>
+                  <th>co2</th>
+                  <th>co</th>
+                  <th>air_pressure</th>
+                  <th>ozone</th>
+                  <th>no2</th>
+                  <th>date</th>
+              </tr>
+          </thead>
+          <tbody data-bind="foreach: oldRecords" >
+              <tr>
+                  <td data-bind="text: temperature"></td>
+                  <td data-bind="text: relative_humidity"></td>
+                  <td data-bind="text: pm2_5"></td>
+                  <td data-bind="text: tvoc"></td>
+                  <td data-bind="text: co2"></td>
+                  <td data-bind="text: co"></td>
+                  <td data-bind="text: air_pressure"></td>
+                  <td data-bind="text: ozone"></td>
+                  <td data-bind="text: no2"></td>
+                  <td data-bind="text: created_at"></td>
+              </tr>
+          </tbody>
+      </table>
+    </div>
+    
+</script>
+
 <script type="text/html" id='profileTemplate'>
     <div class="container-fluid" id="container">
         <div class="row">
@@ -137,7 +188,12 @@
                     <tr>
                         <td ><input type="" data-bind="value :name"></input></td>
                         <td data-bind="text:serial_number"></td>
-                        <td ><button type="button" class="btn btn-success" data-bind="click: $root.editDevice.bind($data)">Save</button></td>
+                        <td >
+                          <button type="button" class="btn btn-success" data-bind="click: $root.editDevice.bind($data)">Save</button>
+                          <button type="button" class="btn btn-primary"data-bind="click:  $root.oldData.bind($data), value: id">More info</button>
+
+                        </td>
+
                     </tr>
                 </tbody>
             </table>
@@ -234,7 +290,9 @@
             </div>
         </div>
         <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <canvas style="background:white; border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
+
+            <canvas style="background:white; border: solid 2px" id="currentBP" width="1000" height="500"></canvas>
+
         </div>
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
             <div class="modal-dialog">

@@ -43,9 +43,20 @@ var adminDevicesModel = function (){
         var newModel = new staticDataModel()
         ko.applyBindings(newModel)
         break;
+      case 'oldData':
+        ko.cleanNode($("#main")[0])
+        var newModel = new oldDataModel()
+        ko.applyBindings(newModel)
+        break;
     }
   }
+
+self.oldData = function(data){
   
+  ko.cleanNode($("#main")[0])
+  var newModel = new oldDataModel(data)
+  ko.applyBindings(newModel)
+}
   /**
    * Token
    */
@@ -138,7 +149,7 @@ var adminDevicesModel = function (){
    if (selectedItems != 0) {
      $.post(base_url + '/api/uhoo/addDeviceOrg' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
        if (data == 1) {
-         console.log('privjet')
+
          $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
            console.log(data)
            if(data != '' ){
@@ -194,7 +205,7 @@ var adminDevicesModel = function (){
         if(data ){
           swal("Success!", "Name has been changed!", "success");
         }
-       
+
       })
   }
   $.post(base_url + '/api/me', {token: self.token()})
