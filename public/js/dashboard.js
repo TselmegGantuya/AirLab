@@ -186,6 +186,8 @@ var dashModel = function (){
 				btn.style.top = toppixel +'px';
 				document.getElementById("bp").appendChild(btn);
 
+        self.blueprintDevi.push(btn)
+
 				// jquery popover method. Return device name when hovered over 
 				$('[data-toggle="popover"]').popover({
           placement: 'top',
@@ -222,7 +224,6 @@ var dashModel = function (){
 	 * @return {[type]} [description]
 	 */
 	self.dragNDropLogic = function () {
-    var droppedIn = false;
     $('.draggable').mousedown(function(event) {
       $('[data-toggle="popover"]').popover('hide')
       event.preventDefault()
@@ -261,20 +262,25 @@ var dashModel = function (){
       dragElement.onmouseup = function(event) {
         event.preventDefault()
         finishDrag()
-        // setTimeout(function(){
-        //   location.reload();
-        // }, 10)
-      }
 
-      function drag_drop(event) {
-          event.preventDefault(); /* Prevent undesirable default behavior while dropping */
-          droppedIn = true;
-      }
-      function drag_end(event) {
-          if(droppedIn == false){
-              alert('go back')
-          }
-        droppedIn = false;
+        // this function will return true after 1 second (see the async keyword in front of function)
+        async function returnTrue() {
+          
+          // create a new promise inside of the async function
+          let promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve(dragElement.remove()), 500) // resolve
+          });
+          
+          // wait for the promise to resolve
+          let result = await promise;
+
+          // console log the result (true)
+          self.blueprintdash()
+          // console.log(result);
+        }
+
+        // call the function
+        returnTrue();
       }
 
       // When mouse is moving 
