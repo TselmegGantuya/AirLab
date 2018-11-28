@@ -7,7 +7,10 @@ var dashModel = function (){
   self.nav = ko.observable(true)
   self.setColorDevices = ko.observable(false)
   self.setBlueprint = ko.observable(true)
+  self.showLocked = ko.observable(true)
+  self.showUnlocked = ko.observable(false)
   self.token = ko.observable()
+  self.blueprintName = ko.observable()
   self.blueprintData = ko.observableArray() 
   self.blueprintDevices = ko.observableArray()
   self.removeBpDevices = ko.observableArray() 
@@ -71,7 +74,7 @@ var dashModel = function (){
     context.clearRect(0, 0, canvas.width, canvas.height)
     if(self.currentBlueprint()){
     let path = self.currentBlueprint()['path']
-    // console.log(self.currentBlueprint())
+    self.blueprintName(self.currentBlueprint().name);
     let img = new Image()
     img.src = base_url + '/storage/' + path
     img.addEventListener("load", function() {
@@ -232,6 +235,8 @@ var dashModel = function (){
 	 * @return {[type]} [description]
 	 */
 	self.dragNDropLogic = function () {
+    self.showUnlocked(true);
+    self.showLocked(false);
 		$('.draggable').mousedown(function(event) {
 			$('[data-toggle="popover"]').popover('hide')
 			event.preventDefault()
@@ -398,6 +403,8 @@ var dashModel = function (){
    * @return {[type]} [description]
    */
   self.stopDragNDropLogic = function () {
+    self.showUnlocked(false);
+    self.showLocked(true);
   	$('.draggable').off("mousedown")
   }
 
@@ -425,4 +432,5 @@ var dashModel = function (){
     })
   }
   self.enterPage()
+
 }

@@ -218,12 +218,21 @@
         </div>
     </div>
     <div>
-        <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
-            <button class="btn btn-primary col" type="button">Start Drag n Drop</button>
-        </a>
-        <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
-            <button class="btn btn-primary col" type="button">Stop Drag n Drop</button>
-        </a>
+        <div class="row">
+            <h1 class="col-10" data-bind="text: blueprintName"></h1>
+            <div class="col-2">
+                <div data-bind="if: showUnlocked">
+                    <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
+                        <button class="btn btn-success " type="button"><i class="fas fa-lock-open"></i> unlocked</button>
+                    </a>
+                </div>
+                <div data-bind="if: showLocked">
+                    <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
+                        <button class="btn btn-danger" type="button"><i class="fas fa-lock"></i> locked</button>
+                    </a>
+                </div>
+            </div>
+        </div>
         <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)">
             <canvas style="background:white; border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
@@ -241,11 +250,13 @@
                             <thead>
                                 <td>Name</td>
                                 <td>Value</td>
+                                <td></td>
                             </thead>
                             <tbody data-bind="foreach: $root.records">
-                                <tr data-bind="css: bgColor">
+                                <tr>
                                     <th data-bind="text: name">Temperature: </th>
-                                    <td data-bind="text: value " ></td>
+                                    <td data-bind="text: value"></td>
+                                    <td><i data-bind="css: bgColor" class="fas "></i></td>
                                 </tr>                
                             </tbody>
                         </table> 

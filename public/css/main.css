@@ -51,7 +51,15 @@
   border-radius: 15px;
   color: purple;
 }
-
+.color-red{
+  color: red;
+}
+.color-orange{
+  color: orange;
+}
+.color-green{
+  color: green;
+}
 .blockquote-footer:before {
   content: "";
 }
