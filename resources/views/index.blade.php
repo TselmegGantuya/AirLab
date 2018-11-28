@@ -52,42 +52,59 @@
 </script>
 
 <script type="text/html" id='profileTemplate'>
-    <div class="container-fluid" id="container">
-        <div class="row">
-            <p>Profile</p>
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr data-bind="foreach: currentTabHead">
-                        <th data-bind="text: name"></th>
-                    </tr>
-                </thead>
-                <tbody data-bind="foreach: $root.currentTabData">
-                    <tr>
-                        <td data-bind="text:name"></td>
-                        <td data-bind="text:email"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div>
-                <!-- ko if: $root.role() == 2 -->
-                <a href="#" data-bind="click: openBtn">
-                    <button type="button" class="btn btn-outline-dark">Register</button>
-                </a>
-                <!-- /ko -->
-                <!--
-                <a href="">
-                    <button type="button" class="btn btn-outline-dark">Change Email</button>
-                </a> -->
+    <div class="container-fluid" id="container" style="min-width:800px;">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">My profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="create-tab" data-toggle="tab" href="#create" role="tab" aria-controls="create" aria-selected="false">Create Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload" aria-selected="false">Upload blueprint</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                 <p>Profile</p>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr data-bind="foreach: currentTabHead">
+                            <th data-bind="text: name"></th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: $root.currentTabData">
+                        <tr>
+                            <td data-bind="text:name"></td>
+                            <td data-bind="text:email"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <form>
-                <div data-bind="foreach:inputs">
-                    <input data-bind="attr:{id:name, type:input, placeholder: name}">
+            <div class="tab-pane fade" id="create" role="tabpanel" aria-labelledby="create-tab">
+                <div>
+                    <!-- ko if: $root.role() == 2 -->
+                    <a href="#" data-bind="click: openBtn">
+                        <button type="button" class="btn btn-outline-dark">Register</button>
+                    </a>
+                    <!-- /ko -->
+                    <!--
+                    <a href="">
+                        <button type="button" class="btn btn-outline-dark">Change Email</button>
+                    </a> -->
                 </div>
-                <select id = "orgSelect" data-bind= "options: $data.organizations,
-                        optionsText: 'name',
-                        optionsValue: 'id'"></select>
-                        <button data-bind = "click:register, text:'Register'"></button>
-            </form>
+                    <form>
+                        <div data-bind="foreach:inputs">
+                            <input data-bind="attr:{id:name, type:input, placeholder: name}">
+                        </div>
+                        <select id = "orgSelect" data-bind= "options: $data.organizations,
+                                optionsText: 'name',
+                                optionsValue: 'id'"></select>
+                                <button data-bind = "click:register, text:'Register'"></button>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="upload" role="tabpanel" aria-labelledby="upload-tab">contact</div>
         </div>
     </div>
 </script>
