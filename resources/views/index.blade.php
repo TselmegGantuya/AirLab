@@ -253,7 +253,7 @@
         </div>
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDevices" class="nav-item">
-                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }" ondragend="drag_end(event)" class="draggable btn btn-danger drag-drop"></li>
+                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }" class="draggable btn btn-danger drag-drop"></li>
             </div>
         </ul>
         <br>

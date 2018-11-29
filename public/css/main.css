@@ -24,14 +24,6 @@
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  text-align: center;
-}
-
-.btn-dev {
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
-  color: purple;
 }
 
 .blockquote-footer:before {
