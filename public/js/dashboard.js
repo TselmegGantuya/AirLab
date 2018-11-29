@@ -1,4 +1,4 @@
-/**['records']
+/**
 *   Knockoutjs
 */
 var dashModel = function (){
@@ -203,34 +203,32 @@ var dashModel = function (){
       }
       
   }
-  
 
-	/**
-	 * First get devices from DB then create element of devices with pixels and append to HTML
-	 * @return {[type]} [description]
-	 */
-	self.blueprintdash = function () {
-		// request to get devices where top_pixel and left_pixel are not equal to null
-		$.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
-			data.forEach(function(element) {
-				var btn = document.createElement("BUTTON");
-				let toppixel = element.top_pixel - 79
-				btn.setAttribute("data-toggle", "popover"); 
-				btn.style.position = 'absolute';
-				btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
-				btn.id = element.id;
-				self.devices(btn.id)
-				btn.style.left = element.left_pixel +'px';
-				btn.style.top = toppixel +'px';
-				document.getElementById("bp").appendChild(btn);
+  /**
+   * First get devices from DB then create element of devices with pixels and append to HTML
+   * @return {[type]} [description]
+   */
+  self.blueprintdash = function () {
+    // request to get devices where top_pixel and left_pixel are not equal to null
+    $.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
+      data.forEach(function(element) {
+        var btn = document.createElement("BUTTON");
+        let toppixel = element.top_pixel - 79
+        btn.setAttribute("data-toggle", "popover");
+        btn.style.position = 'absolute';
+        btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
+        btn.id = element.id;
+        self.devices(btn.id)
+        btn.style.left = element.left_pixel +'px';
+        btn.style.top = toppixel +'px';
+        document.getElementById("bp").appendChild(btn);
 
-        self.blueprintDevi.push(btn)
-
-				// jquery popover method. Return device name when hovered over 
-				$('[data-toggle="popover"]').popover({
+        // jquery popover method. Return device name when hovered over 
+        $('[data-toggle="popover"]').popover({
           placement: 'top',
           animation: true,
           trigger: 'hover',
+          title: "Device",
           title: function() {
             if (element.id == btn.id) {
               return element.name
@@ -241,36 +239,63 @@ var dashModel = function (){
               return element.danger
             }
           },
-				})
+        })
 
-				// Open modal to remove device from blueprint
-			  $(btn).on('click', function(e) {
-			    $('#removeDevice').modal('show')
-			    self.devices(element)
-            $.post(base_url + '/api/blueprint/records/getForDevice', {id: element.id}).done(function(data) {
-              setTimeout(function(){
-                self.records(data)
-                console.log(data);
-              }, 10)
-            })
+        // Open modal to remove device from blueprint
+        $(btn).on('click', function(e) {
+          $('#removeDevice').modal('show')
+          self.devices(element)
+          $.post(base_url + '/api/blueprint/records/getForDevice', {id: element.id}).done(function(data) {
+            // this function will return true after 1 second (see the async keyword in front of function)
+            async function returnTrue() {
+              // create a new promise inside of the async function
+              let promise = new Promise((resolve, reject) => {
+                setTimeout(() => resolve(self.records(data)), 500) // resolve
+              });
+              // wait for the promise to resolve
+              let result = await promise;
+              console.log(data);
+            }
+            // call the function
+            returnTrue()
+
+            // setTimeout(function(){
+            //   self.records(data)
+            //   console.log(data);
+            // }, 10)
+          })
+
           // Method to remove device from blueprint and refresh page
-			    self.removeDevice = function(){
-				    $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
-							setTimeout(function(){
-								location.reload();
-							}, 10)
-				    })
-			    }
-			  })
-			})
-		})
-	}
+          self.removeDevice = function(){
+            $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
+            // this function will return true after 1 second (see the async keyword in front of function)
+            async function returnTrue() {
+              // create a new promise inside of the async function
+              let promise = new Promise((resolve, reject) => {
+                setTimeout(() => resolve($('.draggable').remove()), 500) // resolve
+              });
+              // wait for the promise to resolve
+              let result = await promise;
+              self.blueprintdash()
+              // request to get devices on blueprint
+              $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
+                self.blueprintDevices(data)
+              })
+            }
+            // call the function
+            returnTrue()
+            })
+          }
+        })
+      })
+    })
+  }
 
-	/**
-	 * [dragNDropLogic description]
-	 * @return {[type]} [description]
-	 */
-	self.dragNDropLogic = function () {
+  /**
+   * [dragNDropLogic description]
+   * @return {[type]} [description]
+   */
+  self.dragNDropLogic = function () {
     self.showUnlocked(true);
     self.showLocked(false);
     $('.draggable').mousedown(function(event) {
@@ -289,8 +314,8 @@ var dashModel = function (){
       function startDrag(clientX, clientY) {
         shiftX = clientX - dragElement.getBoundingClientRect().left;
         shiftY = clientY - dragElement.getBoundingClientRect().top;
-        dragElement.className = "btn btn-info draggable btn-dev";
-        dragElement.removeAttribute("data-bind")
+        dragElement.className = "btn btn-info draggable btn-circle";
+        dragElement.style.color = 'red';
         dragElement.style.position = 'fixed';
         document.body.append(dragElement);
         moveAt(clientX, clientY);
@@ -314,29 +339,90 @@ var dashModel = function (){
 
         // this function will return true after 1 second (see the async keyword in front of function)
         async function returnTrue() {
-          
           // create a new promise inside of the async function
           let promise = new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dragElement.remove()), 500) // resolve
+            setTimeout(() => resolve($('.draggable').remove()), 500) // resolve
           });
-          
           // wait for the promise to resolve
           let result = await promise;
-
-          // console log the result (true)
           self.blueprintdash()
-          // console.log(result);
+          // request to get devices on blueprint
+          $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
+            self.blueprintDevices(data)
+          })
         }
-
         // call the function
-        returnTrue();
+        returnTrue()
+        self.showLocked(true);
+        self.showUnlocked(false);
       }
 
       // When mouse is moving 
       function onMouseMove(event) {
-        event.preventDefault()
+        // event.preventDefault()
         moveAt(event.clientX, event.clientY);
+        dragElement.hidden = true;
+        let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+        dragElement.hidden = false;
+
+        // mousemove events may trigger out of the window (when the ball is dragged off-screen)
+        // if clientX/clientY are out of the window, then elementfromPoint returns null
+        if (!elemBelow) return;
+        // potential droppables are labeled with the class "droppable" (can be other logic)
+        let droppable = elemBelow.closest('#bp');
+        if (currentDroppable != droppable) { // if there are any changes
+          // we're flying in or out...
+          // note: both values can be null
+          //   currentDroppable=null if we were not over a droppable (e.g over an empty space)
+          //   droppableBelow=null if we're not over a droppable now, during this event
+          if (currentDroppable) {
+            // the logic to process "flying out" of the droppable (remove highlight)
+            leaveDroppable(currentDroppable);
+          }
+
+          currentDroppable = droppable;
+          if (currentDroppable) {
+            // the logic to process "flying in" of the droppable
+            enterDroppable(currentDroppable);
+          }
+        }
       }
+      
+      // When device enters blueprint or is in blueprint
+      function enterDroppable(elem) {
+        elem.style.background = 'black';
+      }
+
+      // When device leaves blueprint
+      function leaveDroppable(elem) {
+        document.removeEventListener('mousemove', onMouseMove);
+        swal({
+          title: "ERROR!",
+          text: "Please stay inside the blueprint.",
+          icon: "error"
+        })
+        elem.style.background = '';
+        // this function will return true after 1 second (see the async keyword in front of function)
+        async function returnTrue() {
+          // create a new promise inside of the async function
+          let promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve($('.draggable').remove()), 500) // resolve
+          });
+          // wait for the promise to resolve
+          let result = await promise;
+          self.blueprintdash()
+          // request to get devices on blueprint
+          $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
+            self.blueprintDevices(data)
+          })
+        }
+        // call the function
+        returnTrue()
+        self.showLocked(true);
+        self.showUnlocked(false);
+      }
+
+
 
       // get coordinates when mouse is moving
       function moveAt(clientX, clientY) {
@@ -392,7 +478,7 @@ var dashModel = function (){
   self.stopDragNDropLogic = function () {
     self.showUnlocked(false);
     self.showLocked(true);
-  	$('.draggable').off("mousedown")
+    $('.draggable').off("mousedown")
   }
 
   /**
@@ -405,10 +491,10 @@ var dashModel = function (){
       for (var i = 0, d; d = data[i]; i++) {
         self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
       }
-    	// request to get devices on blueprint
-	    $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-	      self.blueprintDevices(data)
-	    })
+      // request to get devices on blueprint
+      $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
+        self.blueprintDevices(data)
+      })
       self.blueprintdash()
     })
 
@@ -419,5 +505,4 @@ var dashModel = function (){
     })
   }
   self.enterPage()
-
 }
