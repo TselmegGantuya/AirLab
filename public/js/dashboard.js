@@ -203,7 +203,6 @@ var dashModel = function (){
       }
       
   }
-  
 
 	/**
 	 * First get devices from DB then create element of devices with pixels and append to HTML
