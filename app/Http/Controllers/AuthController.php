@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use User;
+use App\Organization;
 
 class AuthController extends Controller
 {
@@ -40,7 +41,10 @@ class AuthController extends Controller
      */
     public static function me()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user()->toArray();
+        $organization = Organization::where('id', $user['organization_id'])->first()->toArray();
+        $user['organization'] = $organization['name'];
+        return $user;
     }
 
     /**

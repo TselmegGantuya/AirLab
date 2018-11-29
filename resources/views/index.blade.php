@@ -52,7 +52,7 @@
 </script>
 
 <script type="text/html" id='profileTemplate'>
-    <div class="container-fluid" id="container" style="min-width:800px;">
+    <div class="container-fluid" id="container" style="min-width:800px;" data-bind="if: showAdminPart">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">My profile</a>
@@ -66,46 +66,69 @@
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                 <p>Profile</p>
+                <h1>Profile</h1>
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr data-bind="foreach: currentTabHead">
                             <th data-bind="text: name"></th>
                         </tr>
                     </thead>
-                    <tbody data-bind="foreach: $root.currentTabData">
+                    <tbody>
                         <tr>
-                            <td data-bind="text:name"></td>
-                            <td data-bind="text:email"></td>
+                            <td data-bind="text:username"></td>
+                            <td data-bind="text:useremail"></td>
+                            <td data-bind="text:userorganization"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="tab-pane fade" id="create" role="tabpanel" aria-labelledby="create-tab">
                 <div>
-                    <!-- ko if: $root.role() == 2 -->
-                    <a href="#" data-bind="click: openBtn">
-                        <button type="button" class="btn btn-outline-dark">Register</button>
-                    </a>
-                    <!-- /ko -->
                     <!--
                     <a href="">
                         <button type="button" class="btn btn-outline-dark">Change Email</button>
                     </a> -->
                 </div>
-                    <form>
-                        <div data-bind="foreach:inputs">
-                            <input data-bind="attr:{id:name, type:input, placeholder: name}">
+                <h1>Create profile</h1>
+                <p>Add a new account for a organization.</p>
+                <form>
+                    <div class="form-group ">
+                        <label class="col-form-label">Organization</label>
+                        <select class="form-control" id = "orgSelect" data-bind= "options: $data.organizations,
+                            optionsText: 'name',
+                            optionsValue: 'id'">
+                        </select>
+                    </div>  
+                    <div data-bind="foreach:inputs" class="form-group ">
+                        <label data-bind="text: name" class="col-form-label"></label>
+                        <input data-bind="attr:{id:name, type:input, placeholder: name}" class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="col-1 offset-10">
+                            <button class="btn btn-info" data-bind = "click:register, text:'Register'"></button>
                         </div>
-                        <select id = "orgSelect" data-bind= "options: $data.organizations,
-                                optionsText: 'name',
-                                optionsValue: 'id'"></select>
-                                <button data-bind = "click:register, text:'Register'"></button>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
             <div class="tab-pane fade" id="upload" role="tabpanel" aria-labelledby="upload-tab">contact</div>
         </div>
+    </div>
+    <div class="container-fluid" id="container" style="min-width:800px;" data-bind="if: showUserPart">
+        <h1>Profile</h1>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr data-bind="foreach: currentTabHead">
+                    <th data-bind="text: name"></th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: $root.currentTabData">
+                <tr>
+                    <td data-bind="text:name"></td>
+                    <td data-bind="text:email"></td>
+                    <td data-bind="text:organization"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </script>
 
@@ -287,11 +310,11 @@
                 </div>
             </div>
         </div>
-        <div id="bp" ondrop="drop(event)" ondragover="allowDrop(event)">
-
-            <canvas style="background:white; border: solid 2px" id="currentBP" width="1000" height="500"></canvas>
-
+        <div id="bp">
+            <canvas border: solid 2px" ondrop="drag_drop(event)" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
+
+        <div id="log"></div>
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -329,7 +352,7 @@
         </div>
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDevices" class="nav-item">
-                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }"  class="draggable btn btn-danger drag-drop"></li>
+                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }" ondragend="drag_end(event)" class="draggable btn btn-danger drag-drop"></li>
             </div>
         </ul>
         <br>

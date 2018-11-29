@@ -5,12 +5,17 @@
 var profileModel = function (){
   var self = this
   self.nav = ko.observable(true)
+  self.showAdminPart = ko.observable(false)
+  self.showUserPart = ko.observable(true)
   self.currentTemplate = ko.observable('profileTemplate')
   self.profiles = ko.observableArray([
     {name:"Name"},
-    {name:"Email"}
+    {name:"Email"},
+    {name:"Organization"}
   ])
-  self.user = ko.observable()
+  self.username = ko.observable()
+  self.useremail = ko.observable()
+  self.userorganization = ko.observable()
   self.currentTabHead = ko.observableArray()
   self.currentTabData = ko.observableArray()
   self.current_password = ko.observable()
@@ -62,7 +67,10 @@ var profileModel = function (){
   *   Register New users a admin
   */
   self.register = function() {
-    $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()})
+    $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()}).done(function(data){
+      console.log(data);
+      swal("Success!", "Profile succesfull created!", "success");
+    })
   }
   /**
    * [toggleVisibilityProfile description]
@@ -78,13 +86,21 @@ var profileModel = function (){
     })
     $.post(base_url + '/api/me').done(function(data){
       console.log(data)
-      self.user(data.name)
+      self.username(data.name)
+      self.useremail(data.email)
+      self.userorganization(data.organization)
       self.currentTabHead(self.profiles())
       self.currentTabData(data)
+      console.log(self.currentTabData())
       self.userEmail(data.email)
       self.userOrganization(data.name)
       self.role(data.role)
-      console.log(self.role())
+      if(self.role() == 1){
+        self.showAdminPart(false)
+      }else if (self.role() == 2){
+        self.showAdminPart(true)
+        self.showUserPart(false) 
+      } 
     })
   }
 self.enterPage()
