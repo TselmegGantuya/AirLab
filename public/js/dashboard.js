@@ -203,6 +203,7 @@ var dashModel = function (){
       }
       
   }
+  
 
 	/**
 	 * First get devices from DB then create element of devices with pixels and append to HTML
@@ -214,7 +215,7 @@ var dashModel = function (){
 			data.forEach(function(element) {
 				var btn = document.createElement("BUTTON");
 				let toppixel = element.top_pixel - 79
-				btn.setAttribute("data-toggle", "popover");
+				btn.setAttribute("data-toggle", "popover"); 
 				btn.style.position = 'absolute';
 				btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
 				btn.id = element.id;
