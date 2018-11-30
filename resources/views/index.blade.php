@@ -310,7 +310,7 @@
                 </div>
             </div>
         </div>
-        <div id="bp">
+        <div id="bp" style="border:2px solid black; background-color: white;">
             <canvas border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
 

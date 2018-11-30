@@ -390,7 +390,7 @@ var dashModel = function (){
       
       // When device enters blueprint or is in blueprint
       function enterDroppable(elem) {
-        elem.style.background = 'black';
+        elem.style.background = '#f3f8fa';
       }
 
       // When device leaves blueprint

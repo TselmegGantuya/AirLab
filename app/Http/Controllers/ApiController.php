@@ -20,7 +20,7 @@ class ApiController extends Controller
     public function recordsById(Request $request)
     {
       if ($request->id) {
-        $records = Record::where('device_id', $request->id)->get();
+        $records = Record::where('device_id', $request->id)->orderBy('updated_at', 'desc')->get();
       }
         return $records;
     }
