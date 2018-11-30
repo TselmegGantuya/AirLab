@@ -58,10 +58,7 @@
                 <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">My profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="create-tab" data-toggle="tab" href="#create" role="tab" aria-controls="create" aria-selected="false">Create Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload" aria-selected="false">Upload blueprint</a>
+                <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload" aria-selected="false">Admin</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -82,35 +79,37 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane fade" id="create" role="tabpanel" aria-labelledby="create-tab">
-                <div>
-                    <!--
-                    <a href="">
-                        <button type="button" class="btn btn-outline-dark">Change Email</button>
-                    </a> -->
+            <div class="tab-pane fade" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+                <h1>Admin</h1>
+                 <div>
+                    <a href="#" data-bind="click: changeSet.bind($data, 'Register')">
+                        <button type="button" class="btn btn-info">Register</button>
+                    </a>
+                    <a href="#" data-bind="click: changeSet.bind($data, 'Upload Blueprint')">
+                        <button type="button" class="btn btn-info">Upload Blueprint</button>
+                    </a>
+                    
                 </div>
-                <h1>Create profile</h1>
-                <p>Add a new account for a organization.</p>
                 <form>
-                    <div class="form-group ">
-                        <label class="col-form-label">Organization</label>
+                    <div class="form-group"> 
+                        <label class="col-form-label">Organization</label>   
                         <select class="form-control" id = "orgSelect" data-bind= "options: $data.organizations,
-                            optionsText: 'name',
-                            optionsValue: 'id'">
-                        </select>
-                    </div>  
-                    <div data-bind="foreach:inputs" class="form-group ">
-                        <label data-bind="text: name" class="col-form-label"></label>
-                        <input data-bind="attr:{id:name, type:input, placeholder: name}" class="form-control">
+                                optionsText: 'name',
+                                optionsValue: 'id'"></select>
+                    </div>
+                    <div class="form-group">
+                        <div data-bind="foreach:inputs" class="form-group ">
+                            <label data-bind="text: name" class="col-form-label"></label>
+                            <input data-bind="attr:{id:name, type:input, placeholder: name}" class="form-control">
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-1 offset-10">
-                            <button class="btn btn-info" data-bind = "click:register, text:'Register'"></button>
+                        <div class="col-2 offset-9">
+                            <button class="btn btn-success" data-bind = "click:multiFunc, text:set"></button>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade" id="upload" role="tabpanel" aria-labelledby="upload-tab">contact</div>
         </div>
     </div>
     <div class="container-fluid" id="container" style="min-width:800px;" data-bind="if: showUserPart">
