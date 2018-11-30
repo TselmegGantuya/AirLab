@@ -22,10 +22,14 @@
                     </tr>
                 </tbody>
             </table>
+            <!-- ko if: $root.role() == 2 -->
             <div>
-                <!-- ko if: $root.role() == 2 -->
-                <a href="#" data-bind="click: openBtn">
+                
+                <a href="#" data-bind="click: changeSet.bind($data, 'Register')">
                     <button type="button" class="btn btn-outline-dark">Register</button>
+                </a>
+                <a href="#" data-bind="click: changeSet.bind($data, 'Upload Blueprint')">
+                    <button type="button" class="btn btn-outline-dark">Upload Blueprint</button>
                 </a>
                 
             </div>
@@ -36,7 +40,7 @@
                 <select id = "orgSelect" data-bind= "options: $data.organizations,
                         optionsText: 'name',
                         optionsValue: 'id'"></select>
-                        <button data-bind = "click:register, text:'Register'"></button>
+                        <button data-bind = "click:multiFunc, text:set"></button>
             </form>
             <!-- /ko -->
 

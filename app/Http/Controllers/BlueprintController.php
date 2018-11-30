@@ -32,6 +32,22 @@ class BlueprintController extends Controller
         $blueprint->save();
         return 'success';
     }
+        /**
+     * Upload and display blueprint
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadBPAdmin(Request $request)
+    {
+        $user = auth()->user();
+        $path = $request->file('blueprint')->store('public');
+        $blueprint = new Blueprint;
+        $blueprint->name = $request->input('name');
+        $blueprint->organization_id = $request->input('organizations');
+        $blueprint->path = $path;
+        $blueprint->save();
+        return 'success';
+    }
 /**
      * Upload and display blueprint
      *
