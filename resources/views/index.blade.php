@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
+
 <script type="text/html" id ="oldData">
     <div class="row">  
         <div class="col-10">
