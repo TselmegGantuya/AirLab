@@ -13,7 +13,6 @@ var dashModel = function (){
   self.blueprintName = ko.observable()
   self.blueprintData = ko.observableArray() 
   self.blueprintDevices = ko.observableArray()
-  self.blueprintDevi = ko.observableArray()
   self.removeBpDevices = ko.observableArray() 
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
@@ -22,10 +21,10 @@ var dashModel = function (){
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
   self.records = ko.observableArray()
-  self.lastRecord = ko.observableArray()
   self.currentBlueprintSize = ko.observable()
   self.currentBlueprintHeight = ko.observable()
   self.currentBlueprintWidth = ko.observable()
+
   /**
    * Token
    */
@@ -201,7 +200,6 @@ var dashModel = function (){
         }
       })
       }
-      
   }
 
   /**
@@ -258,11 +256,6 @@ var dashModel = function (){
             }
             // call the function
             returnTrue()
-
-            // setTimeout(function(){
-            //   self.records(data)
-            //   console.log(data);
-            // }, 10)
           })
 
           // Method to remove device from blueprint and refresh page
@@ -309,8 +302,8 @@ var dashModel = function (){
       document.addEventListener('mousemove', onMouseMove);
 
       // on drag start:
-      //   remember the initial shift
-      //   move the element position:fixed and a direct child of body
+      // remember the initial shift
+      // move the element position:fixed and a direct child of body
       function startDrag(clientX, clientY) {
         shiftX = clientX - dragElement.getBoundingClientRect().left;
         shiftY = clientY - dragElement.getBoundingClientRect().top;
@@ -321,7 +314,7 @@ var dashModel = function (){
         moveAt(clientX, clientY);
       }
 
-      // switch to absolute coordinates at the end, to fix the element in the document
+      // switch to absolute coordinates at the end, to fix the element in the document and send coordinates to DB
       function finishDrag() {
         dragElement.style.top = parseInt(dragElement.style.top) + pageYOffset + 'px';
         dragElement.style.left = parseInt(dragElement.style.left) + pageXOffset + 'px';
@@ -345,11 +338,12 @@ var dashModel = function (){
           });
           // wait for the promise to resolve
           let result = await promise;
-          self.blueprintdash()
           // request to get devices on blueprint
           $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
             self.blueprintDevices(data)
           })
+          self.blueprintdash()
+
         }
         // call the function
         returnTrue()
@@ -361,10 +355,13 @@ var dashModel = function (){
       function onMouseMove(event) {
         // event.preventDefault()
         moveAt(event.clientX, event.clientY);
+
+        // in a mouse event handler
         dragElement.hidden = true;
         let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
         dragElement.hidden = false;
-
+        // elemBelow is the element below the dragElement. If it's droppable, we can handle it.
+        
         // mousemove events may trigger out of the window (when the ball is dragged off-screen)
         // if clientX/clientY are out of the window, then elementfromPoint returns null
         if (!elemBelow) return;
@@ -389,19 +386,16 @@ var dashModel = function (){
       }
       
       // When device enters blueprint or is in blueprint
-      function enterDroppable(elem) {
-        elem.style.background = 'black';
-      }
+      function enterDroppable() {}
 
       // When device leaves blueprint
-      function leaveDroppable(elem) {
+      function leaveDroppable() {
         document.removeEventListener('mousemove', onMouseMove);
         swal({
           title: "ERROR!",
           text: "Please stay inside the blueprint.",
           icon: "error"
         })
-        elem.style.background = '';
         // this function will return true after 1 second (see the async keyword in front of function)
         async function returnTrue() {
           // create a new promise inside of the async function
@@ -422,48 +416,11 @@ var dashModel = function (){
         self.showUnlocked(false);
       }
 
-
-
       // get coordinates when mouse is moving
       function moveAt(clientX, clientY) {
         // new window-relative coordinates
         let newX = clientX - shiftX;
         let newY = clientY - shiftY;
-        // check if the new coordinates are below the bottom window edge
-        let newBottom = newY + dragElement.offsetHeight; // new bottom
-        // // below the window? let's scroll the page
-        // if (newBottom > document.documentElement.clientHeight) {
-        //   // window-relative coordinate of document end
-        //   let docBottom = document.documentElement.getBoundingClientRect().bottom;
-        //   // scroll the document down by 10px has a problem
-        //   // it can scroll beyond the end of the document
-        //   // Math.min(how much left to the end, 10)
-        //   let scrollY = Math.min(docBottom - newBottom, 10);
-        //   // calculations are imprecise, there may be rounding errors that lead to scrolling up
-        //   // that should be impossible, fix that here
-        //   if (scrollY < 0) scrollY = 0;
-        //   window.scrollBy(0, scrollY);
-        //   // a swift mouse move make put the cursor beyond the document end
-        //   // if that happens -
-        //   // limit the new Y by the maximally possible (right at the bottom of the document)
-        //   newY = Math.min(newY, document.documentElement.clientHeight - dragElement.offsetHeight);
-        // }
-        // check if the new coordinates are above the top window edge (similar logic)
-        // if (newY < 0) {
-        //   // scroll up
-        //   let scrollY = Math.min(-newY, 10);
-        //   if (scrollY < 0) scrollY = 0; // check precision errors
-        //   window.scrollBy(0, -scrollY);
-        //   // a swift mouse move can put the cursor beyond the document start
-        //   newY = Math.max(newY, 0); // newY may not be below 0
-        // }
-        
-        // limit the new X within the window boundaries
-        // there's no scroll here so it's simple
-        if (newX < 0) newX = 0;
-        if (newX > document.documentElement.clientWidth - dragElement.offsetWidth) {
-          newX = document.documentElement.clientWidth - dragElement.offsetWidth;
-        }
 
         dragElement.style.left = newX + 'px';
         dragElement.style.top = newY + 'px';
