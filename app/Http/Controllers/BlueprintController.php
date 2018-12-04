@@ -33,6 +33,23 @@ class BlueprintController extends Controller
         return 'success';
     }
 
+        /**
+     * Upload and display blueprint
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadBPAdmin(Request $request)
+    {
+        $user = auth()->user();
+        $path = $request->file('blueprint')->store('public');
+        $blueprint = new Blueprint;
+        $blueprint->name = $request->input('name');
+        $blueprint->organization_id = $request->input('organizations');
+        $blueprint->path = $path;
+        $blueprint->save();
+        return 'success';
+    }
+    
     /**
      * Upload and display blueprint
      *
@@ -171,7 +188,6 @@ class BlueprintController extends Controller
             $devices[$key]['danger'] = $value;
             $devices[$key]['colorClass'] = $color;
             $devices[$key]['records'] = $deviceData;
-            $devices[$key]['textColor'] = $textColor;
         }
         return $devices;
     }
@@ -180,67 +196,79 @@ class BlueprintController extends Controller
     {
         $deviceRecords = array();
         $i = 0;
-        $records = Record::where('device_id', $request->id)->first()->toArray();
-        $skip = array('id', 'device_id', 'created_at', 'updated_at');
-        foreach ($records as $name => $value) {
-            if(in_array($name, $skip)){
-                continue;
+        $records = Record::where('device_id', $request->id)->first();
+        if($records){
+            $records = $records->toArray();
+        
+            $skip = array('id', 'device_id', 'created_at', 'updated_at');
+            foreach ($records as $name => $value) {
+                if(in_array($name, $skip)){
+                    continue;
+                }
+                $deviceRecords[$i] = array(
+                    'name' => $name,
+                    'value' => $value,
+                    'bgColor' => 'fa-check color-green'
+                );
+                if($name == "temperature" && $value <= 20 || $name == "temperature" && $value >= 27){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "temperature" && $value <= 10 || $name == "temperature" && $value >= 40){
+                    $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
+                }
+                
+                if($name == "relative_humidity" && $value <= 30 || $name == "relative_humidity" && $value >= 50){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "pm2_5" && $value >= 35 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "pm2_5" && $value >= 70 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
+                }
+                if($name == "tvoc" && $value >= 400 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "co2" && $value >= 800 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "co2" && $value >= 1500 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
+                }
+                if($name == "co" && $value >= 100 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "co" && $value >= 250 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
+                }
+                if($name == "air_pressure" && $value <= 970 || $name = "air_pressure" && $value >= 1030){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "ozone" && $value >= 30 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "ozone" && $value >= 70 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
+                }
+                if($name == "no2" && $value >= 35 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
+                }
+                if($name == "no2" && $value >= 70 ){
+                    $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
+                }
+                //set index('i') plus one
+                $i++;
             }
-            $deviceRecords[$i] = array(
-                'name' => $name,
-                'value' => $value,
-                'bgColor' => 'fa-check color-green'
+            return $deviceRecords;
+        }else{
+            $noData = array(
+                'name' => 'no data',
+                'value' => 'no data',
+                'bgColor' => 'fa-times',
             );
-            if($name == "temperature" && $value <= 20 || $name == "temperature" && $value >= 27){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "temperature" && $value <= 10 || $name == "temperature" && $value >= 40){
-                $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
-            }
-            
-            if($name == "relative_humidity" && $value <= 30 || $name == "relative_humidity" && $value >= 50){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "pm2_5" && $value >= 35 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "pm2_5" && $value >= 70 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
-            }
-            if($name == "tvoc" && $value >= 400 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "co2" && $value >= 800 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "co2" && $value >= 1500 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
-            }
-            if($name == "co" && $value >= 100 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "co" && $value >= 250 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
-            }
-            if($name == "air_pressure" && $value <= 970 || $name = "air_pressure" && $value >= 1030){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "ozone" && $value >= 30 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "ozone" && $value >= 70 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
-            }
-            if($name == "no2" && $value >= 35 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-exclamation color-orange';
-            }
-            if($name == "no2" && $value >= 70 ){
-                $deviceRecords[$i]['bgColor'] = 'fa-times color-red';
-            }
-            //set index('i') plus one
-            $i++;
+            return $noData;
         }
-        return $deviceRecords;
+        
     }
 
     /**

@@ -26,12 +26,21 @@ var profileModel = function (){
   self.organizations = ko.observableArray()
   self.token = ko.observable()
   self.role = ko.observable()
+  self.reg_input = ko.observable([
+        {name:"Name", input:"text"},
+        {name:"Password", input:"password"},
+        {name:'Email', input:'text'}
+      ])
+  self.up_input = ko.observable([{name:"Name", input:"text"},
+    {name:"file", input:"file"},
+    ])
   self.inputs = ko.observableArray([
         {name:"Name", input:"text"},
         {name:"Password", input:"password"},
         {name:'Email', input:'text'}
       ])
   self.selectedOrg = ko.observable()
+  self.set = ko.observable('Register')
 
 
   self.loadModel = function(data) {
@@ -63,19 +72,41 @@ var profileModel = function (){
         break;
     }
   }
-  /* 
-  *   Register New users a admin
-  */
-  self.register = function() {
-    $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()}).done(function(data){
-      console.log(data);
-      swal("Success!", "Profile succesfull created!", "success");
-    })
+  self.changeSet = function(data){
+    self.set(data)
+    if(self.set() == 'Register'){
+      self.inputs(self.reg_input())
+    }
+    else if(self.set() == 'Upload Blueprint'){
+      self.inputs(self.up_input())
+    }
   }
-  /**
-   * [toggleVisibilityProfile description]
-   * @return {[type]} [description]
-   */
+  self.multiFunc = function() {
+  /* 
+  *   Register New blueprints as a admin
+  */
+    if(self.set() == 'Upload Blueprint'){
+      var formData = new FormData()
+      console.log($('#file')[0].files[0])
+      // HTML file input, chosen by user
+      formData.append("blueprint", $("#file")[0].files[0])
+      formData.append("token", self.token())
+      formData.append("organizations", $("#orgSelect").val())
+      formData.append("name", $("#Name").val())
+      var request = new XMLHttpRequest()
+      request.open("POST", base_url + '/api/blueprint/uploadAdmin')
+      request.send(formData)
+      swal("Success!", "Image succesfull uploaded!", "success");
+    }
+  /* 
+  *   Register New users as a admin
+  */
+    else if(self.set() == 'Register'){
+       $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()}).done(function(data){
+          swal("Success!", "Profile succesfull created!", "success");
+        })
+    }
+  }
    if (localStorage.getItem('token'))
   {
     self.token(localStorage.getItem('token'))
