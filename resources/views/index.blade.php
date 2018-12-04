@@ -328,13 +328,11 @@
                             <thead>
                                 <td>Name</td>
                                 <td>Value</td>
-                                <td></td>
                             </thead>
                             <tbody data-bind="foreach: $root.records">
-                                <tr>
+                                <tr data-bind="css: bgColor">
                                     <th data-bind="text: name">Temperature: </th>
                                     <td data-bind="text: value"></td>
-                                    <td><i data-bind="css: bgColor" class="fas "></i></td>
                                 </tr>                
                             </tbody>
                         </table> 
