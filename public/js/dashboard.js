@@ -338,12 +338,12 @@ var dashModel = function (){
           });
           // wait for the promise to resolve
           let result = await promise;
+
           // request to get devices on blueprint
           $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
             self.blueprintDevices(data)
           })
           self.blueprintdash()
-
         }
         // call the function
         returnTrue()
@@ -362,7 +362,7 @@ var dashModel = function (){
         dragElement.hidden = false;
         // elemBelow is the element below the dragElement. If it's droppable, we can handle it.
         
-        // mousemove events may trigger out of the window (when the ball is dragged off-screen)
+        // mousemove events may trigger out of the window (when the device is dragged off-screen)
         // if clientX/clientY are out of the window, then elementfromPoint returns null
         if (!elemBelow) return;
         // potential droppables are labeled with the class "droppable" (can be other logic)
@@ -428,6 +428,10 @@ var dashModel = function (){
         dragElement.style.top = newY + 'px';
       }
     })
+  }
+
+  self.runDragNDrop = function () {
+    self.dragNDropLogic()
   }
 
   /**
