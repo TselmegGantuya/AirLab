@@ -3,6 +3,8 @@
 */
 var dashModel = function (){
   var self = this
+  self.optionValues = ko.observableArray(["temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
+  self.selectedOptionValue = ko.observable('Select a value')
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
   self.setColorDevices = ko.observable(false)
@@ -11,13 +13,13 @@ var dashModel = function (){
   self.showUnlocked = ko.observable(false)
   self.token = ko.observable()
   self.blueprintName = ko.observable()
-  self.blueprintData = ko.observableArray() 
+  self.blueprintData = ko.observableArray()
   self.blueprintDevices = ko.observableArray()
   self.blueprintDevi = ko.observableArray()
-  self.removeBpDevices = ko.observableArray() 
+  self.removeBpDevices = ko.observableArray()
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
-  self.devices = ko.observableArray() 
+  self.devices = ko.observableArray()
   self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
@@ -159,7 +161,7 @@ var dashModel = function (){
   function resolvePost(file) {
     return new Promise(resolve => {
       var formData = new FormData()
- 
+
       // HTML file input, chosen by user
       formData.append("id", self.currentBlueprint()['id'])
       formData.append("blueprint", file)
@@ -201,7 +203,7 @@ var dashModel = function (){
         }
       })
       }
-      
+
   }
 
   /**
@@ -223,7 +225,7 @@ var dashModel = function (){
         btn.style.top = toppixel +'px';
         document.getElementById("bp").appendChild(btn);
 
-        // jquery popover method. Return device name when hovered over 
+        // jquery popover method. Return device name when hovered over
         $('[data-toggle="popover"]').popover({
           placement: 'top',
           animation: true,
@@ -357,7 +359,7 @@ var dashModel = function (){
         self.showUnlocked(false);
       }
 
-      // When mouse is moving 
+      // When mouse is moving
       function onMouseMove(event) {
         // event.preventDefault()
         moveAt(event.clientX, event.clientY);
@@ -387,7 +389,7 @@ var dashModel = function (){
           }
         }
       }
-      
+
       // When device enters blueprint or is in blueprint
       function enterDroppable(elem) {
         elem.style.background = '#f3f8fa';
@@ -457,7 +459,7 @@ var dashModel = function (){
         //   // a swift mouse move can put the cursor beyond the document start
         //   newY = Math.max(newY, 0); // newY may not be below 0
         // }
-        
+
         // limit the new X within the window boundaries
         // there's no scroll here so it's simple
         if (newX < 0) newX = 0;

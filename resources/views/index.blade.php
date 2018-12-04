@@ -3,10 +3,10 @@
 
 
 <script type="text/html" id ="oldData">
-    <div class="row">  
+    <div class="row">
         <div class="col-10">
                 <h1 data-bind="text: deviceName"></h1>
-            
+
             <div data-bind="if: noData">
                 <h4>No data for this device</h4>
             </div>
@@ -14,7 +14,7 @@
         <div class="col-2">
             <a class="nav-link" href="#" data-bind="click: loadModel.bind($data, 'dev')">
                 <button class="btn btn-danger" type="button">Back</button>
-            </a>  
+            </a>
         </div>
     </div>
     <div data-bind="if: history">
@@ -49,7 +49,7 @@
           </tbody>
       </table>
     </div>
-    
+
 </script>
 
 <script type="text/html" id='profileTemplate'>
@@ -89,11 +89,11 @@
                     <a href="#" data-bind="click: changeSet.bind($data, 'Upload Blueprint')">
                         <button type="button" class="btn btn-info">Upload Blueprint</button>
                     </a>
-                    
+
                 </div>
                 <form>
-                    <div class="form-group"> 
-                        <label class="col-form-label">Organization</label>   
+                    <div class="form-group">
+                        <label class="col-form-label">Organization</label>
                         <select class="form-control" id = "orgSelect" data-bind= "options: $data.organizations,
                                 optionsText: 'name',
                                 optionsValue: 'id'"></select>
@@ -310,42 +310,62 @@
                 </div>
             </div>
         </div>
-        <div id="bp" style="border:2px solid black; background-color: white;">
-            <canvas border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
+        <div id="bp" style="border:2px; solid black; background-color: white;">
+            <canvas border: solid 2px class="droppable" id="currentBP" width="1000" height="500"></canvas>
         </div>
 
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <div data-bind="foreach: $root.devices">
-                            <h4 class="modal-title" data-bind="text: name"></h4>
-                        
-                        </div>
-                    </div>
-                    <div class="modal-body"> 
-                        <table class="table table-hover">
-                            <thead>
-                                <td>Name</td>
-                                <td>Value</td>
-                                <td></td>
-                            </thead>
-                            <tbody data-bind="foreach: $root.records">
-                                <tr>
-                                    <th data-bind="text: name">Temperature: </th>
-                                    <td data-bind="text: value"></td>
-                                    <td><i data-bind="css: bgColor" class="fas "></i></td>
-                                </tr>                
-                            </tbody>
-                        </table> 
-                    </div>
+                  <ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item">
+                          <a class="nav-link active" id="data-tab" data-toggle="tab" href="#data" role="tab" aria-controls="data" aria-selected="true">Data</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="chart-tab" data-toggle="tab" href="#chart" role="tab" aria-controls="chart" aria-selected="false">Chart</a>
+                      </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="data" role="tabpanel" aria-labelledby="data-tab">
+                        <div class="modal-header">
+                            <div data-bind="foreach: $root.devices">
+                                <h4 class="modal-title" data-bind="text: name"></h4>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a href="#" data-bind="click: removeDevice">
-                            <button class="btn btn-danger" type="button">Remove device</button>
-                        </a>
-                    </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-hover">
+                                <thead>
+                                    <td>Name</td>
+                                    <td>Value</td>
+                                    <td></td>
+                                </thead>
+                                <tbody data-bind="foreach: $root.records">
+                                    <tr>
+                                        <th data-bind="text: name">Temperature: </th>
+                                        <td data-bind="text: value"></td>
+                                        <td><i data-bind="css: bgColor" class="fas "></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a href="#" data-bind="click: removeDevice">
+                                <button class="btn btn-danger" type="button">Remove device</button>
+                            </a>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="chart" role="tabpanel" aria-labelledby="chart-tab">
+                        <h1 data-bind="text: selectedOptionValue"></h1>
+                        <div class="dropdown">
+                          <tr>
+                              <td class="label">Drop-down list:</td>
+                              <td><select data-bind="options: optionValues, value: selectedOptionValue"></select></td>
+                          </tr>
+                          </div>
+                      </div>
                 </div>
             </div>
         </div>
@@ -355,13 +375,15 @@
             </div>
         </ul>
         <br>
-        <form enctype="multipart/form-data" id = "uploadForm" class="form">
-            <label>Upload:</label>
-            <input type="file" id="files" name="" placeholder="New BP" accept="image/*" data-bind="event:{change: $root.fileSelect}">
-            <label>Change:</label>
-            <input type="file" id="files" name="" placeholder="Switch BP" accept="image/*" data-bind="event:{change: $root.fileSwitch}">
-        </form>
+
     </div>
+    <form enctype="multipart/form-data" id = "uploadForm" class="form">
+        <label>Upload:</label>
+        <input type="file" id="files" name="" placeholder="New BP" accept="image/*" data-bind="event:{change: $root.fileSelect}">
+        <label>Change:</label>
+        <input type="file" id="files" name="" placeholder="Switch BP" accept="image/*" data-bind="event:{change: $root.fileSwitch}">
+    </form>
+  </div>
 </script>
 
 <script type="text/html" id="staticDataPage">
