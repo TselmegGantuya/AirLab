@@ -1,7 +1,5 @@
 @extends('layouts.app')
 @section('content')
-
-
 <script type="text/html" id ="oldData">
     <div class="row">  
         <div class="col-10">
@@ -304,7 +302,7 @@
                     </a>
                 </div>
                 <div data-bind="if: showLocked">
-                    <a class="nav-link" href="#" data-bind="event: {mouseover: dragNDropLogic}">
+                    <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
                         <button id="startDnD" class="btn btn-danger"><i class="fas fa-lock"></i> locked</button>
                     </a>
                 </div>

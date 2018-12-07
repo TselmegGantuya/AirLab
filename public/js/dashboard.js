@@ -329,31 +329,11 @@ var dashModel = function (){
       dragElement.onmouseup = function(event) {
         event.preventDefault()
         finishDrag()
-
-        // this function will return true after 1 second (see the async keyword in front of function)
-        async function returnTrue() {
-          // create a new promise inside of the async function
-          let promise = new Promise((resolve, reject) => {
-            setTimeout(() => resolve($('.draggable').remove()), 500) // resolve
-          });
-          // wait for the promise to resolve
-          let result = await promise;
-
-          // request to get devices on blueprint
-          $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-            self.blueprintDevices(data)
-          })
-          self.blueprintdash()
-        }
-        // call the function
-        returnTrue()
-        self.showLocked(true);
-        self.showUnlocked(false);
       }
-
+      
       // When mouse is moving 
       function onMouseMove(event) {
-        // event.preventDefault()
+        event.preventDefault()
         moveAt(event.clientX, event.clientY);
 
         // in a mouse event handler
@@ -368,10 +348,8 @@ var dashModel = function (){
         // potential droppables are labeled with the class "droppable" (can be other logic)
         let droppable = elemBelow.closest('#bp');
         if (currentDroppable != droppable) { // if there are any changes
-          // we're flying in or out...
-          // note: both values can be null
           //   currentDroppable=null if we were not over a droppable (e.g over an empty space)
-          //   droppableBelow=null if we're not over a droppable now, during this event
+          //   droppable=null if we're not over a droppable now, during this event
           if (currentDroppable) {
             // the logic to process "flying out" of the droppable (remove highlight)
             leaveDroppable(currentDroppable);
@@ -398,7 +376,12 @@ var dashModel = function (){
           text: "Please stay inside the blueprint.",
           icon: "error"
         })
-        // this function will return true after 1 second (see the async keyword in front of function)
+        self.showUnlocked(false)
+        self.showLocked(true)
+        $('.draggable').off("mousedown")
+        $('.draggable').remove()
+        self.enterPage()
+/*        // this function will return true after 1 second (see the async keyword in front of function)
         async function returnTrue() {
           // create a new promise inside of the async function
           let promise = new Promise((resolve, reject) => {
@@ -415,7 +398,7 @@ var dashModel = function (){
         // call the function
         returnTrue()
         self.showLocked(true);
-        self.showUnlocked(false);
+        self.showUnlocked(false);*/
       }
 
       // get coordinates when mouse is moving
@@ -430,18 +413,16 @@ var dashModel = function (){
     })
   }
 
-  self.runDragNDrop = function () {
-    self.dragNDropLogic()
-  }
-
   /**
    * Button to stop drag and drop from working
    * @return {[type]} [description]
    */
   self.stopDragNDropLogic = function () {
-    self.showUnlocked(false);
-    self.showLocked(true);
+    self.showUnlocked(false)
+    self.showLocked(true)
     $('.draggable').off("mousedown")
+    $('.draggable').remove()
+    self.enterPage()
   }
 
   /**
