@@ -30,7 +30,7 @@ Route::group([
 
     // Routes for basic Log in
     Route::post('refresh', 'AuthController@refresh');
-      Route::post('me', 'AuthController@me');
+    Route::post('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
 
     // Routes for Blueprint

@@ -15,8 +15,11 @@ use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
 {
-    // START STEFAN CODE
-
+    /**
+     * [recordsById description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function recordsById(Request $request)
     {
       if ($request->id) {
@@ -25,25 +28,6 @@ class ApiController extends Controller
         return $records;
     }
 
-    public function adminAddBlueprint()
-    {
-        $records = Record::all();
-        $devices = Device::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-        $recordray = array();
-        $users = User::all();
-
-        if ($userInfo->role_id == $role->admin) {
-            $blueprint = new Blueprint;
-            $blueprint->name;
-            $blueprint->organization_id = $userInfo->organization_id;
-            $blueprint->path;
-            $blueprint->save();
-        }
-    }
     /**
      * Display all devices
      *
@@ -115,7 +99,6 @@ class ApiController extends Controller
       }
       return $status;
     }
-    // END STEFAN CODE
 
     /**
      * [Method for changing/updating password]
@@ -174,61 +157,6 @@ class ApiController extends Controller
     }
 
     /**
-     * Display all devices
-     *
-     * [deviceView description]
-     * @return [type] [description]
-     */
-    // public function deviceView()
-    // {
-    //     $devices = Device::all();
-    //     dd($devices);
-    //     foreach ($devices as $device) {
-    //       if ($device->organization_id == true) {
-    //         $device->organization;
-    //       }else {
-    //         $device->organization_name = 'none';
-    //       }
-    //     }
-    //     return $devices;
-    // }
-
-    /**
-     * Display all records that belongs to logged in user.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function recordView(){
-        $records = Record::all();
-        $devices = Device::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-        $recordray = array();
-        $users = User::all();
-
-        foreach ($organizations as $organization) {
-            foreach ($users as $user) {
-                if ($userInfo['name'] == $organization->name) {
-                    foreach ($devices as $device) {
-                        if ($device->organization_id == $organization->id) {
-                            foreach ($records as $record) {
-                                $record->device_name = $record->device->name;
-                                // $record->device->serial_number;
-                                if ($record->device_name == $device->name) {
-                                    $recordray[] = $record;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return $recordray;
-    }
-    //code Lars
-    /**
      * function to get all devices with values
      * Colors:
         green = bg-success
@@ -237,14 +165,13 @@ class ApiController extends Controller
         undefiend = secondary
      * @return [type] [description]
      */
-    public function getDevicesWithData(Request $request)
-    {
-      if ($request->id) {
+    public function getDevicesWithData(Request $request){
+        if ($request->id) {
             $device = array();
             $orgDevices = Device::where('organization_id', $request->id)->get();
             $orgDeviceData = array();
-            foreach ($orgDevices as $device) {
 
+            foreach ($orgDevices as $device) {
                 $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
                 if(isset($deviceData)){
                     $color = "bg-success";
@@ -268,6 +195,7 @@ class ApiController extends Controller
                     $color = "bg-secondary";
                     $message = "There is no data for this device";
                 }
+
                 //set color by device
                 $orgDeviceData[] = array(
                     'name' => $device['name'],
@@ -275,10 +203,15 @@ class ApiController extends Controller
                     'message' => $message,
                 );
             }
-      }
-      return $orgDeviceData;
+        }
+        return $orgDeviceData;
     }
 
+    /**
+     * [editDevice description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function editDevice(Request $request){
         $id = $request->id;
         $name = $request->name;
@@ -289,6 +222,7 @@ class ApiController extends Controller
         }
         return 'Succes update! ';
     }
+
     /**
      * Method to get all devices tha belongs to logged in user
      * [userDevice description]
@@ -303,13 +237,6 @@ class ApiController extends Controller
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
         $userDevice = array();
-
-
-        // $user = User::with('organization_id')->get();
-        // $devices = Device::where($user->organization_id == 'organization_id')->get();
-        // $userDevice[] = $devices;
-        // return $userDevice;
-
 
         foreach ($organizations as $organization) {
             if ($userInfo['name'] == $organization->name) {
