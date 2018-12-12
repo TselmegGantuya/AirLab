@@ -17,7 +17,7 @@ var dashModel = function (){
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
   self.devices = ko.observableArray() 
-  self.currentBlueprint = ko.observable(true)
+  self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
   self.records = ko.observableArray()
@@ -35,8 +35,6 @@ var dashModel = function (){
 
   /**
    * Switching between models
-   * @param  {[type]} data [description]
-   * @return {[type]}      [description]
    */
   self.loadModel = function(data) {
     switch(data) {
@@ -70,7 +68,6 @@ var dashModel = function (){
 
   /**
    * [selectFunc description]
-   * @return {[type]} [description]
    */
   self.selectFunc = function(){
     let canvas = document.getElementById("currentBP")
@@ -100,7 +97,7 @@ var dashModel = function (){
         self.currentBlueprintHeight(img.height)
 
         // this function will return true after 1 second (see the async keyword in front of function)
-        async function returnTrue() {
+        async function removeDraggable() {
           // create a new promise inside of the async function
           let promise = new Promise((resolve, reject) => {
             setTimeout(() => resolve($('.draggable').remove()), 250) // resolve
@@ -110,20 +107,13 @@ var dashModel = function (){
           self.blueprintdash()
         }
         // call the function
-        returnTrue()
-
-        // if (self.showUnlocked() == false) {
-          
-        // }else if(self.showLocked() == true){
-        //   self.blueprintdash()
-        // }
+        removeDraggable()
       })
     }
   }
 
   /**
    * Delete blueprint
-   * @return {[type]} [description]
   */
   self.deleteBP = function(){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
@@ -132,7 +122,6 @@ var dashModel = function (){
 
   /**
    * Change blueprint name
-   * @return {[type]} [description]
    */
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
@@ -194,7 +183,8 @@ var dashModel = function (){
       request.send(formData)
     })
   }
-    /**
+
+  /**
   *
   *   Switch image
   */
@@ -267,9 +257,9 @@ var dashModel = function (){
           $(btn).on('click', function(e) {
             $('#removeDevice').modal('show')
             self.devices(element)
-            $.post(base_url + '/api/blueprint/records/getForDevice', {id: element.id}).done(function(data) {
+            $.post(base_url + '/api/blueprint/records/get_for_device', {id: element.id}).done(function(data) {
               // this function will return true after 1 second (see the async keyword in front of function)
-              async function returnTrue() {
+              async function returnDeviceRecords() {
                 // create a new promise inside of the async function
                 let promise = new Promise((resolve, reject) => {
                   setTimeout(() => resolve(self.records(data)), 500) // resolve
@@ -278,7 +268,7 @@ var dashModel = function (){
                 let result = await promise;
               }
               // call the function
-              returnTrue()
+              returnDeviceRecords()
             })
 
             // Method to remove device from blueprint and refresh page
