@@ -32,6 +32,9 @@ class BlueprintController extends Controller
         $blueprint->save();
         return 'success';
     }
+    public function full(){
+        return view('full');
+    }
 
         /**
      * Upload and display blueprint

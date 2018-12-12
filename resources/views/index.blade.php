@@ -89,6 +89,9 @@
                     <a href="#" data-bind="click: changeSet.bind($data, 'Upload Blueprint')">
                         <button type="button" class="btn btn-info">Upload Blueprint</button>
                     </a>
+                    <a href="#" data-bind="click: changeSet.bind($data, 'Change setting')">
+                        <button type="button" class="btn btn-info">User info</button>
+                    </a>
                     
                 </div>
                 <form>
@@ -96,12 +99,28 @@
                         <label class="col-form-label">Organization</label>   
                         <select class="form-control" id = "orgSelect" data-bind= "options: $data.organizations,
                                 optionsText: 'name',
-                                optionsValue: 'id'"></select>
+                                optionsValue: 'id',
+                                event:{change: orgSet}"></select>
                     </div>
+                    <!-- ko if: $data.set() == 'Change setting' -->
+                    <div class="form-group"> 
+                        <label class="col-form-label">Users</label>   
+                        <select class="form-control" id = "userSelect" data-bind= "options: $data.users,
+                                optionsText: 'name',
+                                optionsValue: 'id',
+                                value: $data.currentUser"></select>
+                    </div>
+                    <div class="form-group"> 
+                        <label class="col-form-label">User organization</label>   
+                        <select class="form-control" id = "orgChange" data-bind= "options: $data.organizations,
+                                optionsText: 'name',
+                                optionsValue: 'id',"></select>
+                    </div>
+                    <!-- /ko -->
                     <div class="form-group">
                         <div data-bind="foreach:inputs" class="form-group ">
                             <label data-bind="text: name" class="col-form-label"></label>
-                            <input data-bind="attr:{id:name, type:input, placeholder: name}" class="form-control">
+                            <input data-bind="attr:{id:name, type:input, placeholder: name,}" class="form-control">
                         </div>
                     </div>
                     <div class="row">
@@ -311,7 +330,7 @@
             </div>
         </div>
         <div id="bp" style="border:2px solid black; background-color: white;">
-            <canvas border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
+            <canvas class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
 
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
