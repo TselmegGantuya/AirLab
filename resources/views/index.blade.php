@@ -119,13 +119,19 @@
             <thead>
                 <tr data-bind="foreach: currentTabHead">
                     <th data-bind="text: name"></th>
+                   
                 </tr>
             </thead>
             <tbody data-bind="foreach: $root.currentTabData">
                 <tr>
-                    <td data-bind="text:name"></td>
-                    <td data-bind="text:email"></td>
+                    <td ><input type="" data-bind="value :name"></input></td>
+                    <td ><input type="" data-bind="value :email"></input></td>
                     <td data-bind="text:organization"></td>
+                    <td>
+                        <button type="button" class="btn btn-success" data-bind="click: $root.editProfile.bind($data)">
+                            save
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -81,6 +81,20 @@ var profileModel = function (){
       self.inputs(self.up_input())
     }
   }
+
+  /*
+  *   Edit Profile
+  */
+   self.editProfile = function(data){
+    $.post(base_url + '/api/uhoo/editProfile' ,{token: self.token(),id:data.id, name: data.name, email: data.email})
+      .done(function(data){
+        console.log(data);
+        if(data ){
+          swal("Success!", "Name has been changed!", "success");
+        }
+
+      })
+  }
   self.multiFunc = function() {
   /* 
   *   Register New blueprints as a admin

@@ -69,7 +69,7 @@ Route::group([
     Route::post('uhoo/deleteDevicesOrganization', 'ApiController@deleteDevicesOrganization');
     //edit device
     Route::post('uhoo/editDevice', 'ApiController@editDevice');
-
+     Route::post('uhoo/editProfile', 'ApiController@editProfile');
     // Routes for Dashboard
     Route::post('uhoo/getDevicesWithData', 'ApiController@getDevicesWithData');
 

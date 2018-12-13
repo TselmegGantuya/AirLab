@@ -53,6 +53,7 @@ class ApiController extends Controller
     public function getOrganizations()
     {
       $organizations = Organization::all();
+      dd($organizations);
       return $organizations;
     }
 
@@ -278,7 +279,10 @@ class ApiController extends Controller
       }
       return $orgDeviceData;
     }
-
+    /**
+     * fucntion to edit device
+     * edit only name
+     */
     public function editDevice(Request $request){
         $id = $request->id;
         $name = $request->name;
@@ -286,6 +290,22 @@ class ApiController extends Controller
             DB::table('devices')
                 ->where('id', $id)
                 ->update(['name' => $name]);
+        }
+        return 'Succes update! ';
+    }
+    /**
+     * fucntion to edit profile
+     * edit only name and email
+     */
+    public function editProfile(Request $request){
+        $id = $request->id;
+        $name = $request->name;
+        $email = $request->email;
+
+        if(isset($id) && isset($name)){
+            DB::table('users')
+                ->where('id', $id)
+                ->update(['name' => $name, 'email'=> $email]);
         }
         return 'Succes update! ';
     }
