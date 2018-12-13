@@ -17,6 +17,7 @@ class ApiController extends Controller
 {
     // START STEFAN CODE
 
+
     public function recordsById(Request $request)
     {
       if ($request->id) {
@@ -24,6 +25,7 @@ class ApiController extends Controller
       }
         return $records;
     }
+
 
     public function adminAddBlueprint()
     {
@@ -173,27 +175,6 @@ class ApiController extends Controller
         // return response()->json($record);
         return $record;
     }
-
-    /**
-     * Display all devices
-     *
-     * [deviceView description]
-     * @return [type] [description]
-     */
-    // public function deviceView()
-    // {
-    //     $devices = Device::all();
-    //     dd($devices);
-    //     foreach ($devices as $device) {
-    //       if ($device->organization_id == true) {
-    //         $device->organization;
-    //       }else {
-    //         $device->organization_name = 'none';
-    //       }
-    //     }
-    //     return $devices;
-    // }
-
     /**
      * Display all records that belongs to logged in user.
      *
@@ -228,7 +209,6 @@ class ApiController extends Controller
         }
         return $recordray;
     }
-    //code Lars
     /**
      * function to get all devices with values
      * Colors:
@@ -323,12 +303,6 @@ class ApiController extends Controller
         $content = $user->getContent();
         $userInfo = json_decode($content, true);
         $userDevice = array();
-
-
-        // $user = User::with('organization_id')->get();
-        // $devices = Device::where($user->organization_id == 'organization_id')->get();
-        // $userDevice[] = $devices;
-        // return $userDevice;
 
 
         foreach ($organizations as $organization) {
