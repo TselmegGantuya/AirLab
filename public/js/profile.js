@@ -72,6 +72,12 @@ var profileModel = function (){
         break;
     }
   }
+  
+  /**
+   * [changeSet description]
+   * @param  {[type]} data [description]
+   * @return {[type]}      [description]
+   */
   self.changeSet = function(data){
     self.set(data)
     if(self.set() == 'Register'){
@@ -81,6 +87,7 @@ var profileModel = function (){
       self.inputs(self.up_input())
     }
   }
+  
   self.multiFunc = function() {
   /* 
   *   Register New blueprints as a admin
