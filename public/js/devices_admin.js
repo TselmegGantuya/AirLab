@@ -51,12 +51,18 @@ var adminDevicesModel = function (){
     }
   }
 
+/**
+ * Get old data 
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
 self.oldData = function(data){
   
   ko.cleanNode($("#main")[0])
   var newModel = new oldDataModel(data)
   ko.applyBindings(newModel)
 }
+
   /**
    * Token
    */
@@ -71,6 +77,7 @@ self.oldData = function(data){
      })
  }
  self.getOrganizations()
+
  /**
   * [organizationCheckbox description]
   * @return {[type]} [description]
@@ -100,6 +107,11 @@ self.oldData = function(data){
    return true; // to trigger the browser default bahaviour
  }
 
+/**
+ * Devices belonged to User
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
  self.devicesOwner = function(data) {
    var items=document.getElementsByName('devicesOrganization');
    var selectedItems = [];
@@ -139,6 +151,11 @@ self.oldData = function(data){
    }
  }
 
+/**
+ * new devices
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
  self.newDevice = function(data) {
    var items=document.getElementsByName('newDevices');
    var selectedItems = [];
@@ -180,6 +197,10 @@ self.oldData = function(data){
  /*END STEFAN CODE*/
 
  /*START CODE LARS */
+ /**
+  * Get the user devices
+  * @return {[type]} [description]
+  */
  self.getUserDevices = function(){
     $.post(base_url + '/api/me', {token: self.token()})
       .done(function(data){
@@ -198,6 +219,11 @@ self.oldData = function(data){
   }
   self.getUserDevices()
 
+/**
+ * Method to edit device
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
   self.editDevice = function(data){
     $.post(base_url + '/api/uhoo/editDevice' ,{token: self.token(),id:data.id, name: data.name})
       .done(function(data){
