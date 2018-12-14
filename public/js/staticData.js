@@ -52,6 +52,10 @@ var staticDataModel = function (){
     self.token(localStorage.getItem('token'))
   }
 
+/**
+ * [colorDevices description]
+ * @return {[type]} [description]
+ */
   self.colorDevices = function(){
     $.post(base_url + '/api/me', {token: self.token()})
       .done(function(data){

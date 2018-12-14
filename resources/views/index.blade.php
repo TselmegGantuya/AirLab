@@ -1,7 +1,5 @@
 @extends('layouts.app')
 @section('content')
- 
-
 <script type="text/html" id ="oldData">
     <div class="row">  
         <div class="col-10">
@@ -321,12 +319,12 @@
             <div class="col-2">
                 <div data-bind="if: showUnlocked">
                     <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
-                        <button class="btn btn-success " type="button"><i class="fas fa-lock-open"></i> unlocked</button>
+                        <button class="btn btn-success"><i class="fas fa-lock-open"></i> unlocked</button>
                     </a>
                 </div>
                 <div data-bind="if: showLocked">
                     <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
-                        <button class="btn btn-danger" type="button"><i class="fas fa-lock"></i> locked</button>
+                        <button id="startDnD" class="btn btn-danger"><i class="fas fa-lock"></i> locked</button>
                     </a>
                 </div>
             </div>

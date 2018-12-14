@@ -41,7 +41,7 @@ Route::group([
 
     // Routes for basic Log in
     Route::post('refresh', 'AuthController@refresh');
-      Route::post('me', 'AuthController@me');
+    Route::post('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::get('getUsersOrg', function(Request $request){
         return User::where('organization_id', $request->input('id'))->get();
@@ -58,7 +58,7 @@ Route::group([
     Route::get('blueprint/devices/get', 'BlueprintController@getUserDevices');
     Route::get('blueprint/db/devices/get', 'BlueprintController@getUserDBDevices');
     Route::post('blueprint/device/remove', 'BlueprintController@removeDeviceFromBlueprint');
-    Route::post('blueprint/records/getForDevice', 'BlueprintController@getRecordsForDevice');
+    Route::post('blueprint/records/get_for_device', 'BlueprintController@getRecordsForDevice');
 
     // Routes for Uhoo API
     Route::post('uhoo/');

@@ -46,7 +46,7 @@ var oldDataModel = function (data){
   }
 
 
-    console.log('Hey!');
+    // console.log('Hey!');
     // hier komt nog data sht call
     self.deviceId = data.id
     self.deviceName = data.name

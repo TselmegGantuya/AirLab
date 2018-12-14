@@ -81,11 +81,7 @@ var profileModel = function (){
         break;
     }
   }
-  self.orgSet = function (){
-       $.get(base_url + '/api/getUsersOrg', {id: $('#orgSelect').val()}).done(function(data){
-        self.users(data)
-      })
-  }
+
   self.changeSet = function(data){
     self.set(data)
     if(self.set() == 'Register'){
@@ -112,7 +108,6 @@ var profileModel = function (){
 
       })
   }
-
   self.multiFunc = function() {
   /* 
   *   Register New blueprints as a admin

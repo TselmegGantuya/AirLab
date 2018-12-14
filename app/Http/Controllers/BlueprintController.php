@@ -66,7 +66,6 @@ class BlueprintController extends Controller
         $blueprint->path = $path;
         $blueprint->update();
         return 'success';
-
     }
     
     /**
@@ -83,7 +82,6 @@ class BlueprintController extends Controller
             $bp->name = $request->input('name');
             $bp->save();
         }
-
     }
 
     /**
@@ -165,26 +163,26 @@ class BlueprintController extends Controller
         foreach ($devices as $key => $device) {
             $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
             if(isset($deviceData)){
-                    $color = "shadow-success";
-                    $textColor = "black";
-                    $value = "All values are great!";
-                    //Check warning for temperature
-                    if($deviceData['temperature'] <= 20 || $deviceData['temperature'] >= 27){
-                        $color = "shadow-warning";
-                        $value = "Temprature is " . round($deviceData['temperature']) . "℃";
-                    }
-                    //Check danger for temprature
-                    if($deviceData['temperature'] <= 10 || $deviceData['temperature'] >= 40){
-                        $color = "shadow-danger";
-                        $value = "Temprature is " . round($deviceData['temperature']) . "℃";
-                        $textColor = "bg-danger";
-                    }
-                    //Check warning for relative humidity
-                    if($deviceData['relative_humidity'] <= 30 || $deviceData['relative_humidity'] >= 50){
-                        $color = "shadow-warning";
-                        $value = "Relative humidity is " . round($deviceData['relative_humidity']) . "%";
-                        $textColor = "bg-warning";
-                    }
+                $color = "shadow-success";
+                $textColor = "black";
+                $value = "All values are great!";
+                //Check warning for temperature
+                if($deviceData['temperature'] <= 20 || $deviceData['temperature'] >= 27){
+                    $color = "shadow-warning";
+                    $value = "Temprature is " . round($deviceData['temperature']) . "℃";
+                }
+                //Check danger for temprature
+                if($deviceData['temperature'] <= 10 || $deviceData['temperature'] >= 40){
+                    $color = "shadow-danger";
+                    $value = "Temprature is " . round($deviceData['temperature']) . "℃";
+                    $textColor = "bg-danger";
+                }
+                //Check warning for relative humidity
+                if($deviceData['relative_humidity'] <= 30 || $deviceData['relative_humidity'] >= 50){
+                    $color = "shadow-warning";
+                    $value = "Relative humidity is " . round($deviceData['relative_humidity']) . "%";
+                    $textColor = "bg-warning";
+                }
             }else{
                 $color = "shadow-secondary";
                 $value = "Device is offline.";
@@ -197,7 +195,8 @@ class BlueprintController extends Controller
         return $devices;
     }
 
-    public function getRecordsForDevice(Request $request){
+    public function getRecordsForDevice(Request $request)
+    {
         $deviceRecords = array();
         $i = 0;
         $records = Record::where('device_id', $request->id)->first();
