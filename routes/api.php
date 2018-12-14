@@ -89,6 +89,8 @@ Route::group([
 
     //routes for records by
     Route::post('uhoo/recordsById', 'ApiController@recordsById');
+    //Records by id and property
+    Route::post('uhoo/recordsByProperty', 'ApiController@recordsByProperty');
 
 
 });
