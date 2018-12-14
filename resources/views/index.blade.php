@@ -134,26 +134,22 @@
     </div>
     <div class="container-fluid" id="container" style="min-width:800px;" data-bind="if: showUserPart">
         <h1>Profile</h1>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr data-bind="foreach: currentTabHead">
-                    <th data-bind="text: name"></th>
-                   
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: $root.currentTabData">
-                <tr>
-                    <td ><input type="" data-bind="value :name"></input></td>
-                    <td ><input type="" data-bind="value :email"></input></td>
-                    <td data-bind="text:organization"></td>
-                    <td>
-                        <button type="button" class="btn btn-success" data-bind="click: $root.editProfile.bind($data)">
-                            save
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div>
+            <div class="form-group" data-bind="foreach: $root.currentTabData">
+                <label for="name">Name</label>
+                <input type="name" class="form-control" id="name" data-bind="value : $data.name">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" data-bind="value : $data.email">
+                <label for="Organization">Organization</label>
+                <input type="Organization" class="form-control" id="Organization" data-bind="value : $data.organization" disabled="">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" aria-describedby="passwordDis" placeholder="Enter password" data-bind="value :$root.new_password">
+                <small id="passwordDis" class="form-text text-muted">Enter password if you want to change your password.</small>
+                <button type="button" class="btn btn-lg btn-success float-right" data-bind="click: $root.editProfile.bind($data)">
+                    save
+                </button>
+            </div>
+        </div>
     </div>
 </script>
 

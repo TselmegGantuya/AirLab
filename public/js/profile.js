@@ -103,7 +103,7 @@ var profileModel = function (){
   *   Edit Profile
   */
    self.editProfile = function(data){
-    $.post(base_url + '/api/uhoo/editProfile' ,{token: self.token(),id:data.id, name: data.name, email: data.email})
+    $.post(base_url + '/api/uhoo/editProfile' ,{token: self.token(),id:data.id, name: data.name, email: data.email, password: self.new_password()})
       .done(function(data){
         console.log(data);
         if(data ){
@@ -112,6 +112,7 @@ var profileModel = function (){
 
       })
   }
+
   self.multiFunc = function() {
   /* 
   *   Register New blueprints as a admin
@@ -169,6 +170,7 @@ var profileModel = function (){
       self.userorganization(data.organization)
       self.currentTabHead(self.profiles())
       self.currentTabData(data)
+      self.currentTabData().password = "";
       console.log(self.currentTabData())
       self.userEmail(data.email)
       self.userOrganization(data.name)

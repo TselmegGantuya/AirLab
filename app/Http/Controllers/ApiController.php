@@ -281,11 +281,12 @@ class ApiController extends Controller
         $id = $request->id;
         $name = $request->name;
         $email = $request->email;
+        $password = Hash::make($request->password);
 
         if(isset($id) && isset($name)){
             DB::table('users')
                 ->where('id', $id)
-                ->update(['name' => $name, 'email'=> $email]);
+                ->update(['name' => $name, 'email'=> $email, 'password' => $password]);
         }
         return 'Succes update! ';
     }
