@@ -27,22 +27,23 @@ var profileModel = function (){
   self.token = ko.observable()
   self.role = ko.observable()
   self.reg_input = ko.observable([
-        {name:"Name", input:"text"},
-        {name:"Password", input:"password"},
-        {name:'Email', input:'text'}
-      ])
-  self.up_input = ko.observable([{name:"Name", input:"text"},
+    {name:"Name", input:"text"},
+    {name:"Password", input:"password"},
+    {name:'Email', input:'text'}
+  ])
+  self.up_input = ko.observable([
+    {name:"Name", input:"text"},
     {name:"file", input:"file"},
-    ])
+  ])
   self.inputs = ko.observableArray([
-        {name:"Name", input:"text"},
-        {name:"Password", input:"password"},
-        {name:'Email', input:'text'}
-      ])
+    {name:"Name", input:"text"},
+    {name:"Password", input:"password"},
+    {name:'Email', input:'text'}
+  ])
   self.selectedOrg = ko.observable()
   self.set = ko.observable('Register')
 
-
+  // Load model
   self.loadModel = function(data) {
     switch(data) {
       case 'dash':
@@ -74,7 +75,7 @@ var profileModel = function (){
   }
   
   /**
-   * [changeSet description]
+   * Method to change from tabs
    * @param  {[type]} data [description]
    * @return {[type]}      [description]
    */
@@ -82,16 +83,15 @@ var profileModel = function (){
     self.set(data)
     if(self.set() == 'Register'){
       self.inputs(self.reg_input())
-    }
-    else if(self.set() == 'Upload Blueprint'){
+    }else if(self.set() == 'Upload Blueprint'){
       self.inputs(self.up_input())
     }
   }
   
   self.multiFunc = function() {
-  /* 
-  *   Register New blueprints as a admin
-  */
+    /* 
+    * Register New blueprints as a admin
+    */
     if(self.set() == 'Upload Blueprint'){
       var formData = new FormData()
       console.log($('#file')[0].files[0])
@@ -105,31 +105,38 @@ var profileModel = function (){
       request.send(formData)
       swal("Success!", "Image succesfull uploaded!", "success");
     }
-  /* 
-  *   Register New users as a admin
-  */
+    /* 
+    * Register New users as a admin
+    */
     else if(self.set() == 'Register'){
-       $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()}).done(function(data){
-          swal("Success!", "Profile succesfull created!", "success");
-        })
+      $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()}).done(function(data){
+        swal("Success!", "Profile succesfull created!", "success");
+      })
     }
   }
-   if (localStorage.getItem('token'))
-  {
+
+  /**
+   * Token
+   */
+  if (localStorage.getItem('token')){
     self.token(localStorage.getItem('token'))
   }
+
+  /**
+  * Display blueprint and drag n drop devices onto blueprint
+  * @return {[type]} [description]
+  */
   self.enterPage = function() {
     $.get(base_url + '/api/uhoo/organizations').done(function(data){
       self.organizations(data)
     })
+    
     $.post(base_url + '/api/me').done(function(data){
-      console.log(data)
       self.username(data.name)
       self.useremail(data.email)
       self.userorganization(data.organization)
       self.currentTabHead(self.profiles())
       self.currentTabData(data)
-      console.log(self.currentTabData())
       self.userEmail(data.email)
       self.userOrganization(data.name)
       self.role(data.role)
@@ -141,5 +148,5 @@ var profileModel = function (){
       } 
     })
   }
-self.enterPage()
+  self.enterPage()
 }

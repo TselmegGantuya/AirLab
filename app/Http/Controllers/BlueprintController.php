@@ -11,7 +11,6 @@ use App\Record;
 use App\Device;
 use App\Organization;
 use App\User;
-use Carbon\Carbon;
 use App\Http\Controllers\AuthController;
 
 class BlueprintController extends Controller
@@ -159,6 +158,7 @@ class BlueprintController extends Controller
         $warningValues = array();
         foreach ($devices as $key => $device) {
             $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
+
             if(isset($deviceData)){
                 $color = "shadow-success";
                 $textColor = "black";

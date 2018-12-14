@@ -106,6 +106,7 @@ var dashModel = function (){
           let result = await promise;
           self.blueprintdash()
         }
+        
         // call the function
         removeDraggable()
       })
@@ -128,7 +129,7 @@ var dashModel = function (){
 
     $.post(base_url + "/api/blueprint/change/name",{name:$('#changeName').val(),id:id}).done(function(){
       self.blueprintData.removeAll()
-    $.get(base_url + '/api/blueprint/get').done(function(data){
+      $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
         }
@@ -142,22 +143,25 @@ var dashModel = function (){
   */
   self.fileSelect = function (element,event) {
     var files =  event.target.files// FileList object
-      var formData = new FormData()
+    var formData = new FormData()
 
-      // HTML file input, chosen by user
-      formData.append("blueprint", files[0])
-      formData.append("token", self.token())
+    // HTML file input, chosen by user
+    formData.append("blueprint", files[0])
+    formData.append("token", self.token())
 
-      var request = new XMLHttpRequest()
-      request.open("POST", base_url + '/api/blueprint/upload')
-      request.send(formData)
-        self.blueprintData.removeAll()
-      $.get(base_url + '/api/blueprint/get').done(function(data){
-        for (var i = 0, d; d = data[i]; i++) {
-          self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
-        }
-      })
+    var request = new XMLHttpRequest()
+    request.open("POST", base_url + '/api/blueprint/upload')
+    request.send(formData)
+    self.blueprintData.removeAll()
+    
+    // Request to get blueprint
+    $.get(base_url + '/api/blueprint/get').done(function(data){
+      for (var i = 0, d; d = data[i]; i++) {
+        self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
+      }
+    })
   }
+
   /**
   *
   *   promise function
@@ -179,7 +183,7 @@ var dashModel = function (){
           console.log(request.responseText)
           resolve()
         }
-      };
+      }
       request.send(formData)
     })
   }
@@ -190,25 +194,28 @@ var dashModel = function (){
   */
   self.fileSwitch = function (element,event) {
     var files =  event.target.files// FileList object
-      let img = new Image()
-      img.src = window.URL.createObjectURL( files[0] )
-      img.onload = async function()
-      {
-        var size = img.width / img.height
+    let img = new Image()
+    img.src = window.URL.createObjectURL( files[0] )
+    img.onload = async function()
+    {
+      var size = img.width / img.height
+
       if(self.currentBlueprintSize() != size){
         swal("Whoeps!", "The image size must be " + self.currentBlueprintWidth()  + " x " + self.currentBlueprintHeight() + " !", "warning");
         return;
       }
+
       let result = await resolvePost(files[0])
 
-        self.blueprintData.removeAll()
+      self.blueprintData.removeAll()
 
-        $.get(base_url + '/api/blueprint/get').done(function(data){
+      // Request to get blueprint
+      $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
         }
       })
-      }
+    }
   }
 
   /**
@@ -346,7 +353,8 @@ var dashModel = function (){
         if (!elemBelow) return;
         // potential droppables are labeled with the class "droppable" (can be other logic)
         let droppable = elemBelow.closest('#bp');
-        if (currentDroppable != droppable) { // if there are any changes
+        if (currentDroppable != droppable) { 
+          // if there are any changes
           //   currentDroppable=null if we were not over a droppable (e.g over an empty space)
           //   droppable=null if we're not over a droppable now, during this event
           if (currentDroppable) {
@@ -417,8 +425,8 @@ var dashModel = function (){
 
     // request to get user info to backend
     $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
-        self.userEmail(data.email)
-        self.userOrganization(data.name)
+      self.userEmail(data.email)
+      self.userOrganization(data.name)
     })
   }
   self.enterPage()

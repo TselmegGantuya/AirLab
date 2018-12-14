@@ -10,7 +10,6 @@ use App\Record;
 use App\Device;
 use App\Organization;
 use App\User;
-use Carbon\Carbon;
 use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
@@ -249,24 +248,20 @@ class ApiController extends Controller
 
         $result = curl_exec($curl);
         $response = json_decode($result);
-
         $devices = Device::all();
         $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
+        $user = auth::user();
 
-        foreach ($response as $res) {
+        foreach ($responses as $response) {
             foreach ($devices as $device) {
-                if ($res->deviceName !== $device->name) {
-                    dd('not iden');
+                if ($response->deviceName !== $device->name) {
                     //Save new devices to DB
                     $device = new Device;
-                    $device->name = $res->deviceName;
-                    $device->mac_address = $res->macAddress;
-                    $device->serial_number = $res->serialNumber;
+                    $device->name = $response->deviceName;
+                    $device->mac_address = $response->macAddress;
+                    $device->serial_number = $response->serialNumber;
                     foreach ($organizations as $organization) {
-                        if ($userInfo['name'] == $organization->name) {
+                        if ($user['name'] == $organization->name) {
                             $device->organization_id = $organization->id;
                         }
                     }
@@ -274,9 +269,6 @@ class ApiController extends Controller
                 }
             }
         }
-
-        // Redirect to devices page
-        return redirect('api/uhoo/devices');
     }
 
     /**
@@ -325,8 +317,5 @@ class ApiController extends Controller
         $record->ozone = $response->Ozone;
         $record->no2 = $response->NO2;
         // $record->save();
-
-        // Redirect to records page
-        return redirect('api/uhoo/records');
     }
 }
