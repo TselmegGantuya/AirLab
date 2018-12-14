@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Air Lab</title>
-
+    <link rel="icon" href="/img/icon.png">
     <!-- Styles -->
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -18,6 +18,13 @@
 </head>
 <body id="main">
     <div id="app">
+                <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+            <a class="navbar-brand text-uppercase" href="#">Air Lab </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
         <main class="py-4">
             @yield('content')
         </main>

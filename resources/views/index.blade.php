@@ -310,6 +310,7 @@
             <div class="btn-group float-right" role="group">
                 <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'statData')">Show static data</button>
                 <button class="btn btn-info btn-md" type = 'button' data-bind="click: loadModel.bind($data, 'dash')">Show blueprint</button>
+                <button class="btn btn-info btn-md" type = 'button'><a href="{{ url('api/blueprint/full/') }}" target="_blank">Fullscreen</a></button>
             </div>
         </div>
     </div>
