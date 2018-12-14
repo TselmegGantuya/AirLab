@@ -362,9 +362,11 @@
                         <div class="dropdown">
                           <tr>
                               <td class="label">Drop-down list:</td>
-                              <td><select data-bind="options: optionValues, value: selectedOptionValue"></select></td>
+                              <td><select data-bind="options: optionValues, value: selectedOptionValue, click: getChart"></select></td>
                           </tr>
                           </div>
+                          <canvas id="myChart" height="300" width="300"></canvas>
+
                       </div>
                 </div>
             </div>

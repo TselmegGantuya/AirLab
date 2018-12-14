@@ -3,7 +3,7 @@
 */
 var dashModel = function (){
   var self = this
-  self.optionValues = ko.observableArray(["temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
+  self.optionValues = ko.observableArray(["Pick a value...","temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
   self.selectedOptionValue = ko.observable('Select a value')
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
@@ -28,6 +28,8 @@ var dashModel = function (){
   self.currentBlueprintSize = ko.observable()
   self.currentBlueprintHeight = ko.observable()
   self.currentBlueprintWidth = ko.observable()
+  self.deviceId = ko.observable()
+  self.selectedOptionValue = ko.observable()
   /**
    * Token
    */
@@ -248,6 +250,9 @@ var dashModel = function (){
           $('#removeDevice').modal('show')
           self.devices(element)
           $.post(base_url + '/api/blueprint/records/getForDevice', {id: element.id}).done(function(data) {
+
+            self.deviceId = element.id
+            console.log(  self.deviceId)
             // this function will return true after 1 second (see the async keyword in front of function)
             async function returnTrue() {
               // create a new promise inside of the async function
@@ -507,4 +512,45 @@ var dashModel = function (){
     })
   }
   self.enterPage()
+
+  //Chart begin
+
+  self.getChart = function(data,event) {
+
+    if(event.target.value != 'Pick a value...' && self.deviceId){
+
+      $.post(base_url + '/api/uhoo/recordsByProperty' ,{id:self.deviceId, name:event.target.value}).done(function(data){
+        var modData = [];
+        for (var i = 0; i < data.length; i++) {
+          modData.push(data[i][event.target.value])
+        }
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: modData,
+                datasets: [{
+                    label: "",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(25s5, 99, 132)',
+                    data: modData,
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+
+      })
+
+    }
+
+
+  }
+
+
 }

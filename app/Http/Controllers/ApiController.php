@@ -324,6 +324,21 @@ class ApiController extends Controller
         return $userDevice;
     }
 
+    //Get all records from device id by record prop. example co2
+    public function recordsByProperty(Request $request){
+      $id = $request->id;
+      $nameProp = $request->name;
+      $data = Record::where('device_id', $id)->select($nameProp)->get()->toArray();
+      /*
+      foreach($data as $key => $value){
+        $dataRaw[] = $value[$nameProp];
+      }
+      */
+      //print_r(json_encode($dataRaw));
+      return $data;
+    }
+
+
     /**
      * Method for getting a list of all available devices.
      *
