@@ -315,7 +315,10 @@
     </div>
     <div>
         <div class="row">
-            <h1 class="col-10" data-bind="text: blueprintName"></h1>
+            <h1 class="col-8" data-bind="text: blueprintName"></h1>
+            <div class="col-2">
+            	<a class="nav-link" href="{{ url('api/blueprint/full/') }}" target="_blank"><button class="btn btn-info btn-md" type = 'button'>Fullscreen</button></a>
+            </div> 
             <div class="col-2">
                 <div data-bind="if: showUnlocked">
                     <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
@@ -328,64 +331,10 @@
                     </a>
                 </div>
             </div>
+            
         </div>
         <div id="bp" style="border:2px solid black; background-color: white;">
             <canvas class="droppable" id="currentBP" width="1000" height="500"></canvas>  
-        </div>
-                <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                  <ul class="nav nav-tabs" id="myTab" role="tablist">
-                      <li class="nav-item">
-                          <a class="nav-link active" id="data-tab" data-toggle="tab" href="#data" role="tab" aria-controls="data" aria-selected="true">Data</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" id="chart-tab" data-toggle="tab" href="#chart" role="tab" aria-controls="chart" aria-selected="false">Chart</a>
-                      </li>
-                  </ul>
-                  <div class="tab-content" id="myTabContent">
-                      <div class="tab-pane fade show active" id="data" role="tabpanel" aria-labelledby="data-tab">
-                        <div class="modal-header">
-                            <div data-bind="foreach: $root.devices">
-                                <h4 class="modal-title" data-bind="text: name"></h4>
-
-                            </div>
-                        </div>
-                        <div class="modal-body">
-                            <table class="table table-hover">
-	                            <thead>
-	                                <td>Name</td>
-	                                <td>Value</td>
-	                            </thead>
-	                            <tbody data-bind="foreach: $root.records">
-	                                <tr data-bind="css: bgColor">
-	                                    <th data-bind="text: name">Temperature: </th>
-	                                    <td data-bind="text: value"></td>
-	                                </tr>                
-	                            </tbody>
-	                        </table> 
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <a href="#" data-bind="click: removeDevice">
-                                <button class="btn btn-danger" type="button">Remove device</button>
-                            </a>
-                        </div>
-                      </div>
-                      <div class="tab-pane fade" id="chart" role="tabpanel" aria-labelledby="chart-tab">
-                        <h1 data-bind="text: selectedOptionValue"></h1>
-                        <div class="dropdown">
-                          <tr>
-                              <td class="label">Drop-down list:</td>
-                              <td><select data-bind="options: optionValues, value: selectedOptionValue, click: getChart"></select></td>
-                          </tr>
-                          </div>
-                          <canvas id="myChart" height="300" width="300"></canvas>
-
-                      </div>
-                </div>
-            </div>
         </div>
 
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
@@ -449,7 +398,7 @@
         <div data-bind="foreach: allColorDevices" class="card-columns">
             <div class="card text-white  mb-3" data-bind="css: $data.color " style="max-width: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title d-inline" data-bind="text: $data.name"></h5>
+              <h5 class="card-title d-inline" data-bind="text: $data.name"></h5>
                     <!-- <a data-toggle="modal" data-target="#editNameModal" data-id="bla"><i class="fas fa-edit d-inline float-right"></i></a>-->
                     <p class="card-text" data-bind="text: $data.message"></p>
                 </div>
@@ -517,3 +466,4 @@
         </div>
     </div>
 </main>
+@endsection

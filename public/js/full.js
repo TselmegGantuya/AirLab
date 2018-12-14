@@ -62,13 +62,14 @@ var fullModel = function (){
     $.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
       data.forEach(function(element) {
         var btn = document.createElement("BUTTON");
-        let toppixel = element.top_pixel 
+        let toppixel = element.top_pixel - 134
+        let leftpixel = element.left_pixel - 258
         btn.setAttribute("data-toggle", "popover");
         btn.style.position = 'absolute';
         btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
         btn.id = element.id;
         self.devices(btn.id)
-        btn.style.left = element.left_pixel +'px';
+        btn.style.left = leftpixel +'px';
         btn.style.top = toppixel +'px';
         document.getElementById("bp").appendChild(btn);
 
