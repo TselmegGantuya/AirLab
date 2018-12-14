@@ -3,8 +3,10 @@ $.ajaxSetup({
     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
   }
 })
+
 var localStorage = window.localStorage
 var base_url = window.location.origin
+
 $( document ).ajaxError(function( event, jqXHR, settings, thrownError) {
   var msg = ''
   if (jqXHR.status === 0) {
@@ -108,7 +110,11 @@ var loginModel = function (){
     })
   }
 
-
+  /**
+   * Method to switch pages
+   * @param  {[type]} data [description]
+   * @return {[type]}      [description]
+   */
   self.choosePage = function(data)
   {
     data = data.toLowerCase()
@@ -126,7 +132,10 @@ var loginModel = function (){
     }
   }
 
-
+  /**
+   * Method to to what happens when u enter
+   * @return {[type]} [description]
+   */
   self.enterPage = function() {
   self.choosePage('login')
     if (localStorage.getItem('token'))

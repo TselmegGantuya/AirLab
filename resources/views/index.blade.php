@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('content')
-
 <script type="text/html" id ="oldData">
     <div class="row">  
         <div class="col-10">
@@ -58,10 +57,7 @@
                 <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">My profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="create-tab" data-toggle="tab" href="#create" role="tab" aria-controls="create" aria-selected="false">Create Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload" aria-selected="false">Upload blueprint</a>
+                <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload" aria-selected="false">Admin</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -82,53 +78,76 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane fade" id="create" role="tabpanel" aria-labelledby="create-tab">
-                <div>
-                    <!--
-                    <a href="">
-                        <button type="button" class="btn btn-outline-dark">Change Email</button>
-                    </a> -->
+            <div class="tab-pane fade" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+                <h1>Admin</h1>
+                 <div>
+                    <a href="#" data-bind="click: changeSet.bind($data, 'Register')">
+                        <button type="button" class="btn btn-info">Register</button>
+                    </a>
+                    <a href="#" data-bind="click: changeSet.bind($data, 'Upload Blueprint')">
+                        <button type="button" class="btn btn-info">Upload Blueprint</button>
+                    </a>
+                    <a href="#" data-bind="click: changeSet.bind($data, 'Change setting')">
+                        <button type="button" class="btn btn-info">User info</button>
+                    </a>
+                    
                 </div>
-                <h1>Create profile</h1>
-                <p>Add a new account for a organization.</p>
                 <form>
-                    <div class="form-group ">
-                        <label class="col-form-label">Organization</label>
+                    <div class="form-group"> 
+                        <label class="col-form-label">Organization</label>   
                         <select class="form-control" id = "orgSelect" data-bind= "options: $data.organizations,
-                            optionsText: 'name',
-                            optionsValue: 'id'">
-                        </select>
-                    </div>  
-                    <div data-bind="foreach:inputs" class="form-group ">
-                        <label data-bind="text: name" class="col-form-label"></label>
-                        <input data-bind="attr:{id:name, type:input, placeholder: name}" class="form-control">
+                                optionsText: 'name',
+                                optionsValue: 'id',
+                                event:{change: orgSet}"></select>
+                    </div>
+                    <!-- ko if: $data.set() == 'Change setting' -->
+                    <div class="form-group"> 
+                        <label class="col-form-label">Users</label>   
+                        <select class="form-control" id = "userSelect" data-bind= "options: $data.users,
+                                optionsText: 'name',
+                                optionsValue: 'id',
+                                value: $data.currentUser"></select>
+                    </div>
+                    <div class="form-group"> 
+                        <label class="col-form-label">User organization</label>   
+                        <select class="form-control" id = "orgChange" data-bind= "options: $data.organizations,
+                                optionsText: 'name',
+                                optionsValue: 'id',"></select>
+                    </div>
+                    <!-- /ko -->
+                    <div class="form-group">
+                        <div data-bind="foreach:inputs" class="form-group ">
+                            <label data-bind="text: name" class="col-form-label"></label>
+                            <input data-bind="attr:{id:name, type:input, placeholder: name,}" class="form-control">
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-1 offset-10">
-                            <button class="btn btn-info" data-bind = "click:register, text:'Register'"></button>
+                        <div class="col-2 offset-9">
+                            <button class="btn btn-success" data-bind = "click:multiFunc, text:set"></button>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade" id="upload" role="tabpanel" aria-labelledby="upload-tab">contact</div>
         </div>
     </div>
     <div class="container-fluid" id="container" style="min-width:800px;" data-bind="if: showUserPart">
         <h1>Profile</h1>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr data-bind="foreach: currentTabHead">
-                    <th data-bind="text: name"></th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: $root.currentTabData">
-                <tr>
-                    <td data-bind="text:name"></td>
-                    <td data-bind="text:email"></td>
-                    <td data-bind="text:organization"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div>
+            <div class="form-group" data-bind="foreach: $root.currentTabData">
+                <label for="name">Name</label>
+                <input type="name" class="form-control" id="name" data-bind="value : $data.name">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" data-bind="value : $data.email">
+                <label for="Organization">Organization</label>
+                <input type="Organization" class="form-control" id="Organization" data-bind="value : $data.organization" disabled="">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" aria-describedby="passwordDis" placeholder="Enter password" data-bind="value :$root.new_password">
+                <small id="passwordDis" class="form-text text-muted">Enter password if you want to change your password.</small>
+                <button type="button" class="btn btn-lg btn-success float-right" data-bind="click: $root.editProfile.bind($data)">
+                    save
+                </button>
+            </div>
+        </div>
     </div>
 </script>
 
@@ -300,21 +319,20 @@
             <div class="col-2">
                 <div data-bind="if: showUnlocked">
                     <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
-                        <button class="btn btn-success " type="button"><i class="fas fa-lock-open"></i> unlocked</button>
+                        <button class="btn btn-success"><i class="fas fa-lock-open"></i> unlocked</button>
                     </a>
                 </div>
                 <div data-bind="if: showLocked">
                     <a class="nav-link" href="#" data-bind="click: dragNDropLogic">
-                        <button class="btn btn-danger" type="button"><i class="fas fa-lock"></i> locked</button>
+                        <button id="startDnD" class="btn btn-danger"><i class="fas fa-lock"></i> locked</button>
                     </a>
                 </div>
             </div>
         </div>
-        <div id="bp">
-            <canvas border: solid 2px" ondrop="drag_drop(event)" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
+        <div id="bp" style="border:2px solid black; background-color: white;">
+            <canvas class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
 
-        <div id="log"></div>
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -329,13 +347,11 @@
                             <thead>
                                 <td>Name</td>
                                 <td>Value</td>
-                                <td></td>
                             </thead>
                             <tbody data-bind="foreach: $root.records">
-                                <tr>
+                                <tr data-bind="css: bgColor">
                                     <th data-bind="text: name">Temperature: </th>
                                     <td data-bind="text: value"></td>
-                                    <td><i data-bind="css: bgColor" class="fas "></i></td>
                                 </tr>                
                             </tbody>
                         </table> 
@@ -352,7 +368,7 @@
         </div>
         <ul class="nav flex-column">
             <div data-bind="foreach: $root.blueprintDevices" class="nav-item">
-                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }" ondragend="drag_end(event)" class="draggable btn btn-danger drag-drop"></li>
+                <li data-bind="text: name, attr: { id: id }, style: { top: null, left: null }" class="draggable btn btn-danger drag-drop"></li>
             </div>
         </ul>
         <br>

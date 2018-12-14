@@ -13,7 +13,6 @@ var logoutModel = function (){
    * [logout description]
    * @return {[type]} [description]
    */
-
   self.logout = function(){
       $.post(base_url + '/api/logout', {token:self.token()}).done(function(data){
         console.log('User has been logged out')
