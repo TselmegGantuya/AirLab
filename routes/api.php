@@ -35,46 +35,36 @@ Route::group([
 
     // Routes for Blueprint
     Route::post('blueprint/upload', 'BlueprintController@uploadBP');
-    Route::post('blueprint/uploadAdmin', 'BlueprintController@uploadBPAdmin');
+    Route::post('blueprint/upload/admin', 'BlueprintController@uploadBPAdmin');
     Route::post('blueprint/update', 'BlueprintController@updateBP');
     Route::get('blueprint/get', 'BlueprintController@getBP');
-    Route::post('blueprint/changeName', 'BlueprintController@changeName');
+    Route::post('blueprint/change/name', 'BlueprintController@changeName');
     Route::post('blueprint/coordinations/get', 'BlueprintController@getCoordination');
     Route::post('blueprint/delete', 'BlueprintController@blueprintDelete');
     Route::get('blueprint/devices/get', 'BlueprintController@getUserDevices');
     Route::get('blueprint/db/devices/get', 'BlueprintController@getUserDBDevices');
     Route::post('blueprint/device/remove', 'BlueprintController@removeDeviceFromBlueprint');
-    Route::post('blueprint/records/get_for_device', 'BlueprintController@getRecordsForDevice');
+    Route::post('blueprint/records/device', 'BlueprintController@getRecordsForDevice');
 
     // Routes for Uhoo API
     Route::post('uhoo/');
     Route::post('uhoo/data/devices', 'ApiController@getUhooDevices');
     Route::post('uhoo/data/records', 'ApiController@getUhooData');
-
-    // Routes for Uhoo records and devices view
-    Route::post('uhoo/devices', 'ApiController@deviceView');
-    Route::post('uhoo/records', 'ApiController@recordView');
-    Route::post('uhoo/record', 'ApiController@recordDetail');
-    // Route::post('uhoo/user/device', 'ApiController@userDevice');
-    Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
-
     // Routes for organizations and organization's device
-    Route::post('uhoo/organizations', 'ApiController@getOrganizations');
+    Route::get('uhoo/organizations', 'ApiController@getOrganizations');
     //Getting all devices no class_parent
-    Route::post('uhoo/getDevicesOrganization', 'ApiController@getDevicesOrganization');
-    Route::post('uhoo/getNewDevices', 'ApiController@getNewDevices');
+    Route::get('uhoo/devices/organization', 'ApiController@getDevicesOrganization');
+    Route::get('uhoo/new/devices', 'ApiController@getNewDevices');
     //Add device to organization
-    Route::post('uhoo/addDeviceOrg', 'ApiController@addDeviceOrg');
+    Route::post('uhoo/add/device/organization', 'ApiController@addDeviceOrg');
     //Delete device from organization
-    Route::post('uhoo/deleteDevicesOrganization', 'ApiController@deleteDevicesOrganization');
+    Route::post('uhoo/delete/device/organization', 'ApiController@deleteDevicesOrganization');
     //edit device
-    Route::post('uhoo/editDevice', 'ApiController@editDevice');
-
+    Route::post('uhoo/edit/device', 'ApiController@editDevice');
     // Routes for Dashboard
-    Route::post('uhoo/getDevicesWithData', 'ApiController@getDevicesWithData');
-
+    Route::get('uhoo/data/devices', 'ApiController@getDevicesWithData');
     //routes for records by
-    Route::post('uhoo/recordsById', 'ApiController@recordsById');
+    Route::get('uhoo/records/id', 'ApiController@recordsById');
 
 
 });

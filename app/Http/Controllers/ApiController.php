@@ -224,34 +224,6 @@ class ApiController extends Controller
     }
 
     /**
-     * Method to get all devices tha belongs to logged in user
-     * [userDevice description]
-     * @return [type] [description]
-     */
-    public function userDevice()
-    {
-        $devices = Device::all();
-        $records = Record::all();
-        $organizations = Organization::all();
-        $user = auth()->user();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-        $userDevice = array();
-
-        foreach ($organizations as $organization) {
-            if ($userInfo['name'] == $organization->name) {
-                foreach ($devices as $device) {
-                    // $device->records;
-                    if ($device->organization->name == $organization->name) {
-                        $userDevice[] = $device;
-                    }
-                }
-            }
-        }
-        return $userDevice;
-    }
-
-    /**
      * Method for getting a list of all available devices.
      *
      * [getUhooData description]

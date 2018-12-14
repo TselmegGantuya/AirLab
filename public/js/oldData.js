@@ -45,22 +45,18 @@ var oldDataModel = function (data){
     }
   }
 
-
-    // console.log('Hey!');
-    // hier komt nog data sht call
-    self.deviceId = data.id
-    self.deviceName = data.name
-    $.post(base_url + '/api/uhoo/recordsById' ,{id: self.deviceId})
-          .done(function(data){
-            console.log(data)
-            if(data.length != 0){
-              console.log('sup')
-              self.history(true)
-              console.log(data);
-              self.oldRecords(data)
-            }else {
-              self.noData(true)
-            }
-
-      })
+  // console.log('Hey!');
+  // hier komt nog data sht call
+  self.deviceId = data.id
+  self.deviceName = data.name
+  $.get(base_url + '/api/uhoo/records/id' ,{id: self.deviceId}).done(function(data){
+    // console.log(data)
+    if(data.length != 0){
+      self.history(true)
+      // console.log(data);
+      self.oldRecords(data)
+    }else {
+      self.noData(true)
+    }
+  })
 }

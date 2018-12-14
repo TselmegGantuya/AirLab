@@ -62,7 +62,7 @@ var staticDataModel = function (){
         self.user(data)
         console.log(data);
         //get devices with organization
-        $.post(base_url + '/api/uhoo/getDevicesWithData' ,{token: self.token(),id:self.user().organization_id})
+        $.get(base_url + '/api/uhoo/data/devices' ,{token: self.token(),id:self.user().organization_id})
               .done(function(data){
               self.allColorDevices(data)
               console.log(data);

@@ -71,8 +71,12 @@ self.oldData = function(data){
     self.token(localStorage.getItem('token'))
   }
 
+/**
+ * Method to get organizations
+ * @return {[type]} [description]
+ */
  self.getOrganizations = function(){
-     $.post(base_url + '/api/uhoo/organizations').done(function(data){
+     $.get(base_url + '/api/uhoo/organizations').done(function(data){
          self.organization(data)
      })
  }
@@ -90,14 +94,14 @@ self.oldData = function(data){
      console.log(event.target.value)
      self.orgId = event.target.value;
      //get all devices with no organization
-     $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
+     $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.orgId}).done(function(data){
 
          if (data != '' && data[0]['organization_id'] != null ){
            self.devicesOrganization(data)
            self.showOrgDevices(!self.showOrgDevices());
          }
      })
-     $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
+     $.get(base_url + '/api/uhoo/new/devices').done(function(data){
          if (data != ''){
            self.newDevices(data)
            self.showNewDevices(!self.showNewDevices());
@@ -122,7 +126,7 @@ self.oldData = function(data){
    if (selectedItems != 0) {
      $.post(base_url + '/api/uhoo/deleteDevicesOrganization', {device_id:selectedItems}).done(function(data){
        if (data == 1) {
-         $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
+         $.get(base_url + '/api/uhoo/new/devices').done(function(data){
              if (data[0]['organization_id'] == null ){
                self.newDevices(data)
                self.showNewDevices(true);
@@ -131,7 +135,7 @@ self.oldData = function(data){
                console.log('Geen nieuwe devices');
              }
          })
-         $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
+         $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.orgId}).done(function(data){
            if(data != ''){
              if (data[0]['organization_id'] != null ){
                self.devicesOrganization(data)
@@ -164,10 +168,10 @@ self.oldData = function(data){
      selectedItems.push(items[i].value+"\n");
    }
    if (selectedItems != 0) {
-     $.post(base_url + '/api/uhoo/addDeviceOrg' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
+     $.post(base_url + '/api/uhoo/add/device/organization' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
        if (data == 1) {
 
-         $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
+         $.get(base_url + '/api/uhoo/new/devices').done(function(data){
            console.log(data)
            if(data != '' ){
              console.log('test')
@@ -179,7 +183,7 @@ self.oldData = function(data){
               self.showNewDevices(false);
            }
          })
-         $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
+         $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.orgId}).done(function(data){
              if (data[0]['organization_id'] != null ){
                self.devicesOrganization(data)
                self.showOrgDevices(true);
@@ -207,7 +211,7 @@ self.oldData = function(data){
         self.user(data)
         if(self.user().role == 1){
           self.showAdminPart(false)
-          $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.user().organization_id}).done(function(data){
+          $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.user().organization_id}).done(function(data){
            self.allUserDevices(data)
            console.log(data)
          })
@@ -225,7 +229,7 @@ self.oldData = function(data){
  * @return {[type]}      [description]
  */
   self.editDevice = function(data){
-    $.post(base_url + '/api/uhoo/editDevice' ,{token: self.token(),id:data.id, name: data.name})
+    $.post(base_url + '/api/uhoo/edit/device' ,{token: self.token(),id:data.id, name: data.name})
       .done(function(data){
         console.log(data);
         if(data ){

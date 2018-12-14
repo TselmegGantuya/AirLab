@@ -126,7 +126,7 @@ var dashModel = function (){
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
 
-    $.post(base_url + "/api/blueprint/changeName",{name:$('#changeName').val(),id:id}).done(function(){
+    $.post(base_url + "/api/blueprint/change/name",{name:$('#changeName').val(),id:id}).done(function(){
       self.blueprintData.removeAll()
     $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
@@ -257,7 +257,7 @@ var dashModel = function (){
           $(btn).on('click', function(e) {
             $('#removeDevice').modal('show')
             self.devices(element)
-            $.post(base_url + '/api/blueprint/records/get_for_device', {id: element.id}).done(function(data) {
+            $.post(base_url + '/api/blueprint/records/device', {id: element.id}).done(function(data) {
               // this function will return true after 1 second (see the async keyword in front of function)
               async function returnDeviceRecords() {
                 // create a new promise inside of the async function

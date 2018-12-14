@@ -101,7 +101,7 @@ var profileModel = function (){
       formData.append("organizations", $("#orgSelect").val())
       formData.append("name", $("#Name").val())
       var request = new XMLHttpRequest()
-      request.open("POST", base_url + '/api/blueprint/uploadAdmin')
+      request.open("POST", base_url + '/api/blueprint/upload/admin')
       request.send(formData)
       swal("Success!", "Image succesfull uploaded!", "success");
     }
@@ -119,7 +119,7 @@ var profileModel = function (){
     self.token(localStorage.getItem('token'))
   }
   self.enterPage = function() {
-    $.post(base_url + '/api/uhoo/organizations').done(function(data){
+    $.get(base_url + '/api/uhoo/organizations').done(function(data){
       self.organizations(data)
     })
     $.post(base_url + '/api/me').done(function(data){
