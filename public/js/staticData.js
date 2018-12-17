@@ -61,7 +61,7 @@ var staticDataModel = function (){
     $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
       self.user(data)
       //get devices with organization
-      $.get(base_url + '/api/uhoo/data/devices' ,{token: self.token(),id:self.user().organization_id}).done(function(data){
+      $.get(base_url + '/api/airlab/devices/data/get' ,{token: self.token(),id:self.user().organization_id}).done(function(data){
         self.allColorDevices(data)
       })
     })

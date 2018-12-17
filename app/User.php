@@ -12,6 +12,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    // User relationship with organization
     public function organizations()
     {
         return $this->belongsTo('App\Organization');

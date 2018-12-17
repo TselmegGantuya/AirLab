@@ -127,7 +127,7 @@ var profileModel = function (){
   * @return {[type]} [description]
   */
   self.enterPage = function() {
-    $.get(base_url + '/api/uhoo/organizations').done(function(data){
+    $.get(base_url + '/api/airlab/organizations/get').done(function(data){
       self.organizations(data)
     })
     

@@ -127,7 +127,7 @@ var dashModel = function (){
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
 
-    $.post(base_url + "/api/blueprint/change/name",{name:$('#changeName').val(),id:id}).done(function(){
+    $.post(base_url + "/api/blueprint/name/change",{name:$('#changeName').val(),id:id}).done(function(){
       self.blueprintData.removeAll()
       $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
@@ -196,8 +196,7 @@ var dashModel = function (){
     var files =  event.target.files// FileList object
     let img = new Image()
     img.src = window.URL.createObjectURL( files[0] )
-    img.onload = async function()
-    {
+    img.onload = async function(){
       var size = img.width / img.height
 
       if(self.currentBlueprintSize() != size){
@@ -206,7 +205,6 @@ var dashModel = function (){
       }
 
       let result = await resolvePost(files[0])
-
       self.blueprintData.removeAll()
 
       // Request to get blueprint
@@ -264,7 +262,7 @@ var dashModel = function (){
           $(btn).on('click', function(e) {
             $('#removeDevice').modal('show')
             self.devices(element)
-            $.post(base_url + '/api/blueprint/records/device', {id: element.id}).done(function(data) {
+            $.post(base_url + '/api/blueprint/records/device/get', {id: element.id}).done(function(data) {
               // this function will return true after 1 second (see the async keyword in front of function)
               async function returnDeviceRecords() {
                 // create a new promise inside of the async function

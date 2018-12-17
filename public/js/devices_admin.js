@@ -73,8 +73,7 @@ var adminDevicesModel = function (){
   /**
    * Token
    */
-  if (localStorage.getItem('token'))
-  {
+  if (localStorage.getItem('token')){
     self.token(localStorage.getItem('token'))
   }
 
@@ -83,7 +82,7 @@ var adminDevicesModel = function (){
    * @return {[type]} [description]
    */
   self.getOrganizations = function(){
-    $.get(base_url + '/api/uhoo/organizations').done(function(data){
+    $.get(base_url + '/api/airlab/organizations/get').done(function(data){
       self.organization(data)
     })
   }
@@ -100,14 +99,14 @@ var adminDevicesModel = function (){
       //id organization
       self.orgId = event.target.value;
       //get all devices with no organization
-      $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.orgId}).done(function(data){
+      $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
         if (data != '' && data[0]['organization_id'] != null ){
           self.devicesOrganization(data)
           self.showOrgDevices(!self.showOrgDevices());
         }
       })
-
-      $.get(base_url + '/api/uhoo/new/devices').done(function(data){
+      // get new devices
+      $.get(base_url + '/api/airlab/new/devices/get').done(function(data){
         if (data != ''){
           self.newDevices(data)
           self.showNewDevices(!self.showNewDevices());
@@ -130,9 +129,9 @@ var adminDevicesModel = function (){
       selectedItems.push(items[i].value+"\n");
     }
     if (selectedItems != 0) {
-      $.post(base_url + '/api/uhoo/deleteDevicesOrganization', {device_id:selectedItems}).done(function(data){
+      $.post(base_url + '/api/airlab/device/organization/delete', {device_id:selectedItems}).done(function(data){
         if (data == 1) {
-          $.get(base_url + '/api/uhoo/new/devices').done(function(data){
+          $.get(base_url + '/api/airlab/new/devices').done(function(data){
             if (data[0]['organization_id'] == null ){
               self.newDevices(data)
               self.showNewDevices(true);
@@ -140,7 +139,7 @@ var adminDevicesModel = function (){
               console.log('Geen nieuwe devices');
             }
           })
-          $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.orgId}).done(function(data){
+          $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
             if(data != ''){
               if (data[0]['organization_id'] != null ){
                 self.devicesOrganization(data)
@@ -174,9 +173,9 @@ var adminDevicesModel = function (){
     }
 
     if (selectedItems != 0) {
-      $.post(base_url + '/api/uhoo/add/device/organization' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
+      $.post(base_url + '/api/airlab/device/organization/add' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
         if (data == 1) {
-          $.get(base_url + '/api/uhoo/new/devices').done(function(data){
+          $.get(base_url + '/api/airlab/new/devices/get').done(function(data){
             if(data != '' ){
               if (data[0]['organization_id'] == null ){
                 self.newDevices(data)
@@ -187,7 +186,7 @@ var adminDevicesModel = function (){
             }
           })
 
-          $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.orgId}).done(function(data){
+          $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
             if (data[0]['organization_id'] != null ){
               self.devicesOrganization(data)
               self.showOrgDevices(true);
@@ -212,7 +211,7 @@ var adminDevicesModel = function (){
       self.user(data)
       if(self.user().role == 1){
         self.showAdminPart(false)
-        $.get(base_url + '/api/uhoo/devices/organization' ,{id:self.user().organization_id}).done(function(data){
+        $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.user().organization_id}).done(function(data){
           self.allUserDevices(data)
         })
       }else if(self.user().role == 2){
@@ -228,7 +227,7 @@ var adminDevicesModel = function (){
    * @return {[type]}      [description]
    */
   self.editDevice = function(data){
-    $.post(base_url + '/api/uhoo/edit/device' ,{token: self.token(),id:data.id, name: data.name}).done(function(data){
+    $.post(base_url + '/api/airlab/device/edit' ,{token: self.token(),id:data.id, name: data.name}).done(function(data){
       if(data ){
         swal("Success!", "Name has been changed!", "success");
       }
@@ -240,5 +239,4 @@ var adminDevicesModel = function (){
     self.userEmail(data.email)
     self.userOrganization(data.name)
   })
- /*END CODE LARS*/
 }

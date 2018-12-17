@@ -20,10 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([
     'middleware' => 'api'
 ], function ($router) {
-
+    // Routes for register
     Route::post('user/register', 'RegisterController@create');
 
-    // Routes for basic Log in
+    // Routes for Auth Controller functions
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
@@ -33,26 +33,27 @@ Route::group([
     Route::get('blueprint/devices/get', 'BlueprintController@getUserDevices');
     Route::get('blueprint/db/devices/get', 'BlueprintController@getUserDBDevices');
     Route::post('blueprint/upload', 'BlueprintController@uploadBP');
-    Route::post('blueprint/upload/admin', 'BlueprintController@uploadBPAdmin');
+    Route::post('blueprint/admin/upload', 'BlueprintController@uploadBPAdmin');
     Route::post('blueprint/update', 'BlueprintController@updateBP');
-    Route::post('blueprint/change/name', 'BlueprintController@changeName');
+    Route::post('blueprint/name/change', 'BlueprintController@changeName');
     Route::post('blueprint/coordinations/get', 'BlueprintController@getCoordination');
-    Route::post('blueprint/delete', 'BlueprintController@blueprintDelete');
+    Route::post('blueprint/delete', 'BlueprintController@deleteBlueprint');
     Route::post('blueprint/device/remove', 'BlueprintController@removeDeviceFromBlueprint');
-    Route::post('blueprint/records/device', 'BlueprintController@getRecordsForDevice');
+    Route::post('blueprint/records/device/get', 'BlueprintController@getRecordsForDevice');
+
+    // Routes for Airlab API
+    Route::get('airlab/organizations/get', 'ApiController@getOrganizations');
+    Route::get('airlab/devices/organization/get', 'ApiController@getDevicesOrganization');
+    Route::get('airlab/new/devices/get', 'ApiController@getNewDevices');
+    Route::get('airlab/devices/data/get', 'ApiController@getDevicesWithData');
+    Route::get('airlab/records/id/get', 'ApiController@getRecordsById');
+    Route::post('airlab/device/organization/add', 'ApiController@addDeviceOrg');
+    Route::post('airlab/device/organization/delete', 'ApiController@deleteDevicesOrganization');
+    Route::post('airlab/device/edit', 'ApiController@editDevice');
+    Route::post('airlab/password/reset', 'ApiController@changePassword');
 
     // Routes for Uhoo API
-    Route::get('uhoo/organizations', 'ApiController@getOrganizations');
-    Route::get('uhoo/devices/organization', 'ApiController@getDevicesOrganization');
-    Route::get('uhoo/new/devices', 'ApiController@getNewDevices');
-    Route::get('uhoo/data/devices', 'ApiController@getDevicesWithData');
-    Route::get('uhoo/records/id', 'ApiController@recordsById');
-    Route::post('uhoo/');
-    Route::post('uhoo/data/devices', 'ApiController@getUhooDevices');
-    Route::post('uhoo/data/records', 'ApiController@getUhooData');
-    Route::post('uhoo/add/device/organization', 'ApiController@addDeviceOrg');
-    Route::post('uhoo/delete/device/organization', 'ApiController@deleteDevicesOrganization');
-    Route::post('uhoo/edit/device', 'ApiController@editDevice');
-    Route::post('uhoo/password/reset', 'ApiController@changePassword');
+    Route::post('uhoo/data/devices/get', 'ApiController@getUhooDevices');
+    Route::post('uhoo/data/records/get', 'ApiController@getUhooData');
 
 });

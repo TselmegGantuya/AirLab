@@ -9,17 +9,16 @@ use Illuminate\Support\Facades\Auth;
 use App\Record;
 use App\Device;
 use App\Organization;
-use App\User;
 use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
 {
     /**
-     * [recordsById description]
+     * Method to get records by device ID
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function recordsById(Request $request)
+    public function getRecordsById(Request $request)
     {
       if ($request->id) {
         $records = Record::where('device_id', $request->id)->orderBy('updated_at', 'desc')->get();
@@ -92,67 +91,9 @@ class ApiController extends Controller
       $status = 0;
       foreach ($request->device_id as $id) {
         Device::where('id', $id)->update(['organization_id' => NULL]);
-        //softdelete concept
-        //Device::where('id', $id)->delete();
         $status = 1;
       }
       return $status;
-    }
-
-    /**
-     * [Method for changing/updating password]
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
-    public function changePassword(Request $request){
-        $user = Auth::user();
-
-        if (Hash::check($request->get('current_password'), Auth::user()->password)) {
-            //Change the password
-            $user->fill([
-                'password' => Hash::make($request->get('new_password'))
-            ])->save();
-
-            // $request->session()->flash('success', 'Your password has been changed.');
-        }
-
-        // if (!(Hash::check($request->get('current_password'), Auth::user()->password))) {
-        //     // The passwords matches
-        //     return redirect()->back()->with("error","Your current password does not matche with the password you provided. Please try again.");
-        // }
-
-        // if(strcmp($request->get('current_password'), $request->get('new_password')) == 0){
-        //     //Current password and new password are same
-        //     return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
-        // }
-
-        // $validatedData = $request->validate([
-        //     'current_password' => 'required',
-        //     'new_password' => 'required|string|min:6|confirmed',
-        //     'confirm_password' => 'required|string|min:6|confirmed'
-        // ]);
-
-        // //Change Password
-        // $user = Auth::user();
-        // $user->password = bcrypt($request->get('new_password'));
-        // $user->save();
-        return redirect('/');
-    }
-
-    /**
-     * Display record details
-     *
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function recordDetail()
-    {
-        $id = request('id');
-        $device = Device::findOrFail($id);
-        //->orderBy('id', 'desc')->first()
-        $record = Record::where('device_id', '=', $device->id)->first();
-        // return response()->json($record);
-        return $record;
     }
 
     /**
@@ -207,7 +148,7 @@ class ApiController extends Controller
     }
 
     /**
-     * [editDevice description]
+     * Method to edit device name
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -248,25 +189,21 @@ class ApiController extends Controller
 
         $result = curl_exec($curl);
         $response = json_decode($result);
-        $devices = Device::all();
-        $organizations = Organization::all();
         $user = auth::user();
+        $organization = Organization::where('name', '=', $user['name'])->get();
+        $device = Device::where('name', '=', $response->deviceName)->get();
 
         foreach ($responses as $response) {
-            foreach ($devices as $device) {
-                if ($response->deviceName !== $device->name) {
-                    //Save new devices to DB
-                    $device = new Device;
-                    $device->name = $response->deviceName;
-                    $device->mac_address = $response->macAddress;
-                    $device->serial_number = $response->serialNumber;
-                    foreach ($organizations as $organization) {
-                        if ($user['name'] == $organization->name) {
-                            $device->organization_id = $organization->id;
-                        }
-                    }
-                    // $device->save();
+            if ($response->deviceName !== $device->name) {
+                //Save new devices to DB
+                $device = new Device;
+                $device->name = $response->deviceName;
+                $device->mac_address = $response->macAddress;
+                $device->serial_number = $response->serialNumber;
+                if ($user['name'] == $organization->name) {
+                    $device->organization_id = $organization->id;
                 }
+                // $device->save();
             }
         }
     }

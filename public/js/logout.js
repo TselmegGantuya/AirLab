@@ -7,17 +7,15 @@ var logoutModel = function (){
   if (localStorage.getItem('token')){
     self.token(localStorage.getItem('token'))
   }
-  
+
   self.loadModel = ko.observable(false)
-  console.log('Ik zit hier')
 
   /**
-   * [logout description]
+   * Method to logout from app
    * @return {[type]} [description]
    */
   self.logout = function(){
     $.post(base_url + '/api/logout', {token:self.token()}).done(function(data){
-      console.log('User has been logged out')
       localStorage.removeItem('myCat')
       localStorage.removeItem('token')
       ko.cleanNode($("#main")[0])

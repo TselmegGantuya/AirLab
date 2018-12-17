@@ -48,7 +48,8 @@ var oldDataModel = function (data){
 
   self.deviceId = data.id
   self.deviceName = data.name
-  $.get(base_url + '/api/uhoo/records/id' ,{id: self.deviceId}).done(function(data){
+  // request to get records
+  $.get(base_url + '/api/airlab/records/id/get' ,{id: self.deviceId}).done(function(data){
     if(data.length != 0){
       self.history(true)
       self.oldRecords(data)

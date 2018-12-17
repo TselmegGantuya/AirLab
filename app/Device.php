@@ -14,11 +14,10 @@ class Device extends Model
      *
      * @var array
      */
-    //START STEFAN
     protected $dates = ['deleted_at'];
 
     public $organization;
-    //END STEFAN
+
     /**
      * Device relationship with an organization
      * @return [type] [description]
@@ -35,23 +34,5 @@ class Device extends Model
     public function records()
     {
     	return $this->hasMany('App\Record');
-    }
-
-    /**
-     * Find or create device by using name
-     * @param  [type] $name [description]
-     * @return [type]       [description]
-     */
-    public static function findOrCreateDeviceByName($name)
-    {
-        $device = Device::where('name', '=', $name)->first();
-
-        if ($device === NULL) {
-            $device = new Device;
-            $device->name = $name;
-            $device->save();
-        }
-
-        return $device;
     }
 }
