@@ -36,6 +36,7 @@ Route::group([
 ], function ($router) {
     Route::post('user/register', 'RegisterController@create');
     Route::post('user/info', 'UserController@info');
+    Route::post('uhoo/editProfile', 'ApiController@editProfile');
     // Route for reset password and email
     Route::post('uhoo/password/reset', 'ApiController@changePassword');
 
@@ -67,23 +68,20 @@ Route::group([
 
     // Routes for Uhoo records and devices view
     Route::post('uhoo/devices', 'ApiController@deviceView');
-    Route::post('uhoo/records', 'ApiController@recordView');
-    Route::post('uhoo/record', 'ApiController@recordDetail');
-    // Route::post('uhoo/user/device', 'ApiController@userDevice');
     Route::post('uhoo/meter/detail/{id}', 'ApiController@meterDetail');
     
     // Routes for organizations and organization's device
     Route::post('uhoo/organizations', 'OrganizationController@all');
+
     //Getting all devices no class_parent
-    Route::post('uhoo/getDevicesOrganization', 'ApiController@getDevicesOrganization');
-    Route::post('uhoo/getNewDevices', 'ApiController@getNewDevices');
+    Route::post('uhoo/getDevicesOrganization', 'DeviceController@getDevicesOrganization');
+    Route::post('uhoo/getNewDevices', 'DeviceController@getNewDevices');
     //Add device to organization
-    Route::post('uhoo/addDeviceOrg', 'ApiController@addDeviceOrg');
+    Route::post('uhoo/addDeviceOrg', 'DeviceController@addDeviceOrg');
     //Delete device from organization
-    Route::post('uhoo/deleteDevicesOrganization', 'ApiController@deleteDevicesOrganization');
+    Route::post('uhoo/deleteDevicesOrganization', 'DeviceController@deleteDevicesOrganization');
     //edit device
-    Route::post('uhoo/editDevice', 'ApiController@editDevice');
-     Route::post('uhoo/editProfile', 'ApiController@editProfile');
+    Route::post('uhoo/editDevice', 'DeviceController@editDevice');
     // Routes for Dashboard
     Route::post('uhoo/getDevicesWithData', 'ApiController@getDevicesWithData');
 

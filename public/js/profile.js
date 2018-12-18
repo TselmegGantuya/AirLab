@@ -81,6 +81,12 @@ var profileModel = function (){
         break;
     }
   }
+    self.orgSet = function (){
+       $.get(base_url + '/api/getUsersOrg', {id: $('#orgSelect').val()}).done(function(data){
+        self.users(data)
+      })
+  }
+
 
   self.changeSet = function(data){
     self.set(data)

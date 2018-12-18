@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Blueprint;
 use App\Record;
 use App\Device;
-use App\Organization;
-use App\User;
 use Carbon\Carbon;
 use App\Http\Controllers\AuthController;
 
