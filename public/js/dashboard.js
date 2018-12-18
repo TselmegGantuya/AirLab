@@ -79,6 +79,7 @@ var dashModel = function (){
       let img = new Image()
       img.src = base_url + '/storage/' + path
       img.addEventListener("load", function() {
+        // If statement to check if height and width of blueprint
         if(img.width / canvas.width < img.height / canvas.height){
           let mult = img.height / canvas.height
           let w = Math.floor(img.width / mult)
@@ -96,7 +97,7 @@ var dashModel = function (){
         self.currentBlueprintWidth(img.width)
         self.currentBlueprintHeight(img.height)
 
-        // this function will return true after 1 second (see the async keyword in front of function)
+        // this function will remove after 1 second
         async function removeDraggable() {
           // create a new promise inside of the async function
           let promise = new Promise((resolve, reject) => {
@@ -117,6 +118,7 @@ var dashModel = function (){
    * Delete blueprint
   */
   self.deleteBP = function(){
+    //request to delete blueprint
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
     self.blueprintData.remove(self.currentBlueprint())
   }
@@ -126,9 +128,10 @@ var dashModel = function (){
    */
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
-
+    // request to change name of blueprint
     $.post(base_url + "/api/blueprint/name/change",{name:$('#changeName').val(),id:id}).done(function(){
       self.blueprintData.removeAll()
+      // request to get blueprint
       $.get(base_url + '/api/blueprint/get').done(function(data){
         for (var i = 0, d; d = data[i]; i++) {
           self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
@@ -138,7 +141,6 @@ var dashModel = function (){
   }
 
   /**
-  *
   *   Upload image
   */
   self.fileSelect = function (element,event) {
@@ -177,6 +179,7 @@ var dashModel = function (){
       formData.append("token", self.token())
 
       var request = new XMLHttpRequest()
+      // request tp update blueprint
       request.open("POST", base_url + '/api/blueprint/update')
       request.onreadystatechange = function () {
         if(request.readyState === 4 && request.status === 200) {
@@ -263,7 +266,7 @@ var dashModel = function (){
             $('#removeDevice').modal('show')
             self.devices(element)
             $.post(base_url + '/api/blueprint/records/device/get', {id: element.id}).done(function(data) {
-              // this function will return true after 1 second (see the async keyword in front of function)
+              // this function will return device records
               async function returnDeviceRecords() {
                 // create a new promise inside of the async function
                 let promise = new Promise((resolve, reject) => {
@@ -326,6 +329,7 @@ var dashModel = function (){
         dragElement.className = "btn btn-info draggable btn-circle drag-drop";
         document.removeEventListener('mousemove', onMouseMove);
         dragElement.onmouseup = null;
+        //request to send device coordinations to DB
         $.post(base_url + '/api/blueprint/coordinations/get', {blueprintData: [{left: dragElement.style.left, top: dragElement.style.top, id: self.currentBlueprint().id, device_id: dragElement.id}]}).done(function(data) {})
       }
 
