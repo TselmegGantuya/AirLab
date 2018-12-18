@@ -3,7 +3,7 @@
 */
 var dashModel = function (){
   var self = this
-  self.optionValues = ko.observableArray(["Pick a value...","temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
+   self.optionValues = ko.observableArray(["Pick a value...","temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
   self.selectedOptionValue = ko.observable('Select a value')
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
@@ -30,6 +30,7 @@ var dashModel = function (){
   self.currentBlueprintWidth = ko.observable()
   self.deviceId = ko.observable()
   self.selectedOptionValue = ko.observable()
+
   /**
    * Token
    */
@@ -40,8 +41,6 @@ var dashModel = function (){
 
   /**
    * Switching between models
-   * @param  {[type]} data [description]
-   * @return {[type]}      [description]
    */
   self.loadModel = function(data) {
     switch(data) {
@@ -75,41 +74,52 @@ var dashModel = function (){
 
   /**
    * [selectFunc description]
-   * @return {[type]} [description]
    */
   self.selectFunc = function(){
     let canvas = document.getElementById("currentBP")
     let context = canvas.getContext("2d")
     context.clearRect(0, 0, canvas.width, canvas.height)
     if(self.currentBlueprint()){
-    let path = self.currentBlueprint()['path']
-    self.blueprintName(self.currentBlueprint().name);
-    let img = new Image()
-    img.src = base_url + '/storage/' + path
-    img.addEventListener("load", function() {
-      if(img.width / canvas.width < img.height / canvas.height){
-        let mult = img.height / canvas.height
-        let w = Math.floor(img.width / mult)
-        let h = Math.floor(img.height / mult)
-        context.drawImage(img,canvas.width / 2 - w / 2,0,w,h)
-      }
-      else
-      {
-        let mult = img.width / canvas.width
-        let w = Math.floor(img.width / mult)
-        let h = Math.floor(img.height / mult)
-        context.drawImage(img,0,canvas.height / 2 - h / 2,w,h)
-      }
-      self.currentBlueprintSize(img.width/img.height)
-      self.currentBlueprintWidth(img.width)
-      self.currentBlueprintHeight(img.height)
-    })
+      let path = self.currentBlueprint()['path']
+      self.blueprintName(self.currentBlueprint().name);
+      let img = new Image()
+      img.src = base_url + '/storage/' + path
+      img.addEventListener("load", function() {
+        if(img.width / canvas.width < img.height / canvas.height){
+          let mult = img.height / canvas.height
+          let w = Math.floor(img.width / mult)
+          let h = Math.floor(img.height / mult)
+          context.drawImage(img,canvas.width / 2 - w / 2,0,w,h)
+        }
+        else
+        {
+          let mult = img.width / canvas.width
+          let w = Math.floor(img.width / mult)
+          let h = Math.floor(img.height / mult)
+          context.drawImage(img,0,canvas.height / 2 - h / 2,w,h)
+        }
+        self.currentBlueprintSize(img.width/img.height)
+        self.currentBlueprintWidth(img.width)
+        self.currentBlueprintHeight(img.height)
+
+        // this function will return true after 1 second (see the async keyword in front of function)
+        async function removeDraggable() {
+          // create a new promise inside of the async function
+          let promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve($('.draggable').remove()), 250) // resolve
+          });
+          // wait for the promise to resolve
+          let result = await promise;
+          self.blueprintdash()
+        }
+        // call the function
+        removeDraggable()
+      })
     }
   }
 
   /**
    * Delete blueprint
-   * @return {[type]} [description]
   */
   self.deleteBP = function(){
     $.post(base_url + '/api/blueprint/delete',{id:self.currentBlueprint().id})
@@ -118,7 +128,6 @@ var dashModel = function (){
 
   /**
    * Change blueprint name
-   * @return {[type]} [description]
    */
   self.changeNameBTN = function(){
     let id =  self.currentBlueprint()['id']
@@ -163,7 +172,7 @@ var dashModel = function (){
   function resolvePost(file) {
     return new Promise(resolve => {
       var formData = new FormData()
-
+ 
       // HTML file input, chosen by user
       formData.append("id", self.currentBlueprint()['id'])
       formData.append("blueprint", file)
@@ -180,7 +189,8 @@ var dashModel = function (){
       request.send(formData)
     })
   }
-    /**
+
+  /**
   *
   *   Switch image
   */
@@ -205,9 +215,12 @@ var dashModel = function (){
         }
       })
       }
-
   }
 
+  /**
+   * First get devices from DB then create element of devices with pixels and append to HTML
+   * @return {[type]} [description]
+   */
   /**
    * First get devices from DB then create element of devices with pixels and append to HTML
    * @return {[type]} [description]
@@ -316,8 +329,8 @@ var dashModel = function (){
       document.addEventListener('mousemove', onMouseMove);
 
       // on drag start:
-      //   remember the initial shift
-      //   move the element position:fixed and a direct child of body
+      // remember the initial shift
+      // move the element position:fixed and a direct child of body
       function startDrag(clientX, clientY) {
         shiftX = clientX - dragElement.getBoundingClientRect().left;
         shiftY = clientY - dragElement.getBoundingClientRect().top;
@@ -328,7 +341,7 @@ var dashModel = function (){
         moveAt(clientX, clientY);
       }
 
-      // switch to absolute coordinates at the end, to fix the element in the document
+      // switch to absolute coordinates at the end, to fix the element in the document and send coordinates to DB
       function finishDrag() {
         dragElement.style.top = parseInt(dragElement.style.top) + pageYOffset + 'px';
         dragElement.style.left = parseInt(dragElement.style.left) + pageXOffset + 'px';
@@ -343,45 +356,27 @@ var dashModel = function (){
       dragElement.onmouseup = function(event) {
         event.preventDefault()
         finishDrag()
-
-        // this function will return true after 1 second (see the async keyword in front of function)
-        async function returnTrue() {
-          // create a new promise inside of the async function
-          let promise = new Promise((resolve, reject) => {
-            setTimeout(() => resolve($('.draggable').remove()), 500) // resolve
-          });
-          // wait for the promise to resolve
-          let result = await promise;
-          self.blueprintdash()
-          // request to get devices on blueprint
-          $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-            self.blueprintDevices(data)
-          })
-        }
-        // call the function
-        returnTrue()
-        self.showLocked(true);
-        self.showUnlocked(false);
       }
-
-      // When mouse is moving
+      
+      // When mouse is moving 
       function onMouseMove(event) {
-        // event.preventDefault()
+        event.preventDefault()
         moveAt(event.clientX, event.clientY);
+
+        // in a mouse event handler
         dragElement.hidden = true;
         let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
         dragElement.hidden = false;
-
-        // mousemove events may trigger out of the window (when the ball is dragged off-screen)
+        // elemBelow is the element below the dragElement. If it's droppable, we can handle it.
+        
+        // mousemove events may trigger out of the window (when the device is dragged off-screen)
         // if clientX/clientY are out of the window, then elementfromPoint returns null
         if (!elemBelow) return;
         // potential droppables are labeled with the class "droppable" (can be other logic)
         let droppable = elemBelow.closest('#bp');
         if (currentDroppable != droppable) { // if there are any changes
-          // we're flying in or out...
-          // note: both values can be null
           //   currentDroppable=null if we were not over a droppable (e.g over an empty space)
-          //   droppableBelow=null if we're not over a droppable now, during this event
+          //   droppable=null if we're not over a droppable now, during this event
           if (currentDroppable) {
             // the logic to process "flying out" of the droppable (remove highlight)
             leaveDroppable(currentDroppable);
@@ -394,83 +389,28 @@ var dashModel = function (){
           }
         }
       }
-
+      
       // When device enters blueprint or is in blueprint
       function enterDroppable(elem) {
         elem.style.background = '#f3f8fa';
       }
 
       // When device leaves blueprint
-      function leaveDroppable(elem) {
+      function leaveDroppable() {
         document.removeEventListener('mousemove', onMouseMove);
         swal({
           title: "ERROR!",
           text: "Please stay inside the blueprint.",
           icon: "error"
         })
-        elem.style.background = '';
-        // this function will return true after 1 second (see the async keyword in front of function)
-        async function returnTrue() {
-          // create a new promise inside of the async function
-          let promise = new Promise((resolve, reject) => {
-            setTimeout(() => resolve($('.draggable').remove()), 500) // resolve
-          });
-          // wait for the promise to resolve
-          let result = await promise;
-          self.blueprintdash()
-          // request to get devices on blueprint
-          $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-            self.blueprintDevices(data)
-          })
-        }
-        // call the function
-        returnTrue()
-        self.showLocked(true);
-        self.showUnlocked(false);
+        self.stopDragNDropLogic()
       }
-
-
 
       // get coordinates when mouse is moving
       function moveAt(clientX, clientY) {
         // new window-relative coordinates
         let newX = clientX - shiftX;
         let newY = clientY - shiftY;
-        // check if the new coordinates are below the bottom window edge
-        let newBottom = newY + dragElement.offsetHeight; // new bottom
-        // // below the window? let's scroll the page
-        // if (newBottom > document.documentElement.clientHeight) {
-        //   // window-relative coordinate of document end
-        //   let docBottom = document.documentElement.getBoundingClientRect().bottom;
-        //   // scroll the document down by 10px has a problem
-        //   // it can scroll beyond the end of the document
-        //   // Math.min(how much left to the end, 10)
-        //   let scrollY = Math.min(docBottom - newBottom, 10);
-        //   // calculations are imprecise, there may be rounding errors that lead to scrolling up
-        //   // that should be impossible, fix that here
-        //   if (scrollY < 0) scrollY = 0;
-        //   window.scrollBy(0, scrollY);
-        //   // a swift mouse move make put the cursor beyond the document end
-        //   // if that happens -
-        //   // limit the new Y by the maximally possible (right at the bottom of the document)
-        //   newY = Math.min(newY, document.documentElement.clientHeight - dragElement.offsetHeight);
-        // }
-        // check if the new coordinates are above the top window edge (similar logic)
-        // if (newY < 0) {
-        //   // scroll up
-        //   let scrollY = Math.min(-newY, 10);
-        //   if (scrollY < 0) scrollY = 0; // check precision errors
-        //   window.scrollBy(0, -scrollY);
-        //   // a swift mouse move can put the cursor beyond the document start
-        //   newY = Math.max(newY, 0); // newY may not be below 0
-        // }
-
-        // limit the new X within the window boundaries
-        // there's no scroll here so it's simple
-        if (newX < 0) newX = 0;
-        if (newX > document.documentElement.clientWidth - dragElement.offsetWidth) {
-          newX = document.documentElement.clientWidth - dragElement.offsetWidth;
-        }
 
         dragElement.style.left = newX + 'px';
         dragElement.style.top = newY + 'px';
@@ -478,14 +418,47 @@ var dashModel = function (){
     })
   }
 
+//Chart begin
+
+  self.getChart = function(data,event) {
+    console.log(data);
+    if(event.target.value != 'Pick a value...' && self.deviceId){
+      $.post(base_url + '/api/uhoo/recordsByProperty' ,{id:self.deviceId, name:event.target.value}).done(function(data){
+        var modData = [];
+        for (var i = 0; i < data.length; i++) {
+          modData.push(data[i][event.target.value])
+        }
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+            // The data for our dataset
+            data: {
+                labels: modData,
+                datasets: [{
+                    label: "",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(25s5, 99, 132)',
+                    data: modData,
+                }]
+            },
+            // Configuration options go here
+            options: {}
+        });
+      })
+    }
+  }
+
   /**
    * Button to stop drag and drop from working
    * @return {[type]} [description]
    */
   self.stopDragNDropLogic = function () {
-    self.showUnlocked(false);
-    self.showLocked(true);
+    self.showUnlocked(false)
+    self.showLocked(true)
     $('.draggable').off("mousedown")
+    $('.draggable').remove()
+    self.blueprintdash()
   }
 
   /**
@@ -498,10 +471,6 @@ var dashModel = function (){
       for (var i = 0, d; d = data[i]; i++) {
         self.blueprintData.push({ id:d.id, name:d.name, path:d.path.replace('public/', '')})
       }
-      // request to get devices on blueprint
-      $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-        self.blueprintDevices(data)
-      })
       self.blueprintdash()
     })
 
@@ -512,45 +481,4 @@ var dashModel = function (){
     })
   }
   self.enterPage()
-
-  //Chart begin
-
-  self.getChart = function(data,event) {
-
-    if(event.target.value != 'Pick a value...' && self.deviceId){
-
-      $.post(base_url + '/api/uhoo/recordsByProperty' ,{id:self.deviceId, name:event.target.value}).done(function(data){
-        var modData = [];
-        for (var i = 0; i < data.length; i++) {
-          modData.push(data[i][event.target.value])
-        }
-
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            // The type of chart we want to create
-            type: 'line',
-
-            // The data for our dataset
-            data: {
-                labels: modData,
-                datasets: [{
-                    label: "",
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(25s5, 99, 132)',
-                    data: modData,
-                }]
-            },
-
-            // Configuration options go here
-            options: {}
-        });
-
-      })
-
-    }
-
-
-  }
-
-
 }
