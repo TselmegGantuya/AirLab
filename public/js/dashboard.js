@@ -3,6 +3,8 @@
 */
 var dashModel = function (){
   var self = this
+   self.optionValues = ko.observableArray(["Pick a value...","temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
+  self.selectedOptionValue = ko.observable('Select a value')
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
   self.setColorDevices = ko.observable(false)
@@ -11,19 +13,23 @@ var dashModel = function (){
   self.showUnlocked = ko.observable(false)
   self.token = ko.observable()
   self.blueprintName = ko.observable()
-  self.blueprintData = ko.observableArray() 
+  self.blueprintData = ko.observableArray()
   self.blueprintDevices = ko.observableArray()
-  self.removeBpDevices = ko.observableArray() 
+  self.blueprintDevi = ko.observableArray()
+  self.removeBpDevices = ko.observableArray()
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
-  self.devices = ko.observableArray() 
+  self.devices = ko.observableArray()
   self.currentBlueprint = ko.observable()
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
   self.records = ko.observableArray()
+  self.lastRecord = ko.observableArray()
   self.currentBlueprintSize = ko.observable()
   self.currentBlueprintHeight = ko.observable()
   self.currentBlueprintWidth = ko.observable()
+  self.deviceId = ko.observable()
+  self.selectedOptionValue = ko.observable()
 
   /**
    * Token
@@ -223,43 +229,42 @@ var dashModel = function (){
    * First get devices from DB then create element of devices with pixels and append to HTML
    * @return {[type]} [description]
    */
+  /**
+   * First get devices from DB then create element of devices with pixels and append to HTML
+   * @return {[type]} [description]
+   */
   self.blueprintdash = function () {
-    // request to get devices on blueprint
-    $.get(base_url + '/api/blueprint/devices/get').done(function(data) {
-      self.blueprintDevices(data)
-    })
     // request to get devices where top_pixel and left_pixel are not equal to null
     $.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
       data.forEach(function(element) {
-        if (element.blueprint_id == self.currentBlueprint().id) {
-          var btn = document.createElement("BUTTON");
-          let toppixel = element.top_pixel - 79
-          btn.setAttribute("data-toggle", "popover");
-          btn.style.position = 'absolute';
-          btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
-          btn.id = element.id;
-          self.devices(btn.id)
-          btn.style.left = element.left_pixel +'px';
-          btn.style.top = toppixel +'px';
-          document.getElementById("bp").appendChild(btn);
+        var btn = document.createElement("BUTTON");
+        let toppixel = element.top_pixel - 79
+        btn.setAttribute("data-toggle", "popover");
+        btn.style.position = 'absolute';
+        btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
+        btn.id = element.id;
+        self.devices(btn.id)
+        btn.style.left = element.left_pixel +'px';
+        btn.style.top = toppixel +'px';
+        document.getElementById("bp").appendChild(btn);
 
-          // jquery popover method. Return device name when hovered over 
-          $('[data-toggle="popover"]').popover({
-            placement: 'top',
-            animation: true,
-            trigger: 'hover',
-            title: "Device",
-            title: function() {
-              if (element.id == btn.id) {
-                return element.name
-              }
-            },
-            content: function() {
-              if (element.id == btn.id) {
-                return element.danger
-              }
-            },
-          })
+        // jquery popover method. Return device name when hovered over
+        $('[data-toggle="popover"]').popover({
+          placement: 'top',
+          animation: true,
+          trigger: 'hover',
+          title: "Device",
+          title: function() {
+            if (element.id == btn.id) {
+              return element.name
+            }
+          },
+          content: function() {
+            if (element.id == btn.id) {
+              return element.danger
+            }
+          },
+        })
 
           // Open modal to remove device from blueprint
           $(btn).on('click', function(e) {
@@ -279,14 +284,13 @@ var dashModel = function (){
               returnDeviceRecords()
             })
 
-            // Method to remove device from blueprint and refresh page
-            self.removeDevice = function(){
-              $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
-                self.stopDragNDropLogic()
-              })
-            }
-          })
-        }
+          // Method to remove device from blueprint and refresh page
+          self.removeDevice = function(){
+            $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
+              self.stopDragNDropLogic()
+            })
+          }
+        })
       })
     })
   }
@@ -398,6 +402,37 @@ var dashModel = function (){
         dragElement.style.top = newY + 'px';
       }
     })
+  }
+
+//Chart begin
+
+  self.getChart = function(data,event) {
+    console.log(data);
+    if(event.target.value != 'Pick a value...' && self.deviceId){
+      $.post(base_url + '/api/uhoo/recordsByProperty' ,{id:self.deviceId, name:event.target.value}).done(function(data){
+        var modData = [];
+        for (var i = 0; i < data.length; i++) {
+          modData.push(data[i][event.target.value])
+        }
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+            // The data for our dataset
+            data: {
+                labels: modData,
+                datasets: [{
+                    label: "",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(25s5, 99, 132)',
+                    data: modData,
+                }]
+            },
+            // Configuration options go here
+            options: {}
+        });
+      })
+    }
   }
 
   /**

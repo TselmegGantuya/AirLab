@@ -87,6 +87,9 @@
                     <a href="#" data-bind="click: changeSet.bind($data, 'Upload Blueprint')">
                         <button type="button" class="btn btn-info">Upload Blueprint</button>
                     </a>
+                    <a href="#" data-bind="click: changeSet.bind($data, 'Change setting')">
+                        <button type="button" class="btn btn-info">User info</button>
+                    </a>
                     
                 </div>
                 <form>
@@ -94,12 +97,28 @@
                         <label class="col-form-label">Organization</label>   
                         <select class="form-control" id = "orgSelect" data-bind= "options: $data.organizations,
                                 optionsText: 'name',
-                                optionsValue: 'id'"></select>
+                                optionsValue: 'id',
+                                event:{change: orgSet}"></select>
                     </div>
+                    <!-- ko if: $data.set() == 'Change setting' -->
+                    <div class="form-group"> 
+                        <label class="col-form-label">Users</label>   
+                        <select class="form-control" id = "userSelect" data-bind= "options: $data.users,
+                                optionsText: 'name',
+                                optionsValue: 'id',
+                                value: $data.currentUser"></select>
+                    </div>
+                    <div class="form-group"> 
+                        <label class="col-form-label">User organization</label>   
+                        <select class="form-control" id = "orgChange" data-bind= "options: $data.organizations,
+                                optionsText: 'name',
+                                optionsValue: 'id',"></select>
+                    </div>
+                    <!-- /ko -->
                     <div class="form-group">
                         <div data-bind="foreach:inputs" class="form-group ">
                             <label data-bind="text: name" class="col-form-label"></label>
-                            <input data-bind="attr:{id:name, type:input, placeholder: name}" class="form-control">
+                            <input data-bind="attr:{id:name, type:input, placeholder: name,}" class="form-control">
                         </div>
                     </div>
                     <div class="row">
@@ -113,20 +132,22 @@
     </div>
     <div class="container-fluid" id="container" style="min-width:800px;" data-bind="if: showUserPart">
         <h1>Profile</h1>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr data-bind="foreach: currentTabHead">
-                    <th data-bind="text: name"></th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: $root.currentTabData">
-                <tr>
-                    <td data-bind="text:name"></td>
-                    <td data-bind="text:email"></td>
-                    <td data-bind="text:organization"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div>
+            <div class="form-group" data-bind="foreach: $root.currentTabData">
+                <label for="name">Name</label>
+                <input type="name" class="form-control" id="name" data-bind="value : $data.name">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" data-bind="value : $data.email">
+                <label for="Organization">Organization</label>
+                <input type="Organization" class="form-control" id="Organization" data-bind="value : $data.organization" disabled="">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" aria-describedby="passwordDis" placeholder="Enter password" data-bind="value :$root.new_password">
+                <small id="passwordDis" class="form-text text-muted">Enter password if you want to change your password.</small>
+                <button type="button" class="btn btn-lg btn-success float-right" data-bind="click: $root.editProfile.bind($data)">
+                    save
+                </button>
+            </div>
+        </div>
     </div>
 </script>
 
@@ -294,7 +315,10 @@
     </div>
     <div>
         <div class="row">
-            <h1 class="col-10" data-bind="text: blueprintName"></h1>
+            <h1 class="col-8" data-bind="text: blueprintName"></h1>
+            <div class="col-2">
+            	<a class="nav-link" href="{{ url('api/blueprint/full/') }}" target="_blank"><button class="btn btn-info btn-md" type = 'button'>Fullscreen</button></a>
+            </div> 
             <div class="col-2">
                 <div data-bind="if: showUnlocked">
                     <a class="nav-link" href="#" data-bind="click: stopDragNDropLogic">
@@ -307,9 +331,10 @@
                     </a>
                 </div>
             </div>
+            
         </div>
         <div id="bp" style="border:2px solid black; background-color: white;">
-            <canvas border: solid 2px" class="droppable" id="currentBP" width="1000" height="500"></canvas>  
+            <canvas class="droppable" id="currentBP" width="1000" height="500"></canvas>  
         </div>
 
         <div class="modal fade" tabindex="-1" role="dialog" id="removeDevice">
@@ -326,13 +351,11 @@
                             <thead>
                                 <td>Name</td>
                                 <td>Value</td>
-                                <td></td>
                             </thead>
                             <tbody data-bind="foreach: $root.records">
-                                <tr>
+                                <tr data-bind="css: bgColor">
                                     <th data-bind="text: name">Temperature: </th>
                                     <td data-bind="text: value"></td>
-                                    <td><i data-bind="css: bgColor" class="fas "></i></td>
                                 </tr>                
                             </tbody>
                         </table> 
@@ -375,7 +398,7 @@
         <div data-bind="foreach: allColorDevices" class="card-columns">
             <div class="card text-white  mb-3" data-bind="css: $data.color " style="max-width: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title d-inline" data-bind="text: $data.name"></h5>
+              <h5 class="card-title d-inline" data-bind="text: $data.name"></h5>
                     <!-- <a data-toggle="modal" data-target="#editNameModal" data-id="bla"><i class="fas fa-edit d-inline float-right"></i></a>-->
                     <p class="card-text" data-bind="text: $data.message"></p>
                 </div>

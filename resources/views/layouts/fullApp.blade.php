@@ -14,18 +14,17 @@
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body id="main">
     <div id="app">
-
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+                <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <a class="navbar-brand text-uppercase" href="#">Air Lab </a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </nav>
-
         <main class="py-4">
             @yield('content')
         </main>
@@ -37,16 +36,12 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ url('js/knockout.js') }}" ></script>
     <script src="{{ url('js/require.js') }}" ></script>
-    <script src="{{ url('js/login.js') }}" ></script>
-    <script src="{{ url('js/dashboard.js') }}" ></script>
-    <script src="{{ url('js/profile.js') }}" ></script>
-    <script src="{{ url('js/logout.js') }}" ></script>
-    <script src="{{ url('js/devices_admin.js') }}" ></script>
-    <script src="{{ url('js/staticData.js') }}" ></script>
-    <script src="{{ url('js/oldData.js') }}" ></script>
+    <script src="{{ url('js/full.js') }}" ></script>
+
+
+
 </body>
 </html>

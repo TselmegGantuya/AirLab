@@ -18,6 +18,8 @@ var profileModel = function (){
   self.userorganization = ko.observable()
   self.currentTabHead = ko.observableArray()
   self.currentTabData = ko.observableArray()
+  self.currentUser = ko.observable()
+  self.currentOrg = ko.observable()
   self.current_password = ko.observable()
   self.new_password = ko.observable()
   self.confirm_password = ko.observable()
@@ -26,7 +28,14 @@ var profileModel = function (){
   self.organizations = ko.observableArray()
   self.token = ko.observable()
   self.role = ko.observable()
+  self.users = ko.observable()
+  self.user_input = ko.observable([
+      {name:"Name", input:"text"},
+      {name:"Password", input:"password"},
+      {name:'Email', input:'text'}
+    ])
   self.reg_input = ko.observable([
+
     {name:"Name", input:"text"},
     {name:"Password", input:"password"},
     {name:'Email', input:'text'}
@@ -73,7 +82,13 @@ var profileModel = function (){
         break;
     }
   }
-  
+    self.orgSet = function (){
+       $.get(base_url + '/api/getUsersOrg', {id: $('#orgSelect').val()}).done(function(data){
+        self.users(data)
+      })
+  }
+
+
   /**
    * Method to change from tabs
    * @param  {[type]} data [description]
@@ -86,8 +101,24 @@ var profileModel = function (){
     }else if(self.set() == 'Upload Blueprint'){
       self.inputs(self.up_input())
     }
+    else if(self.set() == 'Change setting'){
+      self.inputs(self.user_input())
+    }
   }
-  
+
+  /*
+  *   Edit Profile
+  */
+   self.editProfile = function(data){
+    $.post(base_url + '/api/uhoo/editProfile' ,{token: self.token(),id:data.id, name: data.name, email: data.email, password: self.new_password()})
+      .done(function(data){
+        console.log(data);
+        if(data ){
+          swal("Success!", "Name has been changed!", "success");
+        }
+
+      })
+  }
   self.multiFunc = function() {
     /* 
     * Register New blueprints as a admin
@@ -102,15 +133,26 @@ var profileModel = function (){
       formData.append("name", $("#Name").val())
       var request = new XMLHttpRequest()
       request.open("POST", base_url + '/api/blueprint/upload/admin')
+      request.onreadystatechange = function () {
+        if(request.readyState === 4 && request.status === 200) {
+          swal("Success!", "Image succesfull uploaded!", "success")
+        }
+      }
       request.send(formData)
-      swal("Success!", "Image succesfull uploaded!", "success");
+      
     }
     /* 
     * Register New users as a admin
     */
     else if(self.set() == 'Register'){
       $.post(base_url + '/api/user/register',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), org:$("#orgSelect").val()}).done(function(data){
-        swal("Success!", "Profile succesfull created!", "success");
+        swal("Success!", "Profile succesfull created!", "success")
+      })
+    }
+    else if(self.set() == 'Change setting'){
+      $.post(base_url + '/api/user/info',{name:$("#Name").val(), password:$("#Password").val(), email:$("#Email").val(), id:$('#userSelect').val(), org:$('#orgChange').val()}).done(function(data){
+        swal("Success!", "Profile succesfull edited!", "success")
+        self.orgSet()
       })
     }
   }
@@ -129,6 +171,10 @@ var profileModel = function (){
   self.enterPage = function() {
     $.get(base_url + '/api/airlab/organizations/get').done(function(data){
       self.organizations(data)
+      self.currentOrg(self.organizations()[0].id)
+      $.get(base_url + '/api/getUsersOrg', {id: self.currentOrg()}).done(function(data){
+      self.users(data)
+      })
     })
     
     $.post(base_url + '/api/me').done(function(data){
@@ -137,6 +183,7 @@ var profileModel = function (){
       self.userorganization(data.organization)
       self.currentTabHead(self.profiles())
       self.currentTabData(data)
+      self.currentTabData().password = "";
       self.userEmail(data.email)
       self.userOrganization(data.name)
       self.role(data.role)
