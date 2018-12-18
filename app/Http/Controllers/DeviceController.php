@@ -3,82 +3,82 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
+use App\Device;
 
 class DeviceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all devices from organization
      *
-     * @return \Illuminate\Http\Response
+     * [deviceView description]
+     * @return [type] [description]
      */
-    public function index()
+    public function getDevicesOrganization(Request $request)
     {
-        //
+      if ($request->id) {
+        $orgDevices = Device::where('organization_id', $request->id)->get();
+      }
+        return $orgDevices;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display all devices with no organization
      *
-     * @return \Illuminate\Http\Response
+     * [deviceView description]
+     * @return [type] [description]
      */
-    public function create()
+    public function getNewDevices()
     {
-        //
+      $cleanDevices = Device::where('organization_id', NULL)->get();
+      return $cleanDevices;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display for adding organization devices
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * [deviceView description]
+     * @return [type] [description]
      */
-    public function store(Request $request)
+    public function addDeviceOrg(Request $request)
     {
-        //
+      foreach ($request->device_id as $id) {
+        Device::where('id', $id)->update(['organization_id' => $request->organization_id]);
+      }
+      return $status;
     }
 
     /**
-     * Display the specified resource.
+     * Display for deleting organization devices
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * [deviceView description]
+     * @return [type] [description]
      */
-    public function show($id)
+    public function deleteDevicesOrganization(Request $request)
     {
-        //
+      $status = 0;
+      foreach ($request->device_id as $id) {
+        Device::where('id', $id)->update(['organization_id' => NULL]);
+        //softdelete concept
+        //Device::where('id', $id)->delete();
+        $status = 1;
+      }
+      return $status;
     }
-
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * [editDevice description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
      */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+    public function editDevice(Request $request){
+        $id = $request->id;
+        $name = $request->name;
+        if(isset($id) && isset($name)){
+            DB::table('devices')
+                ->where('id', $id)
+                ->update(['name' => $name]);
+        }
+        return 'Succes update! ';
     }
 }

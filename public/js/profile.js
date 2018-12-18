@@ -82,6 +82,12 @@ var profileModel = function (){
         break;
     }
   }
+    self.orgSet = function (){
+       $.get(base_url + '/api/getUsersOrg', {id: $('#orgSelect').val()}).done(function(data){
+        self.users(data)
+      })
+  }
+
 
   /**
    * Method to change from tabs

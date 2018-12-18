@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Blueprint;
 use App\Record;
 use App\Device;
-use App\Organization;
+
 use App\Http\Controllers\AuthController;
 
 class BlueprintController extends Controller
