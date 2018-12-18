@@ -15,6 +15,7 @@ var oldDataModel = function (data){
   self.history = ko.observable(false)
   self.noData = ko.observable(false)
 
+  // Load Model
   self.loadModel = function(data) {
     switch(data) {
       case 'dash':
@@ -45,22 +46,15 @@ var oldDataModel = function (data){
     }
   }
 
-
-    // console.log('Hey!');
-    // hier komt nog data sht call
-    self.deviceId = data.id
-    self.deviceName = data.name
-    $.post(base_url + '/api/uhoo/recordsById' ,{id: self.deviceId})
-          .done(function(data){
-            console.log(data)
-            if(data.length != 0){
-              console.log('sup')
-              self.history(true)
-              console.log(data);
-              self.oldRecords(data)
-            }else {
-              self.noData(true)
-            }
-
-      })
+  self.deviceId = data.id
+  self.deviceName = data.name
+  // request to get records
+  $.get(base_url + '/api/airlab/records/id/get' ,{id: self.deviceId}).done(function(data){
+    if(data.length != 0){
+      self.history(true)
+      self.oldRecords(data)
+    }else {
+      self.noData(true)
+    }
+  })
 }

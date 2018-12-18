@@ -59,6 +59,11 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
+    /**
+     * Method to reset password
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function passwordReset(Request $request)
     {
       $name = $request->input('email');

@@ -12,6 +12,7 @@ class Organization extends Model
     	return $this->hasMany('App\Device');
     }
 
+    // Organization relationship with users
     public function user()
     {
     	return $this->hasMany('App\User');

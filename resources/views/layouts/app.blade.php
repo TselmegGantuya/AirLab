@@ -14,7 +14,6 @@
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body id="main">
     <div id="app">
@@ -49,7 +48,5 @@
     <script src="{{ url('js/devices_admin.js') }}" ></script>
     <script src="{{ url('js/staticData.js') }}" ></script>
     <script src="{{ url('js/oldData.js') }}" ></script>
-
-
 </body>
 </html>

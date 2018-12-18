@@ -10,8 +10,6 @@ use App\Blueprint;
 use App\Record;
 use App\Device;
 use App\Organization;
-use App\User;
-use Carbon\Carbon;
 use App\Http\Controllers\AuthController;
 
 class BlueprintController extends Controller
@@ -121,11 +119,11 @@ class BlueprintController extends Controller
     }
 
     /**
-     * [blueprintDelete description]
+     * Method to delete blueprint
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function blueprintDelete(Request $request){
+    public function deleteBlueprint(Request $request){
         $id =  $request->input('id');
         $bp = Blueprint::find($id);
         $bp->delete(); 
@@ -135,8 +133,7 @@ class BlueprintController extends Controller
      * Method to get devices where left_pixel is equal to NULL
      * @return [type] [description]
      */
-    public function getUserDevices()
-    {
+    public function getUserDevices(){
         $user = auth::user();
         $devices = Device::where([
             ['organization_id', '=', $user['organization_id']],
@@ -160,8 +157,10 @@ class BlueprintController extends Controller
             'left_pixel'
         )->get();
         $warningValues = array();
+
         foreach ($devices as $key => $device) {
             $deviceData = Record::where('device_id', $device['id'])->orderByRaw('created_at DESC')->first();
+
             if(isset($deviceData)){
                 $color = "shadow-success";
                 $textColor = "black";
@@ -195,11 +194,17 @@ class BlueprintController extends Controller
         return $devices;
     }
 
+    /**
+     * Method to get records of a specific device
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function getRecordsForDevice(Request $request)
     {
         $deviceRecords = array();
         $i = 0;
         $records = Record::where('device_id', $request->id)->first();
+
         if($records){
             $records = $records->toArray();
         

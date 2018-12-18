@@ -9,18 +9,16 @@ use Illuminate\Support\Facades\Auth;
 use App\Record;
 use App\Device;
 use App\Organization;
-use App\User;
-use Carbon\Carbon;
 use App\Http\Controllers\AuthController;
 
 class ApiController extends Controller
 {
     /**
-     * [recordsById description]
+     * Method to get records by device ID
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function recordsById(Request $request)
+    public function getRecordsById(Request $request)
     {
       if ($request->id) {
         $records = Record::where('device_id', $request->id)->orderBy('updated_at', 'desc')->get();
@@ -95,68 +93,11 @@ class ApiController extends Controller
       $status = 0;
       foreach ($request->device_id as $id) {
         Device::where('id', $id)->update(['organization_id' => NULL]);
-        //softdelete concept
-        //Device::where('id', $id)->delete();
         $status = 1;
       }
       return $status;
     }
 
-    /**
-     * [Method for changing/updating password]
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
-    public function changePassword(Request $request){
-        $user = Auth::user();
-
-        if (Hash::check($request->get('current_password'), Auth::user()->password)) {
-            //Change the password
-            $user->fill([
-                'password' => Hash::make($request->get('new_password'))
-            ])->save();
-
-            // $request->session()->flash('success', 'Your password has been changed.');
-        }
-
-        // if (!(Hash::check($request->get('current_password'), Auth::user()->password))) {
-        //     // The passwords matches
-        //     return redirect()->back()->with("error","Your current password does not matche with the password you provided. Please try again.");
-        // }
-
-        // if(strcmp($request->get('current_password'), $request->get('new_password')) == 0){
-        //     //Current password and new password are same
-        //     return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
-        // }
-
-        // $validatedData = $request->validate([
-        //     'current_password' => 'required',
-        //     'new_password' => 'required|string|min:6|confirmed',
-        //     'confirm_password' => 'required|string|min:6|confirmed'
-        // ]);
-
-        // //Change Password
-        // $user = Auth::user();
-        // $user->password = bcrypt($request->get('new_password'));
-        // $user->save();
-        return redirect('/');
-    }
-
-    /**
-     * Display record details
-     *
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function recordDetail()
-    {
-        $id = request('id');
-        $device = Device::findOrFail($id);
-        //->orderBy('id', 'desc')->first()
-        $record = Record::where('device_id', '=', $device->id)->first();
-        // return response()->json($record);
-        return $record;
-    }
     /**
      * function to get all devices with values
      * Colors:
@@ -209,7 +150,7 @@ class ApiController extends Controller
     }
     
     /**
-     * [editDevice description]
+     * Method to edit device name
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -223,61 +164,6 @@ class ApiController extends Controller
         }
         return 'Succes update! ';
     }
-
-    /**
-     * fucntion to edit profile
-     * edit only name and email
-     */
-    public function editProfile(Request $request){
-        $id = $request->id;
-        $name = $request->name;
-        $email = $request->email;
-        $password = Hash::make($request->password);
-
-        if(isset($id) && isset($name)){
-            DB::table('users')
-                ->where('id', $id)
-                ->update(['name' => $name, 'email'=> $email, 'password' => $password]);
-        }
-        return 'Succes update! ';
-    }
-    /**
-     * Method to get all devices tha belongs to logged in user
-     * [userDevice description]
-     * @return [type] [description]
-     */
-    public function userDevice()
-    {
-        $devices = Device::all();
-        $records = Record::all();
-        $organizations = Organization::all();
-        $user = auth()->user();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-        $userDevice = array();
-
-        foreach ($organizations as $organization) {
-            if ($userInfo['name'] == $organization->name) {
-                foreach ($devices as $device) {
-                    // $device->records;
-                    if ($device->organization->name == $organization->name) {
-                        $userDevice[] = $device;
-                    }
-                }
-            }
-        }
-        return $userDevice;
-    }
-
-    //Get all records from device id by record prop. example co2
-    public function recordsByProperty(Request $request){
-      $id = $request->id;
-      $nameProp = $request->name;
-      $data = Record::where('device_id', $id)->select($nameProp)->get()->toArray();
- 
-      return $data;
-    }
-
 
     /**
      * Method for getting a list of all available devices.
@@ -305,34 +191,23 @@ class ApiController extends Controller
 
         $result = curl_exec($curl);
         $response = json_decode($result);
+        $user = auth::user();
+        $organization = Organization::where('name', '=', $user['name'])->get();
+        $device = Device::where('name', '=', $response->deviceName)->get();
 
-        $devices = Device::all();
-        $organizations = Organization::all();
-        $user = AuthController::me();
-        $content = $user->getContent();
-        $userInfo = json_decode($content, true);
-
-        foreach ($response as $res) {
-            foreach ($devices as $device) {
-                if ($res->deviceName !== $device->name) {
-                    dd('not iden');
-                    //Save new devices to DB
-                    $device = new Device;
-                    $device->name = $res->deviceName;
-                    $device->mac_address = $res->macAddress;
-                    $device->serial_number = $res->serialNumber;
-                    foreach ($organizations as $organization) {
-                        if ($userInfo['name'] == $organization->name) {
-                            $device->organization_id = $organization->id;
-                        }
-                    }
-                    // $device->save();
+        foreach ($responses as $response) {
+            if ($response->deviceName !== $device->name) {
+                //Save new devices to DB
+                $device = new Device;
+                $device->name = $response->deviceName;
+                $device->mac_address = $response->macAddress;
+                $device->serial_number = $response->serialNumber;
+                if ($user['name'] == $organization->name) {
+                    $device->organization_id = $organization->id;
                 }
+                // $device->save();
             }
         }
-
-        // Redirect to devices page
-        return redirect('api/uhoo/devices');
     }
 
     /**
@@ -381,8 +256,5 @@ class ApiController extends Controller
         $record->ozone = $response->Ozone;
         $record->no2 = $response->NO2;
         // $record->save();
-
-        // Redirect to records page
-        return redirect('api/uhoo/records');
     }
 }

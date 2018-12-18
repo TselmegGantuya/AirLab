@@ -1,3 +1,7 @@
+/**
+ * Admin Devices Model
+ * @return {[type]} [description]
+ */
 var adminDevicesModel = function (){
   var self = this
   self.nav = ko.observable(true)
@@ -14,8 +18,12 @@ var adminDevicesModel = function (){
   self.orgId = ko.observable()
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
-  /*START STEFAN CODE*/
 
+  /**
+   * Method to load models 
+   * @param  {[type]} data [description]
+   * @return {[type]}      [description]
+   */
   self.loadModel = function(data) {
     switch(data) {
       case 'dash':
@@ -51,193 +59,184 @@ var adminDevicesModel = function (){
     }
   }
 
-/**
- * Get old data 
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
- */
-self.oldData = function(data){
-  
-  ko.cleanNode($("#main")[0])
-  var newModel = new oldDataModel(data)
-  ko.applyBindings(newModel)
-}
+  /**
+   * Get old data 
+   * @param  {[type]} data [description]
+   * @return {[type]}      [description]
+   */
+  self.oldData = function(data){
+    ko.cleanNode($("#main")[0])
+    var newModel = new oldDataModel(data)
+    ko.applyBindings(newModel)
+  }
 
   /**
    * Token
    */
-  if (localStorage.getItem('token'))
-  {
+  if (localStorage.getItem('token')){
     self.token(localStorage.getItem('token'))
   }
 
- self.getOrganizations = function(){
-     $.post(base_url + '/api/uhoo/organizations').done(function(data){
-         self.organization(data)
-     })
- }
- self.getOrganizations()
+  /**
+   * Method to get organizations
+   * @return {[type]} [description]
+   */
+  self.getOrganizations = function(){
+    $.get(base_url + '/api/airlab/organizations/get').done(function(data){
+      self.organization(data)
+    })
+  }
+  self.getOrganizations()
 
- /**
+  /**
   * [organizationCheckbox description]
   * @return {[type]} [description]
   */
- self.organizationRadiobox = function(data,event) {
-   self.showOrgDevices(false)
-   self.showNewDevices(false)
-   if (event.target.checked) {
-     //id organization
-     console.log(event.target.value)
-     self.orgId = event.target.value;
-     //get all devices with no organization
-     $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
-
-         if (data != '' && data[0]['organization_id'] != null ){
-           self.devicesOrganization(data)
-           self.showOrgDevices(!self.showOrgDevices());
-         }
-     })
-     $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
-         if (data != ''){
-           self.newDevices(data)
-           self.showNewDevices(!self.showNewDevices());
-         }
-     })
-   }
-   return true; // to trigger the browser default bahaviour
+  self.organizationRadiobox = function(data,event) {
+    self.showOrgDevices(false)
+    self.showNewDevices(false)
+    if (event.target.checked) {
+      //id organization
+      self.orgId = event.target.value;
+      //get all devices with no organization
+      $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
+        if (data != '' && data[0]['organization_id'] != null ){
+          self.devicesOrganization(data)
+          self.showOrgDevices(!self.showOrgDevices());
+        }
+      })
+      // get new devices
+      $.get(base_url + '/api/airlab/new/devices/get').done(function(data){
+        if (data != ''){
+          self.newDevices(data)
+          self.showNewDevices(!self.showNewDevices());
+        }
+      })
+    }
+    return true; // to trigger the browser default bahaviour
  }
 
-/**
- * Devices belonged to User
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
- */
- self.devicesOwner = function(data) {
-   var items=document.getElementsByName('devicesOrganization');
-   var selectedItems = [];
-   for(var i=0; i<items.length; i++){
-     if(items[i].type=='checkbox' && items[i].checked==true)
-     selectedItems.push(items[i].value+"\n");
-   }
-   if (selectedItems != 0) {
-     $.post(base_url + '/api/uhoo/deleteDevicesOrganization', {device_id:selectedItems}).done(function(data){
-       if (data == 1) {
-         $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
-             if (data[0]['organization_id'] == null ){
-               self.newDevices(data)
-               self.showNewDevices(true);
-             }
-             else {
-               console.log('Geen nieuwe devices');
-             }
-         })
-         $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
-           if(data != ''){
-             if (data[0]['organization_id'] != null ){
-               self.devicesOrganization(data)
-               self.showOrgDevices(self.showOrgDevices());
-             }
-             else {
-               console.log('Geen nieuwe devices');
-             }
-           }else {
-             self.showOrgDevices(false)
-           }
-         })
-       }else {
-         console.log('Deleten niet gelukt')
-       }
-     })
-   }
- }
+  /**
+  * Devices belonged to User
+  * @param  {[type]} data [description]
+  * @return {[type]}      [description]
+  */
+  self.devicesOwner = function(data) {
+    var items=document.getElementsByName('devicesOrganization');
+    var selectedItems = [];
+    for(var i=0; i<items.length; i++){
+      if(items[i].type=='checkbox' && items[i].checked==true)
+      selectedItems.push(items[i].value+"\n");
+    }
+    if (selectedItems != 0) {
+      $.post(base_url + '/api/airlab/device/organization/delete', {device_id:selectedItems}).done(function(data){
+        if (data == 1) {
+          $.get(base_url + '/api/airlab/new/devices').done(function(data){
+            if (data[0]['organization_id'] == null ){
+              self.newDevices(data)
+              self.showNewDevices(true);
+            }else {
+              console.log('Geen nieuwe devices');
+            }
+          })
+          $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
+            if(data != ''){
+              if (data[0]['organization_id'] != null ){
+                self.devicesOrganization(data)
+                self.showOrgDevices(self.showOrgDevices());
+              }
+              else {
+                console.log('Geen nieuwe devices');
+              }
+            }else {
+              self.showOrgDevices(false)
+            }
+          })
+        }else {
+          console.log('Deleten niet gelukt')
+        }
+      })
+    }
+  }
 
 /**
  * new devices
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
- self.newDevice = function(data) {
-   var items=document.getElementsByName('newDevices');
-   var selectedItems = [];
-   for(var i=0; i<items.length; i++){
-     if(items[i].type=='checkbox' && items[i].checked==true)
-     selectedItems.push(items[i].value+"\n");
-   }
-   if (selectedItems != 0) {
-     $.post(base_url + '/api/uhoo/addDeviceOrg' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
-       if (data == 1) {
+  self.newDevice = function(data) {
+    var items=document.getElementsByName('newDevices');
+    var selectedItems = [];
+    for(var i=0; i<items.length; i++){
+      if(items[i].type=='checkbox' && items[i].checked==true)
+      selectedItems.push(items[i].value+"\n");
+    }
 
-         $.post(base_url + '/api/uhoo/getNewDevices').done(function(data){
-           console.log(data)
-           if(data != '' ){
-             console.log('test')
-             if (data[0]['organization_id'] == null ){
-               self.newDevices(data)
-               self.showNewDevices();
-             }
-           }else {
+    if (selectedItems != 0) {
+      $.post(base_url + '/api/airlab/device/organization/add' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
+        if (data == 1) {
+          $.get(base_url + '/api/airlab/new/devices/get').done(function(data){
+            if(data != '' ){
+              if (data[0]['organization_id'] == null ){
+                self.newDevices(data)
+                self.showNewDevices();
+              }
+            }else {
               self.showNewDevices(false);
-           }
-         })
-         $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.orgId}).done(function(data){
-             if (data[0]['organization_id'] != null ){
-               self.devicesOrganization(data)
-               self.showOrgDevices(true);
-             }
-             else {
-               console.log('Geen devices van organization');
-             }
-         })
-       }else {
-         console.log('Updaten niet gelukt')
-       }
-     })
-   }
- }
- /*END STEFAN CODE*/
+            }
+          })
 
- /*START CODE LARS */
- /**
+          $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
+            if (data[0]['organization_id'] != null ){
+              self.devicesOrganization(data)
+              self.showOrgDevices(true);
+            }
+            else {
+              console.log('Geen devices van organization');
+            }
+          })
+        }else {
+          console.log('Updaten niet gelukt')
+        }
+      })
+    }
+  }
+
+  /**
   * Get the user devices
   * @return {[type]} [description]
   */
- self.getUserDevices = function(){
-    $.post(base_url + '/api/me', {token: self.token()})
-      .done(function(data){
-        self.user(data)
-        if(self.user().role == 1){
-          self.showAdminPart(false)
-          $.post(base_url + '/api/uhoo/getDevicesOrganization' ,{id:self.user().organization_id}).done(function(data){
-           self.allUserDevices(data)
-           console.log(data)
-         })
-        }else if(self.user().role == 2){
-          self.showAdminPart(true)
-        }
-
-      })
+  self.getUserDevices = function(){
+    $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
+      self.user(data)
+      if(self.user().role == 1){
+        self.showAdminPart(false)
+        $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.user().organization_id}).done(function(data){
+          self.allUserDevices(data)
+        })
+      }else if(self.user().role == 2){
+        self.showAdminPart(true)
+      }
+    })
   }
   self.getUserDevices()
 
-/**
- * Method to edit device
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
- */
+  /**
+   * Method to edit device
+   * @param  {[type]} data [description]
+   * @return {[type]}      [description]
+   */
   self.editDevice = function(data){
-    $.post(base_url + '/api/uhoo/editDevice' ,{token: self.token(),id:data.id, name: data.name})
-      .done(function(data){
-        console.log(data);
-        if(data ){
-          swal("Success!", "Name has been changed!", "success");
-        }
-
-      })
-  }
-  $.post(base_url + '/api/me', {token: self.token()})
-    .done(function(data){
-      self.userEmail(data.email)
-      self.userOrganization(data.name)
+    $.post(base_url + '/api/airlab/device/edit' ,{token: self.token(),id:data.id, name: data.name}).done(function(data){
+      if(data ){
+        swal("Success!", "Name has been changed!", "success");
+      }
     })
- /*END CODE LARS*/
+  }
+
+  // request to get user info to backend
+  $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
+    self.userEmail(data.email)
+    self.userOrganization(data.name)
+  })
 }
