@@ -17,9 +17,9 @@ class DeviceController extends Controller
      */
     public function getDevicesOrganization(Request $request)
     {
-      if ($request->id) {
-        $orgDevices = Device::where('organization_id', $request->id)->get();
-      }
+        if ($request->id) {
+            $orgDevices = Device::where('organization_id', $request->id)->get();
+        }
         return $orgDevices;
     }
 
@@ -31,8 +31,8 @@ class DeviceController extends Controller
      */
     public function getNewDevices()
     {
-      $cleanDevices = Device::where('organization_id', NULL)->get();
-      return $cleanDevices;
+        $cleanDevices = Device::where('organization_id', NULL)->get();
+        return $cleanDevices;
     }
 
     /**
@@ -43,10 +43,10 @@ class DeviceController extends Controller
      */
     public function addDeviceOrg(Request $request)
     {
-      foreach ($request->device_id as $id) {
-        Device::where('id', $id)->update(['organization_id' => $request->organization_id]);
-      }
-      return $status;
+        foreach ($request->device_id as $id) {
+            Device::where('id', $id)->update(['organization_id' => $request->organization_id]);
+        }
+        return $status;
     }
 
     /**
@@ -57,14 +57,14 @@ class DeviceController extends Controller
      */
     public function deleteDevicesOrganization(Request $request)
     {
-      $status = 0;
-      foreach ($request->device_id as $id) {
-        Device::where('id', $id)->update(['organization_id' => NULL]);
-        //softdelete concept
-        //Device::where('id', $id)->delete();
-        $status = 1;
-      }
-      return $status;
+        $status = 0;
+        foreach ($request->device_id as $id) {
+            Device::where('id', $id)->update(['organization_id' => NULL]);
+            //softdelete concept
+            //Device::where('id', $id)->delete();
+            $status = 1;
+        }
+        return $status;
     }
     /**
      * [editDevice description]

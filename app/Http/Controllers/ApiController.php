@@ -20,10 +20,22 @@ class ApiController extends Controller
      */
     public function getRecordsById(Request $request)
     {
-      if ($request->id) {
-        $records = Record::where('device_id', $request->id)->orderBy('updated_at', 'desc')->get();
-      }
+        if ($request->id) {
+            $records = Record::where('device_id', $request->id)->orderBy('updated_at', 'desc')->get();
+        }
         return $records;
+    }
+
+    /**
+     * Get all records from device id by record properties. (Example: co2)
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function getRecordsByProperty(Request $request){
+        $id = $request->id;
+        $nameProp = $request->name;
+        $data = Record::where('device_id', $id)->select($nameProp)->get()->toArray();
+        return $data;
     }
 
     /**

@@ -3,7 +3,7 @@
 */
 var dashModel = function (){
   var self = this
-   self.optionValues = ko.observableArray(["Pick a value...","temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
+  self.optionValues = ko.observableArray(["Pick a value...","temperature", "relative_humidity", "pm2_5", "tvoc", "co2", "co", "air_pressure","ozone", "no2"])
   self.selectedOptionValue = ko.observable('Select a value')
   self.currentTemplate = ko.observable('blueprintPage')
   self.nav = ko.observable(true)
@@ -15,8 +15,6 @@ var dashModel = function (){
   self.blueprintName = ko.observable()
   self.blueprintData = ko.observableArray()
   self.blueprintDevices = ko.observableArray()
-  self.blueprintDevi = ko.observableArray()
-  self.removeBpDevices = ko.observableArray()
   self.userEmail = ko.observable()
   self.userOrganization = ko.observable()
   self.devices = ko.observableArray()
@@ -24,7 +22,6 @@ var dashModel = function (){
   self.user = ko.observableArray()
   self.allColorDevices = ko.observableArray()
   self.records = ko.observableArray()
-  self.lastRecord = ko.observableArray()
   self.currentBlueprintSize = ko.observable()
   self.currentBlueprintHeight = ko.observable()
   self.currentBlueprintWidth = ko.observable()
@@ -107,7 +104,7 @@ var dashModel = function (){
         async function removeDraggable() {
           // create a new promise inside of the async function
           let promise = new Promise((resolve, reject) => {
-            setTimeout(() => resolve($('.draggable').remove()), 250) // resolve
+            setTimeout(() => resolve($('.draggable').remove()), 10) // resolve
           });
           // wait for the promise to resolve
           let result = await promise;
@@ -234,63 +231,71 @@ var dashModel = function (){
    * @return {[type]} [description]
    */
   self.blueprintdash = function () {
+    // request to get devices on blueprint 
+    $.get(base_url + '/api/blueprint/devices/get').done(function(data) { 
+      self.blueprintDevices(data)  
+    })
+
     // request to get devices where top_pixel and left_pixel are not equal to null
     $.get(base_url + '/api/blueprint/db/devices/get').done(function(data) {
       data.forEach(function(element) {
-        var btn = document.createElement("BUTTON");
-        let toppixel = element.top_pixel - 79
-        btn.setAttribute("data-toggle", "popover");
-        btn.style.position = 'absolute';
-        btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
-        btn.id = element.id;
-        self.devices(btn.id)
-        btn.style.left = element.left_pixel +'px';
-        btn.style.top = toppixel +'px';
-        document.getElementById("bp").appendChild(btn);
+        if (element.blueprint_id == self.currentBlueprint().id) {
+          var btn = document.createElement("BUTTON");
+          let toppixel = element.top_pixel - 79
+          btn.setAttribute("data-toggle", "popover");
+          btn.style.position = 'absolute';
+          btn.className = "btn draggable btn-circle drag-drop " + element.colorClass;
+          btn.id = element.id;
+          self.devices(btn.id)
+          btn.style.left = element.left_pixel +'px';
+          btn.style.top = toppixel +'px';
+          document.getElementById("bp").appendChild(btn);
 
-        // jquery popover method. Return device name when hovered over
-        $('[data-toggle="popover"]').popover({
-          placement: 'top',
-          animation: true,
-          trigger: 'hover',
-          title: "Device",
-          title: function() {
-            if (element.id == btn.id) {
-              return element.name
-            }
-          },
-          content: function() {
-            if (element.id == btn.id) {
-              return element.danger
-            }
-          },
-        })
-
-          // Open modal to remove device from blueprint
-          $(btn).on('click', function(e) {
-            $('#removeDevice').modal('show')
-            self.devices(element)
-            $.post(base_url + '/api/blueprint/records/device/get', {id: element.id}).done(function(data) {
-              // this function will return device records
-              async function returnDeviceRecords() {
-                // create a new promise inside of the async function
-                let promise = new Promise((resolve, reject) => {
-                  setTimeout(() => resolve(self.records(data)), 500) // resolve
-                });
-                // wait for the promise to resolve
-                let result = await promise;
+          // jquery popover method. Return device name when hovered over
+          $('[data-toggle="popover"]').popover({
+            placement: 'top',
+            animation: true,
+            trigger: 'hover',
+            title: "Device",
+            title: function() {
+              if (element.id == btn.id) {
+                return element.name
               }
-              // call the function
-              returnDeviceRecords()
-            })
+            },
+            content: function() {
+              if (element.id == btn.id) {
+                return element.danger
+              }
+            },
+          })
 
-          // Method to remove device from blueprint and refresh page
-          self.removeDevice = function(){
-            $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
-              self.stopDragNDropLogic()
-            })
-          }
-        })
+            // Open modal to remove device from blueprint
+            $(btn).on('click', function(e) {
+              $('#removeDevice').modal('show')
+              self.devices(element)
+              $.post(base_url + '/api/blueprint/records/device/get', {id: element.id}).done(function(data) {
+                self.deviceId = element.id
+                // this function will return device records
+                async function returnDeviceRecords() {
+                  // create a new promise inside of the async function
+                  let promise = new Promise((resolve, reject) => {
+                    setTimeout(() => resolve(self.records(data)), 500) // resolve
+                  });
+                  // wait for the promise to resolve
+                  let result = await promise;
+                }
+                // call the function
+                returnDeviceRecords()
+              })
+
+            // Method to remove device from blueprint and refresh page
+            self.removeDevice = function(){
+              $.post(base_url + '/api/blueprint/device/remove', {id: self.devices().id}).done(function(data) {
+                self.stopDragNDropLogic()
+              })
+            }
+          })
+        }
       })
     })
   }
@@ -404,12 +409,16 @@ var dashModel = function (){
     })
   }
 
-//Chart begin
-
+  /**
+   * Logic for records in chart
+   * @param  {[type]} data  [description]
+   * @param  {[type]} event [description]
+   * @return {[type]}       [description]
+   */
   self.getChart = function(data,event) {
     console.log(data);
     if(event.target.value != 'Pick a value...' && self.deviceId){
-      $.post(base_url + '/api/uhoo/recordsByProperty' ,{id:self.deviceId, name:event.target.value}).done(function(data){
+      $.get(base_url + '/api/airlab/device/records/chart/get' ,{id:self.deviceId, name:event.target.value}).done(function(data){
         var modData = [];
         for (var i = 0; i < data.length; i++) {
           modData.push(data[i][event.target.value])

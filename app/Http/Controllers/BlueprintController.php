@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Blueprint;
 use App\Record;
 use App\Device;
-
 use App\Http\Controllers\AuthController;
 
 class BlueprintController extends Controller
@@ -19,7 +18,7 @@ class BlueprintController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function uploadBP(Request $request)
+    public function uploadBlueprint(Request $request)
     {
         $user = auth()->user();
         $path = $request->file('blueprint')->store('public');
@@ -30,7 +29,12 @@ class BlueprintController extends Controller
         $blueprint->save();
         return 'success';
     }
-    public function full(){
+
+    /**
+     * Method to get blueprint in fullscreen
+     * @return [type] [description]
+     */
+    public function getBlueprintFullscreen(){
         return view('full');
     }
 
@@ -39,7 +43,7 @@ class BlueprintController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function uploadBPAdmin(Request $request)
+    public function uploadBlueprintAdmin(Request $request)
     {
         $user = auth()->user();
         $path = $request->file('blueprint')->store('public');
@@ -56,7 +60,7 @@ class BlueprintController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function updateBP(Request $request)
+    public function updateBlueprint(Request $request)
     {
         $user = auth()->user();
         $path = $request->file('blueprint')->store('public');
@@ -71,7 +75,7 @@ class BlueprintController extends Controller
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function changeName(Request $request)
+    public function changeBlueprintName(Request $request)
     {
         $user = auth()->user();
         $bp = Blueprint::FindOrFail($request->input('id'));
@@ -86,7 +90,7 @@ class BlueprintController extends Controller
      * Get organization blueprint
      * @return [type] [description]
      */
-    public function getBP()
+    public function getBlueprint()
     {
         $user = auth()->user();
         $bps = Blueprint::where('organization_id', $user->organization_id)->get();

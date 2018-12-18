@@ -15,7 +15,6 @@ class Device extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
-
     public $organization;
 
     /**
