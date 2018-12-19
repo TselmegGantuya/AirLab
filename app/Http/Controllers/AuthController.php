@@ -24,7 +24,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
- public function login()
+    public function login()
     {
         $credentials = request(['email', 'password']);
         if (! $token = auth()->attempt($credentials)) {
@@ -55,7 +55,6 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
-
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -67,11 +66,7 @@ class AuthController extends Controller
     public function passwordReset(Request $request)
     {
       $name = $request->input('email');
-
-      if (User::where('email', '=', Input::get('email'))->exists()) {
-        
-      }
-
+      if (User::where('email', '=', Input::get('email'))->exists()) {}
     }
 
     /**

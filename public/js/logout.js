@@ -4,6 +4,9 @@ var logoutModel = function (){
   self.nav = ko.observable(false)
   self.token = ko.observable()
 
+  /**
+   * Token
+  */
   if (localStorage.getItem('token')){
     self.token(localStorage.getItem('token'))
   }

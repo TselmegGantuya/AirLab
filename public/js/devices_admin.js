@@ -89,7 +89,7 @@ var adminDevicesModel = function (){
   self.getOrganizations()
 
   /**
-  * [organizationCheckbox description]
+  * Method for checkbox. Get organizations devices when selected
   * @return {[type]} [description]
   */
   self.organizationRadiobox = function(data,event) {
@@ -129,8 +129,10 @@ var adminDevicesModel = function (){
       selectedItems.push(items[i].value+"\n");
     }
     if (selectedItems != 0) {
+      // request to delete device from organization
       $.post(base_url + '/api/airlab/device/organization/delete', {device_id:selectedItems}).done(function(data){
         if (data == 1) {
+          // request to get new devices 
           $.get(base_url + '/api/airlab/new/devices').done(function(data){
             if (data[0]['organization_id'] == null ){
               self.newDevices(data)
@@ -139,6 +141,7 @@ var adminDevicesModel = function (){
               console.log('Geen nieuwe devices');
             }
           })
+          // request to get organizations devices
           $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
             if(data != ''){
               if (data[0]['organization_id'] != null ){
@@ -173,8 +176,10 @@ var adminDevicesModel = function (){
     }
 
     if (selectedItems != 0) {
+      // request to add device to organization
       $.post(base_url + '/api/airlab/device/organization/add' ,{ organization_id:self.orgId, device_id:selectedItems}).done(function(data){
         if (data == 1) {
+          // request to get new devices
           $.get(base_url + '/api/airlab/new/devices/get').done(function(data){
             if(data != '' ){
               if (data[0]['organization_id'] == null ){
@@ -185,7 +190,7 @@ var adminDevicesModel = function (){
               self.showNewDevices(false);
             }
           })
-
+          // request to get organizations devices 
           $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.orgId}).done(function(data){
             if (data[0]['organization_id'] != null ){
               self.devicesOrganization(data)
@@ -211,6 +216,7 @@ var adminDevicesModel = function (){
       self.user(data)
       if(self.user().role == 1){
         self.showAdminPart(false)
+        // request organizations devices
         $.get(base_url + '/api/airlab/devices/organization/get' ,{id:self.user().organization_id}).done(function(data){
           self.allUserDevices(data)
         })
@@ -227,6 +233,7 @@ var adminDevicesModel = function (){
    * @return {[type]}      [description]
    */
   self.editDevice = function(data){
+    // request to edit device
     $.post(base_url + '/api/airlab/device/edit' ,{token: self.token(),id:data.id, name: data.name}).done(function(data){
       if(data ){
         swal("Success!", "Name has been changed!", "success");
@@ -234,7 +241,7 @@ var adminDevicesModel = function (){
     })
   }
 
-  // request to get user info to backend
+  // request to send user info to backend
   $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
     self.userEmail(data.email)
     self.userOrganization(data.name)

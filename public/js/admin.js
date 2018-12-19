@@ -5,8 +5,10 @@
 var adminModel = function (){
 	var self = this
 
-	if (localStorage.getItem('token'))
-	{
+	/**
+	* Token
+	*/
+	if (localStorage.getItem('token')){
 		self.token(localStorage.getItem('token'))
 	}
 

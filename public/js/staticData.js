@@ -68,6 +68,7 @@ var staticDataModel = function (){
   }
   self.colorDevices()
   
+  // request to send user info to backend
   $.post(base_url + '/api/me', {token: self.token()}).done(function(data){
     self.userEmail(data.email)
     self.userOrganization(data.name)
