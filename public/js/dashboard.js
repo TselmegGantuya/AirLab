@@ -211,6 +211,7 @@ var dashModel = function (){
       }
 
       let result = await resolvePost(files[0])
+      // remove data from the blueprint
       self.blueprintData.removeAll()
 
       // Request to get blueprint
