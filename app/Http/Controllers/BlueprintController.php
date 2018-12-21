@@ -81,6 +81,10 @@ class BlueprintController extends Controller
         $bp = Blueprint::FindOrFail($request->input('id'));
         if($user->organization_id == $bp->organization_id)
         {
+            $this->validate($request, [
+                'name' => 'required|string|max:50|unique:blueprints',
+            ]);
+            // $bp->name = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), ' ');
             $bp->name = $request->input('name');
             $bp->save();
         }
