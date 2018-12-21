@@ -110,7 +110,7 @@ var profileModel = function (){
   *   Edit Profile
   */
    self.editProfile = function(data){
-    $.post(base_url + '/api/uhoo/editProfile' ,{token: self.token(),id:data.id, name: data.name, email: data.email, password: self.new_password()})
+    $.post(base_url + '/api/user/info' ,{token: self.token(),id:data.id, name: data.name, email: data.email, password: self.new_password()})
       .done(function(data){
         console.log(data);
         if(data ){

@@ -41,6 +41,7 @@ Route::group([
     // Routes for Airlab Auths
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
+    Route::get('getUsersOrg', 'UserController@getUserOrganization');
     Route::post('logout', 'AuthController@logout');
 
     // Routes for Airlab Blueprints

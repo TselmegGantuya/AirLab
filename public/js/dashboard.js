@@ -434,7 +434,7 @@ var dashModel = function (){
                 datasets: [{
                     label: "",
                     backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(25s5, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
                     data: modData,
                 }]
             },

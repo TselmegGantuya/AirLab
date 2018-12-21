@@ -29,22 +29,4 @@ class UserController extends Controller
     public function getUserOrganization(Request $request){
         return User::where('organization_id', $request->input('id'))->get();
     }
-    
-    /**
-     * fucntion to edit profile
-     * edit only name and email
-    */
-    public function editProfile(Request $request){
-        $id = $request->id;
-        $name = $request->name;
-        $email = $request->email;
-        $password = Hash::make($request->password);
-
-        if(isset($id) && isset($name)){
-            DB::table('users')
-                ->where('id', $id)
-                ->update(['name' => $name, 'email'=> $email, 'password' => $password]);
-        }
-        return 'Succes update! ';
-    }
 }

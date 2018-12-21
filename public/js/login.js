@@ -87,7 +87,6 @@ var loginModel = function (){
    * @return {[type]} [description]
    */
   self.loginToken = function() {
-    // request to log in with name, password and the created token
     $.post(base_url + '/api/login',{email:$('#email').val(), password:$('#password').val()}).done(function(data){
       self.token(data['access_token'])
       localStorage.setItem('token',self.token())
@@ -97,7 +96,6 @@ var loginModel = function (){
 			  }
 			})
 
-      // Method to check if user has admin or user role
   		$.post(base_url + '/api/me').done(function(data){
         if ( data['role'] == 1 ){
           self.userRole('user')
@@ -153,7 +151,6 @@ var loginModel = function (){
   		  }
   		})
 
-      // Method to check if user has admin or user role
       $.post(base_url + '/api/me').done(function(data){
         if ( data['role'] == 1 ){
           self.userRole('user')
